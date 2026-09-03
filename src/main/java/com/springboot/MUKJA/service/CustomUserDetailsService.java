@@ -31,6 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .username(dto.getU_id())
                 .password(dto.getU_passwd())
                 .roles(dto.getU_auth())
+                .disabled("NONE".equals(dto.getU_stats()))
                 .build();
     }
 }

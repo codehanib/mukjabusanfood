@@ -5,82 +5,122 @@
 <mapper namespace="com.springboot.MUKJA.dao.usersDAO">
 
 	<!-- 아이디로 회원 조회 (로그인용) -->
-	<select id="findById" resultType="com.springboot.MUKJA.dto.usersDTO">
-	    SELECT u_no, u_id, u_passwd, u_name, u_tel, u_addr, u_zipno, u_email, u_auth, u_date, u_stats, r_no
-	    FROM users
-	    WHERE u_id = #{u_id}
+	<select id="findById"
+		resultType="com.springboot.MUKJA.dto.usersDTO">
+		SELECT u_no, u_id, u_passwd, u_name, u_tel, u_addr, u_zipno, u_email,
+		u_auth, u_date, u_stats, r_no
+		FROM users
+		WHERE u_id = #{u_id}
 	</select>
 
 	<!-- 회원 목록 (관리자용) -->
-	<select id="userList" resultType="com.springboot.MUKJA.dto.usersDTO">
+	<select id="usersList"
+		resultType="com.springboot.MUKJA.dto.usersDTO">
 		SELECT u_no, u_id, u_name, u_tel, u_email
 		FROM users
-		ORDER BY u_no ASC
+		ORDER BY
+		u_no ASC
 	</select>
 
 	<!-- 회원가입 -->
-	<insert id="usersInsert" parameterType="com.springboot.MUKJA.dto.usersDTO">
-		INSERT INTO users(u_no, u_id, u_passwd, u_name, u_tel, u_addr, u_zipno, u_email, u_auth, u_date, u_stats)
-        	VALUES(users_seq.nextval,
-				            #{u_id},
-				            #{u_passwd},
-				            #{u_name},
-				            #{u_tel},
-				            #{u_addr},
-				            #{u_zipno},
-				            #{u_email},
-				            'USER',
-				            SYSDATE,
-				            'ACTIVE')
+	<insert id="usersInsert"
+		parameterType="com.springboot.MUKJA.dto.usersDTO">
+		INSERT INTO users(u_no, u_id, u_passwd, u_name, u_tel,
+		u_addr, u_zipno, u_email, u_auth, u_date, u_stats)
+		VALUES(users_seq.nextval,
+		#{u_id},
+		#{u_passwd},
+		#{u_name},
+		#{u_tel},
+		#{u_addr},
+		#{u_zipno},
+		#{u_email},
+		'USER',
+		SYSDATE,
+		'ACTIVE')
 	</insert>
 
 	<!-- 회원 정보 수정 -->
-	<update id="userUpdate" parameterType="com.springboot.MUKJA.dto.usersDTO">
+	<update id="usersUpdate"
+		parameterType="com.springboot.MUKJA.dto.usersDTO">
 		UPDATE users
-		SET u_passwd = #{u_passwd},
-		    u_tel = #{u_tel},
-		    u_addr = #{u_addr},
-		    u_zipno = #{u_zipno},
-		    u_email = #{u_email}
+		SET u_tel = #{u_tel},
+		u_addr = #{u_addr},
+		u_zipno = #{u_zipno},
+		u_email = #{u_email}
 		WHERE u_id = #{u_id}
 	</update>
 
-	<!-- 회원 탈퇴 (본인) -->
-	<delete id="userDelete">
-		DELETE FROM users WHERE u_id = #{u_id}
-	</delete>
+	<!-- 회원 탈퇴(활동한 흔적있으면 상태변경함) -->
+	<update id="usersDelete">
+		UPDATE users
+		SET u_id = 'none_' || u_no,
+		u_name = '탈퇴회원',
+		u_tel = '000-0000-0000',
+		u_addr = NULL,
+		u_email = 'none_' || u_no || '@none.com',
+		u_stats = 'NONE'
+		WHERE u_id = #{u_id}
+	</update>
+	
+	<!-- 비밀번호 변경 -->
+	<update id="userspasswd">
+		UPDATE users
+		SET u_passwd =  #{u_passwd} where u_id = #{u_id}
+	</update>
 
 	<!-- 관리자가 회원 삭제 -->
-	<delete id="adminuserDelete">
+	<delete id="adminDelete">
 		DELETE FROM users WHERE u_no = #{u_no}
 	</delete>
 
 	<!-- 관리자 회원 상세조회 -->
-	<select id="userView" resultType="com.springboot.MUKJA.dto.usersDTO">
-	    SELECT u_no, u_id, u_passwd, u_name, u_tel, u_addr, u_zipno, u_email, u_auth, u_date, u_stats, r_no
-	    FROM users
-	    WHERE u_no = #{u_no}
+	<select id="usersView"
+		resultType="com.springboot.MUKJA.dto.usersDTO">
+		SELECT u_no, u_id, u_passwd, u_name, u_tel, u_addr, u_zipno, u_email,
+		u_auth, u_date, u_stats, r_no
+		FROM users
+		WHERE u_no = #{u_no}
 	</select>
+	
+	<!-- 관리자 회원 권한변경 -->
+	<update id="usersAuthUpdate" parameterType="com.springboot.MUKJA.dto.usersDTO">
+		UPDATE users
+		SET u_auth = #{u_auth},r_no = #{r_no} where u_no = #{u_no}
+	</update>
 
-	<!-- 주문 수 -->
-	<select id="orderCount" resultType="int">
-	    SELECT COUNT(*)
-	    FROM orders
-	    WHERE u_no = #{u_no}
+	<!-- 배달 수 -->
+	<select id="delivery" resultType="int">
+		SELECT COUNT(*)
+		FROM delivery
+		WHERE u_no = #{u_no}
 	</select>
 
 	<!-- 찜(위시리스트) 수 -->
-	<select id="wishlistCount" resultType="int">
-	    SELECT COUNT(*)
-	    FROM wishlist
-	    WHERE u_no = #{u_no}
+	<select id="bookmark" resultType="int">
+		SELECT COUNT(*)
+		FROM bookmark
+		WHERE u_no = #{u_no}
 	</select>
 
 	<!-- 1:1 문의 수 -->
-	<select id="one_inquiryCount" resultType="int">
-	    SELECT COUNT(*)
-	    FROM one_inquiry
-	    WHERE u_no = #{u_no}
+	<select id="mukja_inquiry" resultType="int">
+		SELECT COUNT(*)
+		FROM mukja_inquiry
+		WHERE u_no = #{u_no}
+	</select>
+	<!-- 리뷰 수 -->
+	<select id="review" resultType="int">
+		SELECT COUNT(*)
+		FROM r_review
+		WHERE u_no = #{u_no}
+	</select>
+
+	<!-- 예약 수 -->
+	<select id="reservation" resultType="int">
+		SELECT COUNT(*)
+		FROM reservation
+		WHERE u_no = #{u_no}
 	</select>
 
 </mapper>

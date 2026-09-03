@@ -22,7 +22,7 @@ public class WebSecurityConfig {
 			.cors((cors) -> cors.disable())
 			.authorizeHttpRequests(request -> request
 					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-					.requestMatchers("/","/writeForm","/loginForm","/jusoPopup","/usersInsert","/loginsuccess",
+					.requestMatchers("/","/writeForm","/loginForm","/usersInsert", "/checkId","/jusoPopup","/usersInsert","/loginsuccess",
 									"/product/**","/header","/footer","/main","/customerService2","/product/productDetail","/product/productList").permitAll()
 					.requestMatchers("/notice/list", "/notice/view","/product/productDetail").permitAll()
 					.requestMatchers("/login/**","/loginError").permitAll()
