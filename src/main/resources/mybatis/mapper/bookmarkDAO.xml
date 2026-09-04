@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.MUKJA.dao.bookmarkDAO">
+	
+	<select id="reviewCount" resultType="int">
+	</select>
+	<!-- 북마크로 변경 -->
+	<!-- 식당 상세페이지의 리뷰 3개 출력 -->
+	<select id="reviewPList" resultMap="">
+	    select
+	        rv.rv_no,
+	        rv.rv_point,
+	        rv.rv_content,
+	        rv.rv_reg_date,
+	        rv.r_no,
+	        rv.u_no,
+	        u.u_name,
+	        ri.rvimg_no,
+	        ri.rvimg_img
+	     from
+	        ( select * from
+	                ( select
+	                        rv_no,
+	                        rv_point,
+	                        rv_content,
+	                        rv_reg_date,
+	                        r_no,
+	                        u_no
+	                    from r_review
+	                    where r_no = #{r_no}
+	                    order by rv_reg_date desc
+	                ) where ROWNUM &lt;= 3
+	        ) rv
+	     JOIN users u
+	        on rv.u_no = u.u_no
+	     LEFT JOIN r_review_img ri
+	        on rv.rv_no = ri.rv_no
+	     order by rv.rv_reg_date desc, ri.rvimg_no
+	</select>
+	
+	<!-- 리뷰리스트 출력 -->
+	<select id="reviewList" resultMap="reviewResultMap">
+		select
+	        rv.rv_no,
+	        rv.rv_point,
+	        rv.rv_content,
+	        rv.rv_reg_date,
+	        rv.r_no,
+	        rv.u_no,
+	        u.u_name,
+	        ri.rvimg_no,
+	        ri.rvimg_img
+	     from r_review rv
+	     JOIN users u
+	        on rv.u_no = u.u_no
+	     LEFT JOIN r_review_img ri
+	        on rv.rv_no = ri.rv_no
+	     where rv.r_no = #{r_no}
+	     order by rv.rv_reg_date desc, ri.rvimg_no
+	</select>
+	
+	<!-- 리뷰등록 -->
+	<insert id="reviewInsert">
+	
+	</insert>
+	
+	<!-- 리뷰수정 -->
+	<update id="reviewUpdate">
+		update r_review
+	</update>
+	
+	<!-- 리뷰삭제 -->
+	<delete id="reviewDelete">
+		delete r_review where rv_no = #{rv_no}
+		 and u_no = #{u_no}
+	</delete>
+</mapper>
