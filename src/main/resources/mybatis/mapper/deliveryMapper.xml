@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.MUKJA.dto.deliveryDAO">
+	<!-- 주문 등록 (시퀀스 사용 및 생성된 PK 반환) -->
+<insert id="insertDelivery" parameterType="com.springboot.MUKJA.dto.deliveryDTO">
+    <selectKey keyProperty="d_no" resultType="int" order="BEFORE">
+        SELECT seq_delivery_d_no.NEXTVAL FROM dual
+    </selectKey>
+    INSERT INTO delivery (d_no, d_addr, d_lat, d_lng, r_no, u_no)
+    VALUES (#{d_no}, #{d_addr}, #{d_lat}, #{d_lng}, #{r_no}, #{u_no})
+</insert>
+
+<!-- 점주 승인시 시간 정보 및 상태 업데이트 -->
+<update id="updateOrderAccept" parameterType="com.springboot.MUKJA.dto.deliveryDTO">
+    UPDATE delivery
+    SET d_stats = '주문승인',
+        d_cooking_time = #{d_cooking_time},
+        d_delivery_time = #{d_delivery_time},
+        d_arrival_time = #{d_arrival_time}
+    WHERE d_no = #{d_no}
+</update>
+
+<!-- 특정 배달 주문 번호(d_no)의 상세 메뉴 목록 조인 쿼리 -->
+<select id="selectOrderMenuList" resultType="com.springboot.MUKJA.dto.dv_menuDTO">
+    SELECT 
+        dm.dvm_no,
+        dm.dvm_count,
+        dm.dvm_price,
+        dm.d_no,
+        dm.mn_no,
+        m.mn_name,
+        m.mn_content,
+        m.mn_img
+    FROM dv_menu dm
+    JOIN menu m ON dm.mn_no = m.mn_no
+    WHERE dm.d_no = #{d_no}
+</select>
+
+</mapper>
