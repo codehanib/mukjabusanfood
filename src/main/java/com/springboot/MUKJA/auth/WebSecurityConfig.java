@@ -23,7 +23,8 @@ public class WebSecurityConfig {
 			.authorizeHttpRequests(request -> request
 					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 					.requestMatchers("/","/writeForm","/loginForm","/usersInsert", "/checkId","/jusoPopup","/usersInsert","/loginsuccess",
-									"/product/**","/header","/footer","/main","/customerService2","/product/productDetail","/product/productList").permitAll()
+						    "/email/sendCode","/email/verifyCode",
+						    "/product/**","/password/**","/header","/footer","/main","/customerService2","/product/productDetail","/product/productList","/loginsuccess","/error").permitAll()
 					.requestMatchers("/notice/list", "/notice/view","/product/productDetail").permitAll()
 					.requestMatchers("/login/**","/loginError").permitAll()
 					.requestMatchers("/notice/write*", "/notice/update*", "/notice/delete*").hasRole("ADMIN")
@@ -32,8 +33,10 @@ public class WebSecurityConfig {
 					.requestMatchers("/css/**", "/js/**", "/images/**", "/*.webp", "/*.jpg", "/*.png", "/upload/**").permitAll() 
 					.requestMatchers("/guest/**").permitAll()
 					.requestMatchers("/users/**").hasAnyRole("USER","ADMIN")
-					.requestMatchers("/owner/**").hasAnyRole("OWNER","ADMIN")
-					.requestMatchers("/admin/**").hasAnyRole("ADMIN")
+					.requestMatchers("/owner/**","/restaurant/updateForm","/restaurant/update").hasAnyRole("OWNER","ADMIN")
+					.requestMatchers("/restaurant/restaurantWriteForm","/restaurant/insert").hasRole("OWNER")
+
+					.requestMatchers("/admin/**","/restaurant/delete").hasAnyRole("ADMIN")
 					.anyRequest().authenticated()
 			);
 			

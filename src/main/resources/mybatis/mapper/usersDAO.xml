@@ -7,10 +7,12 @@
 	<!-- 아이디로 회원 조회 (로그인용) -->
 	<select id="findById"
 		resultType="com.springboot.MUKJA.dto.usersDTO">
-		SELECT u_no, u_id, u_passwd, u_name, u_tel, u_addr, u_zipno, u_email,
+		SELECT u_no, u_id, u_passwd, u_name, u_tel, u_addr,
+		u_zipno, u_email,
 		u_auth, u_date, u_stats, r_no
 		FROM users
-		WHERE u_id = #{u_id}
+		WHERE u_id =
+		#{u_id}
 	</select>
 
 	<!-- 회원 목록 (관리자용) -->
@@ -55,18 +57,21 @@
 	<update id="usersDelete">
 		UPDATE users
 		SET u_id = 'none_' || u_no,
-		u_name = '탈퇴회원',
+		u_name =
+		'탈퇴회원',
 		u_tel = '000-0000-0000',
 		u_addr = NULL,
-		u_email = 'none_' || u_no || '@none.com',
+		u_email = 'none_' || u_no
+		|| '@none.com',
 		u_stats = 'NONE'
 		WHERE u_id = #{u_id}
 	</update>
-	
+
 	<!-- 비밀번호 변경 -->
 	<update id="userspasswd">
 		UPDATE users
-		SET u_passwd =  #{u_passwd} where u_id = #{u_id}
+		SET u_passwd = #{u_passwd} where u_id =
+		#{u_id}
 	</update>
 
 	<!-- 관리자가 회원 삭제 -->
@@ -77,16 +82,20 @@
 	<!-- 관리자 회원 상세조회 -->
 	<select id="usersView"
 		resultType="com.springboot.MUKJA.dto.usersDTO">
-		SELECT u_no, u_id, u_passwd, u_name, u_tel, u_addr, u_zipno, u_email,
+		SELECT u_no, u_id, u_passwd, u_name, u_tel, u_addr,
+		u_zipno, u_email,
 		u_auth, u_date, u_stats, r_no
 		FROM users
-		WHERE u_no = #{u_no}
+		WHERE u_no =
+		#{u_no}
 	</select>
-	
+
 	<!-- 관리자 회원 권한변경 -->
-	<update id="usersAuthUpdate" parameterType="com.springboot.MUKJA.dto.usersDTO">
+	<update id="usersAuthUpdate"
+		parameterType="com.springboot.MUKJA.dto.usersDTO">
 		UPDATE users
-		SET u_auth = #{u_auth},r_no = #{r_no} where u_no = #{u_no}
+		SET u_auth = #{u_auth},r_no = #{r_no} where
+		u_no = #{u_no}
 	</update>
 
 	<!-- 배달 수 -->
@@ -106,7 +115,8 @@
 	<!-- 1:1 문의 수 -->
 	<select id="mukja_inquiry" resultType="int">
 		SELECT COUNT(*)
-		FROM mukja_inquiry
+		FROM
+		mukja_inquiry
 		WHERE u_no = #{u_no}
 	</select>
 	<!-- 리뷰 수 -->
@@ -119,8 +129,17 @@
 	<!-- 예약 수 -->
 	<select id="reservation" resultType="int">
 		SELECT COUNT(*)
-		FROM reservation
+		FROM
+		reservation
 		WHERE u_no = #{u_no}
+	</select>
+
+	<!-- 이메일 중복 체크용 쿼리 -->
+	<select id="findByEmail"
+		resultType="com.springboot.MUKJA.dto.usersDTO">
+		SELECT u_no, u_id, u_email
+		FROM users
+		WHERE u_email = #{u_email}
 	</select>
 
 </mapper>
