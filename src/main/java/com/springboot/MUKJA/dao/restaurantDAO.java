@@ -12,12 +12,11 @@ import com.springboot.MUKJA.dto.restaurantDTO;
 public interface restaurantDAO {
 		
 		// Elasticsearch 인덱싱용 전체 식당 select (페이징/정렬)
-		public List<restaurantDTO> restaurantESList(@Param("start") int start,
-		        							@Param("pageSize") int pageSize,
-		        							@Param("sort") String sort);
+		public List<restaurantDTO> restaurantESList();
 		
-		public List<restaurantDTO> restaurantListCategory(@Param("start") int start,
-											@Param("pageSize") int pageSize);
+		// 메인 식당 목록
+		public List<restaurantDTO> mainrestaurantList(@Param("start") int start,
+		        									@Param("pageSize") int pageSize);
 		
 		// 음식종류 목록
 	    public List<foodcategoryDTO> foodcategoryList();
@@ -29,7 +28,7 @@ public interface restaurantDAO {
 	            @Param("pageSize") int pageSize);
 	    
 		// 식당 하나의 기본 정보 select
-		public restaurantDTO restaurantdetail(int r_no);
+		public restaurantDTO restaurantDetail(int r_no);
 		
 		// 식당 전체 개수
 		public int restaurantCount();

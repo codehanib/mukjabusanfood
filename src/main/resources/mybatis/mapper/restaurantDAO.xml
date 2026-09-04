@@ -25,7 +25,7 @@
     <select id="foodcategoryList" resultType="com.springboot.MUKJA.dto.foodcategoryDTO">
         SELECT mukja_c_no, mukja_c_name
 	        FROM mukja_category
-	        ORDER BY mukja_c_no ASC
+	        ORDER BY mukja_c_no
     </select>
     
 	<!-- 음식종류별 식당 목록 -->
