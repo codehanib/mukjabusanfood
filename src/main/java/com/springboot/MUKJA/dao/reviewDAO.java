@@ -20,17 +20,18 @@ public interface reviewDAO {
 	
 	// 리뷰 작성
 	public int reviewInsert(reviewDTO rvdto);
-	// 리뷰 이미지 작성
-	public int reviewImgInsert();
+	// 리뷰 이미지 등록
+	public int reviewImgInsert(reviewimgDTO rvimgdto);
 	
 	// 리뷰 수정 - 본인만
 	public int reviewUpdate(reviewDTO rvdto);
+	// 리뷰 이미지 삭제 (수정용)
+	public int reviewimgDelete(int rv_no);
+	
 	// 리뷰 삭제 - 본인만
 	public int reviewDelete(@Param("rv_no") int rv_no,
 							@Param("u_no") int u_no);
 	
-	// 리뷰 이미지 등록
-	public int reviewImgInsert(reviewimgDTO rvimgdto);
 	// 리뷰 이미지 조회
 	public List<reviewimgDTO> reviewImgView(int rv_no);
 	

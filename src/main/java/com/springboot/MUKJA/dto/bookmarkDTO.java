@@ -8,5 +8,7 @@ public class bookmarkDTO {
 	private int r_no;
 	private int u_no;
 	// 식당 조회용
-	private restaurantDTO rdto;
+	private String r_img;
+	private String r_name;
+	private String r_region;
 }

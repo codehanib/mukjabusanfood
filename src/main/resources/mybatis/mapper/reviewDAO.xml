@@ -18,7 +18,7 @@
     <result property="u_no" column="u_no"/>
     <result property="u_name" column="u_name"/>
     <collection property="reviewImages"
-                ofType="reviewimgDTO">
+                ofType="com.springboot.MUKJA.dto.reviewimgDTO">
         <id property="rvimg_no" column="rvimg_no"/>
         <result property="rvimg_img" column="rvimg_img"/>
         <result property="rv_no" column="rv_no"/>
@@ -84,22 +84,28 @@
 		<selectKey keyProperty="rv_no" resultType="int" order="BEFORE">
 			select r_review_seq.NEXTVAL from dual
 		</selectKey>
-		insert into r_review(rv_no,rv_point,rv_content)
+		insert into r_review(rv_no,rv_point,rv_content,rv_reg_date,r_no,u_no)
+		 values(#{rv_no},#{rv_point},#{rv_content},SYSDATE,#{r_no},#{u_no})
 	</insert>
-	
 	<!-- 리뷰이미지등록 -->
 	<insert id="reviewImgInsert">
-	
+		insert into r_review_img(rvimg_no,rvimg_img,rv_no)
+		 values(r_review_img_seq.NEXTVAL,#{rvimg_img},#{rv_no})
 	</insert>
 	
 	<!-- 리뷰수정 -->
 	<update id="reviewUpdate">
-		update r_review
+		update r_rivew set rv_point=#{rv_point},rv_content=#{rv_content}
+		 where rv_no=#{rv_no} and u_no=#{u_no}
 	</update>
+	<!-- 리뷰이미지삭제(수정용) -->
+	<delete id="reviewimgDelete">
+		delete from r_review_img where rv_no = #{rv_no}
+	</delete>
 	
 	<!-- 리뷰삭제 -->
 	<delete id="reviewDelete">
-		delete r_review where rv_no = #{rv_no}
+		delete from r_review where rv_no = #{rv_no}
 		 and u_no = #{u_no}
 	</delete>
 </mapper>
