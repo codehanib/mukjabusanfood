@@ -36,7 +36,7 @@
                     아이디 저장
                 </label>
 
-                <a href="#" class="find-link">비밀번호 찾기</a>
+                <a href="/login/findPasswordForm">비밀번호 찾기</a>
             </div>
 
             <!-- 버튼 -->

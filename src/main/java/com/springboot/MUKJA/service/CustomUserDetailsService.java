@@ -18,10 +18,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     private usersDAO dao;
 
     @Override
-    public UserDetails loadUserByUsername(String m_id)
+    public UserDetails loadUserByUsername(String u_id)
             throws UsernameNotFoundException {
 
-        usersDTO dto = dao.findById(m_id);
+        usersDTO dto = dao.findById(u_id);
 
         if (dto == null) {
             throw new UsernameNotFoundException("회원이 없습니다.");
