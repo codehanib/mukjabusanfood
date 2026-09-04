@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.springboot.MUKJA.dao.restaurantDAO">
+	
+	<!-- Elasticsearch 인덱싱용 전체 식당 조회 -->
+	<select id="restaurantESList" resultType="com.springboot.MUKJA.dto.restaurantDTO">
+	    SELECT r.r_no, r.r_name, r.r_region, r.r_addr, r.mukja_c_no, c.mukja_c_name
+	    	FROM restaurant r
+	    	JOIN mukja_category c
+	        	ON r.mukja_c_no = c.mukja_c_no
+	    	ORDER BY r.r_no DESC
+	</select>
+    
+    <!-- 메인 식당 목록 : 번호 순 + 페이징 -->
+    <select id="mainrestaurantList" resultType="com.springboot.MUKJA.dto.restaurantDTO">
+        SELECT * from restaurant
+        	ORDER BY r_no
+	    	OFFSET #{start} ROWS
+	    	FETCH NEXT #{pageSize} ROWS ONLY
+    </select>
+    
+    <!-- 음식종류 자체 목록 -->
+    <select id="foodcategoryList" resultType="com.springboot.MUKJA.dto.foodcategoryDTO">
+        SELECT mukja_c_no, mukja_c_name
+	        FROM mukja_category
+	        ORDER BY mukja_c_no ASC
+    </select>
+    
+	<!-- 음식종류별 식당 목록 -->
+	<select id="restaurantListCategory" resultType="com.springboot.MUKJA.dto.restaurantDTO">
+		SELECT * FROM restaurant
+			where mukja_c_no = #{mukja_c_no}
+    		ORDER BY r_no
+    		OFFSET #{start} ROWS
+    		FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+	<!-- 식당 상세정보 -->
+	<select id="restaurantdetail" resultType="com.springboot.MUKJA.dto.restaurantDTO">
+        SELECT r.*, c.mukja_c_name
+        	FROM restaurant r
+        	LEFT JOIN mukja_category c
+            	ON r.mukja_c_no = c.mukja_c_no
+        	WHERE r.r_no = #{r_no}
+	</select>
+
+	<!-- 식당 전체 개수 -->
+    <select id="restaurantCount" resultType="int">
+        SELECT COUNT(r_no)
+        FROM restaurant
+    </select>
+
+    <!-- 음식종류별 상품 개수 -->
+    <select id="restaurantCountCategory" resultType="int">
+        SELECT COUNT(r_no)
+        	FROM restaurant
+        	WHERE mukja_c_no = #{mukja_c_no}
+	 </select>
+	 
+	 <!-- 상품 등록 -->
+	<insert id="restaurantInsert" parameterType="com.springboot.MUKJA.dto.restaurantDTO">
+		<selectKey keyProperty="r_no"  resultType="int" order="BEFORE">
+		    SELECT restaurant_seq.NEXTVAL
+		   	FROM dual
+		</selectKey>
+		
+		INSERT INTO restaurant (r_no, r_name, r_addr, r_region, r_lat, r_lon,
+		    					r_point, r_info, r_desc, r_time, r_rest, r_img, mukja_c_no) 
+		   VALUES (#{r_no}, #{r_name}, #{r_addr}, #{r_region}, #{r_lat}, #{r_lon}, 
+		    		#{r_point}, #{r_info}, #{r_desc}, #{r_time}, #{r_rest},#{r_img},#{mukja_c_no})
+	</insert>
+
+    <!-- 상품 수정 -->
+  <update id="restaurantUpdate" parameterType="com.springboot.MUKJA.dto.restaurantDTO">
+	    UPDATE restaurant r_name = #{r_name},  r_addr = #{r_addr}, r_region = #{r_region},
+           				r_lat = #{r_lat}, r_lon = #{r_lon}, r_point = #{r_point},
+           				r_info = #{r_info}, r_desc = #{r_desc}, r_time = #{r_time},
+						r_rest = #{r_rest}, r_img = #{r_img}, mukja_c_no = #{mukja_c_no}
+        WHERE r_no = #{r_no}
+	</update>
+	
+	<!-- 상품 삭제 -->
+    <delete id="restaurantDelete">
+        DELETE FROM restaurant WHERE r_no = #{r_no}
+    </delete>
+    
+</mapper>
