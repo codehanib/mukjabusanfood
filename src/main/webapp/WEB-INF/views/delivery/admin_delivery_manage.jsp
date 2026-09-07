@@ -36,10 +36,11 @@
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th { background-color: #edf2f7; color: #4a5568; padding: 12px 15px; font-size: 0.9em; font-weight: bold; }
     td { padding: 12px 15px; border-top: 1px solid #e2e8f0; font-size: 0.9em; }
-    tr:hover { background-color: #f7fafc; }
+    tr:hover { background-color: #f8f9fa; }
 
     /* 관리자 제어 버튼 */
-    .btn-admin { padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; color: white; }
+    .btn-admin { padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; color: white; text-decoration: none; display: inline-block; }
+    .btn-view { background-color: #4a5568; } /* 상세보기 */
     .btn-cancel { background-color: #e53e3e; } /* 강제 취소 */
     .btn-complete { background-color: #319795; } /* 강제 완료 */
 </style>
@@ -89,12 +90,12 @@
             
             <select class="search-input" name="d_stats">
                 <option value="">전체 상태 보기</option>
-                <option value="주문확인">주문확인(대기)</option>
-                <option value="주문승인">주문승인</option>
-                <option value="조리중">조리중</option>
-                <option value="배달중">배달중</option>
-                <option value="배달완료">배달완료</option>
-                <option value="주문거절">주문거절</option>
+                <option value="주문확인" ${param.d_stats == '주문확인' ? 'selected' : ''}>주문확인(대기)</option>
+                <option value="주문승인" ${param.d_stats == '주문승인' ? 'selected' : ''}>주문승인</option>
+                <option value="조리중" ${param.d_stats == '조리중' ? 'selected' : ''}>조리중</option>
+                <option value="배달중" ${param.d_stats == '배달중' ? 'selected' : ''}>배달중</option>
+                <option value="배달완료" ${param.d_stats == '배달완료' ? 'selected' : ''}>배달완료</option>
+                <option value="주문거절" ${param.d_stats == '주문거절' ? 'selected' : ''}>주문거절</option>
             </select>
 
             <button type="submit" class="btn-admin" style="background-color: #2b6cb0; padding: 8px 16px;">통합 검색</button>
@@ -120,7 +121,6 @@
                     <tr>
                         <td><strong>#${delivery.d_no}</strong></td>
                         <td>
-                            <!-- 식당 테이블(restaurant) JOIN 데이터 -->
                             <strong>[#${delivery.r_no}]</strong> ${delivery.r_name != null ? delivery.r_name : '식당정보'}
                         </td>
                         <td>회원번호 #${delivery.u_no}</td>
@@ -132,7 +132,10 @@
                             <strong style="color: #2b6cb0;">${delivery.d_stats}</strong>
                         </td>
                         <td>
-                            <!-- 관리자 강제 상태 변경 / 개입 버튼 -->
+                            <!-- 1. 상세보기 버튼 -->
+                            <a href="${pageContext.request.contextPath}/store/order/detail?d_no=${delivery.d_no}" class="btn-admin btn-view">상세보기</a>
+
+                            <!-- 2. 관리자 강제 상태 변경 / 개입 버튼 -->
                             <form action="${pageContext.request.contextPath}/admin/delivery/forceUpdate" method="POST" style="display:inline;">
                                 <input type="hidden" name="d_no" value="${delivery.d_no}">
                                 
