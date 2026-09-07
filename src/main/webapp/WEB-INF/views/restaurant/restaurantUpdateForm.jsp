@@ -7,10 +7,12 @@
 <title>식당 정보 수정</title>
 </head>
 <body>
-	<form action="/restaurant/update" method="post" name="restaurantUpdateForm">
+	<h2>식당 정보 수정</h2>
+	<form action="/restaurant/update" method="post" name="restaurantUpdateForm" enctype="multipart/form-data">
 	
 			<!-- 수정 기준이 되는 상품 PK 번호 전달 -->
             <input type="hidden" name="r_no" value="${restaurant.r_no}">
+            <input type="hidden" name="old_r_img" value="${restaurant.r_img}">
 	<table border="1">
 		<tr>
 			<td>식당 이름</td>
@@ -48,6 +50,10 @@
 			<td>휴무일</td>
 			<td><input type="text" name="r_rest" value="${restaurant.r_rest}"></td>
 		</tr>
+	    <tr>
+	        <td>식당 이미지</td>
+	        <td><input type="file" name="r_upload" accept="image/*"></td>
+    	</tr>
 		<tr>
 		    <td>음식종류</td>
 		    <td>

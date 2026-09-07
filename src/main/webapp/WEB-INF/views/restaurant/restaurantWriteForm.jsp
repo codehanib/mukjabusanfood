@@ -4,10 +4,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>식당 추가</title>
+<title>식당 등록</title>
 </head>
 <body>
-	<form action="/restaurant/insert" method="post" name="restaurantWriteForm">
+	<h2>식당 등록</h2>
+	<form action="/restaurant/insert" method="post" name="restaurantWriteForm" enctype="multipart/form-data">
 	<table border="1">
 		<tr>
 			<td>식당 이름</td>
@@ -46,6 +47,12 @@
 			<td><input type="text" name="r_rest"></td>
 		</tr>
 		<tr>
+		    <td>식당 이미지</td>
+		    <td>
+		        <input type="file" name="r_upload" accept="image/*">
+		    </td>
+		</tr>
+		<tr>
 		    <td>음식종류</td>
 		    <td>
 		        <select name="mukja_c_no" required>
@@ -65,6 +72,7 @@
     </table>
 	</form>
 	
+	<br>
 	----------------------------
 	밑에는 나중에 메인 화면에 넣을 검색창
 	<form action="/restaurant/search" method="get">

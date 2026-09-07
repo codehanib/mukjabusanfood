@@ -21,4 +21,6 @@ public class restaurantDTO {
     private String mukja_c_name;
 
     private String mn_name;
+    
+    private int reviewCount;
 }

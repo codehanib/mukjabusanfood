@@ -6,14 +6,22 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import jakarta.servlet.DispatcherType;
 
 @Configuration
-public class WebSecurityConfig {
+public class WebSecurityConfig implements WebMvcConfigurer{
 	@Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+	
+	@Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/upload/**")
+                .addResourceLocations("file:///C:/upload/");
     }
 	
 	@Bean
@@ -23,9 +31,9 @@ public class WebSecurityConfig {
 			.authorizeHttpRequests(request -> request
 					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 					.requestMatchers("/","/writeForm","/loginForm","/usersInsert", "/checkId","/jusoPopup","/usersInsert","/loginsuccess",
-						    "/email/sendCode","/email/verifyCode",
-						    "/product/**","/password/**","/header","/footer","/main","/customerService2","/product/productDetail","/product/productList","/loginsuccess","/error").permitAll()
-					.requestMatchers("/notice/list", "/notice/view","/product/productDetail").permitAll()
+						    "/email/sendCode","/email/verifyCode","/password/**","/header","/footer","/main","/customerService2","/error",
+						    "/restaurant/detail","/restaurant/category","/restaurant/search").permitAll()
+					.requestMatchers("/notice/list", "/notice/view").permitAll()
 					.requestMatchers("/login/**","/loginError").permitAll()
 					.requestMatchers("/notice/write*", "/notice/update*", "/notice/delete*").hasRole("ADMIN")
 										
@@ -46,7 +54,7 @@ public class WebSecurityConfig {
 				.loginPage("/login/login")
 				.loginProcessingUrl("/j_spring_security_check")
 				.defaultSuccessUrl("/main", true)
-				.failureUrl("/login/loginError")
+				.failureUrl("/login/login?error=true")
 				.usernameParameter("u_id")
 				.passwordParameter("u_passwd")
 				.permitAll()
