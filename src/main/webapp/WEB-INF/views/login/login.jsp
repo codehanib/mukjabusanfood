@@ -5,12 +5,13 @@
 <head>
 <meta charset="UTF-8">
 <title>LOGIN</title>
+<script src="/js/writeForm.js"></script>
 </head>
-<body class="login-body">
+<body class="login-body" onload="checkLoginError();">
 
     <div class="login-wrapper">
 
-        <form action="/j_spring_security_check" method="post" name="loginForm" class="login-card">
+        <form action="/j_spring_security_check" method="post" name="loginForm" class="login-card" onsubmit="return saveIdCookie();">
 
 
 
@@ -21,7 +22,7 @@
 
             <!-- 아이디 -->
             <div class="input-box id-box">
-                <input type="text" name="u_id" placeholder="아이디">
+                <input type="text" name="u_id" id="u_id" placeholder="아이디">
             </div>
 
             <!-- 비밀번호 -->
@@ -32,7 +33,7 @@
             <!-- 부가 메뉴 -->
             <div class="login-sub">
                 <label class="save-id">
-                    <input type="checkbox" name="saveId">
+                    <input type="checkbox" name="saveId" id="saveId">
                     아이디 저장
                 </label>
 
@@ -40,7 +41,7 @@
             </div>
 
             <!-- 버튼 -->
-            <input type="submit" value="로그인" class="btn-login" onclick="return check()">
+            <input type="submit" value="로그인" class="btn-login">
 
             <a href="/login/writeForm" class="btn-join">회원가입</a>
 

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.MUKJA.dao.reservationDAO">
+
+	<!-- ES 인덱싱용 전체 예약 -->
+	<select id="reservationESList"
+		resultType="com.springboot.MUKJA.dto.reservationDTO">
+		select * from reservation
+	</select>
+
+	<!-- 예약 하나 상세조회 -->
+	<select id="reservationDetail"
+		resultType="com.springboot.MUKJA.dto.reservationDTO">
+		select * from reservation where res_no = #{res_no}
+	</select>
+
+	<!-- 예약 전체 개수 -->
+	<select id="reservationCount" resultType="int">
+		select count(*) from
+		reservation
+	</select>
+
+	<!-- 예약 등록 -->
+	<insert id="reservationInsert">
+		<selectKey keyProperty="res_no" resultType="int"
+			order="BEFORE">
+			select reservation_seq.nextval from dual
+		</selectKey>
+		insert into reservation
+		(res_no, res_num, res_name, res_tel, res_day, res_time,
+		res_count, res_price, res_stats, res_wait,
+		res_reg_date, res_update, u_no, r_no)
+		values
+		(#{res_no},
+		(select to_char(nvl(max(to_number(res_num)), 0) + 1)
+		from reservation
+		where r_no = #{r_no} and res_day = #{res_day}),
+		#{res_name}, #{res_tel}, #{res_day}, #{res_time},
+		#{res_count}, #{res_price}, #{res_stats}, #{res_wait},
+		SYSDATE, SYSDATE, #{u_no}, #{r_no})
+	</insert>
+
+	<!-- 예약 수정 -->
+	<update id="reservationUpdate">
+		update reservation
+		set res_name = #{res_name},
+		res_tel = #{res_tel},
+		res_day = #{res_day},
+		res_time = #{res_time},
+		res_count = #{res_count},
+		res_stats = #{res_stats},
+		res_update = SYSDATE
+		where res_no = #{res_no}
+	</update>
+
+	<!-- 예약 삭제 -->
+	<delete id="reservationDelete">
+		delete from reservation where res_no = #{res_no}
+	</delete>
+
+</mapper>

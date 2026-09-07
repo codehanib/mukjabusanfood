@@ -141,5 +141,10 @@
 		FROM users
 		WHERE u_email = #{u_email}
 	</select>
-
+	
+	<update id="usersRestaurantUpdate" parameterType="com.springboot.MUKJA.dto.usersDTO">
+    UPDATE users
+       SET r_no = #{r_no}
+       WHERE u_no = #{u_no}
+	</update>
 </mapper>

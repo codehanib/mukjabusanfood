@@ -1,5 +1,6 @@
 package com.springboot.MUKJA.controller;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.springboot.MUKJA.dao.usersDAO;
-import com.springboot.MUKJA.dto.usersDTO;
 import com.springboot.MUKJA.dao.restaurantDAO;
+import com.springboot.MUKJA.dao.usersDAO;
 import com.springboot.MUKJA.dto.restaurantDTO;
+import com.springboot.MUKJA.dto.usersDTO;
 import com.springboot.MUKJA.service.EmailVerificationService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -91,16 +92,22 @@ public class UsersController {
     }
 
     @RequestMapping("/main")
-    public String main(Model model) {
-//
-//        int start = 0;
-//        int pageSize = 20;
-//
-//        List<restaurantDTO> restaurantList =
-//                restaurantdao.mainrestaurantList(start, pageSize);
-//
-//        model.addAttribute("restaurantList", restaurantList);
-//
+    public String main(Model model, Principal principal) {
+
+        int start = 0;
+        int pageSize = 20;
+
+        List<restaurantDTO> restaurantList =
+                restaurantdao.mainrestaurantList(start, pageSize);
+
+        model.addAttribute("restaurantList", restaurantList);
+        
+     // 로그인한 사용자 정보
+        if (principal != null) {
+            usersDTO user = usersDAO.findById(principal.getName());
+            model.addAttribute("user", user);
+        }
+
         return "main";
     }
 
