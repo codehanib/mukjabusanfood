@@ -92,24 +92,54 @@ public class UsersController {
     }
 
     @RequestMapping("/main")
-    public String main(Model model, Principal principal) {
+    public String main(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            Model model,
+            Principal principal) {
 
-        int start = 0;
         int pageSize = 20;
 
-        List<restaurantDTO> restaurantList =
-                restaurantdao.mainrestaurantList(start, pageSize);
+        int start = (page - 1) * pageSize;
+
+        // 현재 페이지 식당 목록
+        List<restaurantDTO> restaurantList = restaurantdao.mainrestaurantList(start, pageSize);
+        
+        int count = restaurantdao.restaurantCount();
+
+        int totalPage =
+                (int) Math.ceil((double) count / pageSize);
+        
+        // 페이지 번호 5개씩
+        int pageBlock = 5;
+        
+        int startPage =
+                ((page - 1) / pageBlock) * pageBlock + 1;
+
+        int endPage =
+                startPage + pageBlock - 1;
+
+        if (endPage > totalPage) {
+            endPage = totalPage;
+        }
 
         model.addAttribute("restaurantList", restaurantList);
-        
-     // 로그인한 사용자 정보
+        model.addAttribute("categoryList", restaurantdao.foodcategoryList());
+        model.addAttribute("regionList", restaurantdao.regionList());
+
+        model.addAttribute("page", page);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
         if (principal != null) {
             usersDTO user = usersDAO.findById(principal.getName());
+
             model.addAttribute("user", user);
         }
 
         return "main";
     }
+
 
     @GetMapping("/checkId")
     @ResponseBody

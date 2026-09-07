@@ -20,6 +20,7 @@ import com.springboot.MUKJA.dao.usersDAO;
 import com.springboot.MUKJA.dto.restaurantDTO;
 import com.springboot.MUKJA.dto.usersDTO;
 import com.springboot.MUKJA.service.RestaurantESService;
+import com.springboot.MUKJA.service.RestaurantService;
 
 @Controller
 public class restaurantController {
@@ -35,6 +36,11 @@ public class restaurantController {
 	@Autowired
 	private reviewDAO reviewdao;
 	
+	@Autowired
+	private RestaurantService restaurantService;
+	
+	@Autowired
+	private reviewService rvService;
 	
 	@RequestMapping("/restaurant/es/index")
 	public String restaurantESIndex() throws Exception {
@@ -141,6 +147,14 @@ public class restaurantController {
 	    public String restaurantDetail(@RequestParam("r_no") int r_no, Model model) {
 
 	        restaurantDTO restaurant = restaurantdao.restaurantDetail(r_no);
+	        
+	        // 영업시간 가공
+	        restaurant.setDisplay_time(
+	            restaurantService.formatRestaurantTime(
+	                restaurant.getR_time()
+	            )
+	        );
+	        
 	        int reviewCount = reviewdao.reviewCount(r_no);
 
 	        // 오늘부터 7일
@@ -154,6 +168,7 @@ public class restaurantController {
 	        model.addAttribute("restaurant", restaurant);
 	        model.addAttribute("reviewCount", reviewCount);
 	        model.addAttribute("dateList", dateList);
+	        model.addAttribute("rvPList", rvService.reviewPList(r_no));
 
 	        return "restaurant/restaurantDetail";
 	    }
