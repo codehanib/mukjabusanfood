@@ -46,35 +46,54 @@
 	<hr>
 	
 	<!-- 예약 -->
-	<h3 id="reservation">예약</h3>
-	<form action="/reservation/writeForm" method="get">
+<h3 id="reservation">예약</h3>
+<form action="/reservation/reservationInsert" method="get">
+
+	<input type="hidden" name="r_no"  value="${restaurant.r_no}">
 	
-		<input type="hidden" name="r_no"  value="${restaurant.r_no}">
-		
-		<!-- 날짜 -->
-    	<input type="date" name="res_day" required>
-		
-		<!-- 인원 -->
-	    <select name="res_count" required>
-	        <option value="">인원 선택</option>
-	        <option value="1">1명</option>
-	        <option value="2">2명</option>
-	        <option value="3">3명</option>
-	        <option value="4">4명</option>
-	    </select>
+	<!-- 날짜 -->
+	<input type="date" name="res_day" required>
 	
-	    <!-- 시간 -->
-	    <select name="res_time" required>
-	        <option value="">시간 선택</option>
-	        <option value="12:00">12:00</option>
-	        <option value="13:00">13:00</option>
-	        <option value="18:00">18:00</option>
-	        <option value="19:00">19:00</option>
-	    </select>
-	
-	    <button type="submit">예약하기</button>
-	
-	</form>
+	<!-- 인원 -->
+    <select name="res_count" required>
+        <option value="">인원 선택</option>
+        <option value="1">1명</option>
+        <option value="2">2명</option>
+        <option value="3">3명</option>
+        <option value="4">4명</option>
+    </select>
+
+    <!-- 시간 -->
+    <select name="res_time" id="res_time">
+							<option value="">선택</option>
+							<option value="11:00">11:00</option>
+							<option value="11:30">11:30</option>
+							<option value="12:00">12:00</option>
+							<option value="12:30">12:30</option>
+							<option value="13:00">13:00</option>
+							<option value="13:30">13:30</option>
+							<option value="14:00">14:00</option>
+							<option value="17:00">17:00</option>
+							<option value="17:30">17:30</option>
+							<option value="18:00">18:00</option>
+							<option value="18:30">18:30</option>
+							<option value="19:00">19:00</option>
+							<option value="19:30">19:30</option>
+							<option value="20:00">20:00</option>
+							<option value="20:30">20:30</option>
+							<option value="21:00">21:00</option>
+					</select>
+
+	<c:choose>
+		<c:when test="${payment}">
+			<button type="submit">결제하기</button>
+		</c:when>
+		<c:otherwise>
+			<button type="submit">예약하기</button>
+		</c:otherwise>
+	</c:choose>
+
+</form>
 
 	<hr>
 	
@@ -106,12 +125,45 @@
 	<!-- 추천 리뷰 -->
     <h3>추천 리뷰</h3>
 
-    <div>★ ${restaurant.r_point} (${reviewCount})</div>
+    <c:choose>
+       <c:when test="${not empty rvPList}">
+          <c:forEach var="rv" items="${rvPList}">
+             <table border="1">
+                <tr>
+                   <td colspan="2">${rv.u_name}</td>
+                </tr>
+                <tr>
+                   <td>${rv.rv_point}</td>
+                   <td>${rv.rv_reg_date}</td>
+                </tr>
+                <tr>
+                   <td colspan="2">
+                      <c:forEach var="rg" items="${rv.reviewImages}">
+                      <c:choose>
+                         <c:when test="${fn:startsWith(rg.rvimg_img, 'http://')
+                                            or fn:startsWith(rg.rvimg_img, 'https://')}">
+                            <img src="${rg.rvimg_img}" width="100" height="100">
+                         </c:when>
+                         <c:otherwise>
+                            <img src="/upload/${rg.rvimg_img}" width="100" height="100">
+                         </c:otherwise>
+                      </c:choose>
+                      </c:forEach>
+                   </td>
+                   <td colspan="2">${rv.rv_content}</td>
+                </tr>
+             </table>
+          </c:forEach>
+       </c:when>
+       <c:otherwise>
+          <p>리뷰가 없습니다.</p>
+       </c:otherwise>
+    </c:choose>
     <br>
 
 
     
-	<form action="/" method="get">
+	<form action="/restaurant/review" method="get">
 		<input type="hidden" name="r_no" value="${restaurant.r_no}">
 		<button type="submit">리뷰 전체보기</button>
 	</form>
