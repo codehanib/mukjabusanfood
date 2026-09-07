@@ -51,9 +51,9 @@
 			</c:choose>
 		</a>
 		
-		<div>${restaurant.r_time}</div>
-			<br>
-		<div>(휴무)${restaurant.r_rest}</div>
+		
+		<div>영업시간 · ${restaurant.simple_time}</div>
+		<div>휴무일 · ${restaurant.rest_day}</div>
 		
 		
 	<form action="/reservation/writeForm" method="get">

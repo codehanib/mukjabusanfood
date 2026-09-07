@@ -137,13 +137,42 @@ public class RestaurantESService {
             }
 
             if (map.get("r_time") != null) {
-                dto.setR_time(map.get("r_time").toString());
-            }
 
-            if (map.get("r_rest") != null) {
-                dto.setR_rest(map.get("r_rest").toString());
-            }
+                String r_time = map.get("r_time").toString();
+                dto.setR_time(r_time);
 
+                // 영업시간 추출
+                java.util.regex.Pattern timePattern =
+                        java.util.regex.Pattern.compile(
+                            "(\\d{1,2}:\\d{2})\\s*~\\s*(?:새벽\\s*)?(\\d{1,2}:\\d{2})"
+                        );
+
+                java.util.regex.Matcher timeMatcher =
+                        timePattern.matcher(r_time);
+
+                if (timeMatcher.find()) {
+                    dto.setSimple_time(
+                        timeMatcher.group(1) + " ~ " + timeMatcher.group(2)
+                    );
+                } else {
+                    dto.setSimple_time("정보 없음");
+                }
+
+                // 휴무일 추출
+                java.util.regex.Pattern restPattern =
+                        java.util.regex.Pattern.compile(
+                            "(월|화|수|목|금|토|일)·(?:\\d{1,2}/\\d{1,2}\\s*)?(?:매주\\s*(?:월|화|수|목|금|토|일)요일\\s*)?휴무"
+                        );
+
+                java.util.regex.Matcher restMatcher =
+                        restPattern.matcher(r_time);
+
+                if (restMatcher.find()) {
+                    dto.setRest_day(restMatcher.group(1));
+                } else {
+                    dto.setRest_day("없음");
+                }
+            }
             list.add(dto);
         }
 

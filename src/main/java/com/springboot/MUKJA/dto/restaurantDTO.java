@@ -23,4 +23,7 @@ public class restaurantDTO {
     private String mn_name;
     
     private int reviewCount;
+    private String simple_time;
+    private String display_time;
+    private String rest_day;
 }
