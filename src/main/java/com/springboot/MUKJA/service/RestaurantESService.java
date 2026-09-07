@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -38,7 +40,12 @@ public class RestaurantESService {
         map.put("r_name", dto.getR_name());
         map.put("r_region", dto.getR_region());
         map.put("r_addr", dto.getR_addr());
+        map.put("r_point", dto.getR_point());
+        map.put("r_time", dto.getR_time());
+        map.put("r_rest", dto.getR_rest());
+        map.put("r_img", dto.getR_img());
         map.put("mukja_c_name", dto.getMukja_c_name());
+        map.put("mukja_c_no", dto.getMukja_c_no());
         map.put("mn_name", dto.getMn_name());
 
         IndexRequest request =
@@ -57,7 +64,6 @@ public class RestaurantESService {
     public List<restaurantDTO> search(String keyword) throws Exception {
 
         SearchRequest request = new SearchRequest("restaurants");
-
         SearchSourceBuilder builder = new SearchSourceBuilder();
 
         builder.query(
@@ -70,11 +76,16 @@ public class RestaurantESService {
                 "mn_name"
             )
         );
-
+        
+        builder.size(20);
         request.source(builder);
 
         SearchResponse response =
                 client.search(request, RequestOptions.DEFAULT);
+
+        System.out.println("검색어 = " + keyword);
+        System.out.println("총 검색 결과 = "
+                + response.getHits().getTotalHits());
 
         List<restaurantDTO> list = new ArrayList<>();
 
@@ -82,15 +93,31 @@ public class RestaurantESService {
 
             Map<String, Object> map = hit.getSourceAsMap();
 
+            System.out.println(map);
+
             restaurantDTO dto = new restaurantDTO();
 
-            dto.setR_no(
-                Integer.parseInt(map.get("r_no").toString())
-            );
+            if (map.get("r_no") != null) {
+                dto.setR_no(
+                    Integer.parseInt(map.get("r_no").toString())
+                );
+            }
 
-            dto.setR_name(map.get("r_name").toString());
-            dto.setR_region(map.get("r_region").toString());
-            dto.setR_addr(map.get("r_addr").toString());
+            if (map.get("r_name") != null) {
+                dto.setR_name(map.get("r_name").toString());
+            }
+
+            if (map.get("r_region") != null) {
+                dto.setR_region(map.get("r_region").toString());
+            }
+
+            if (map.get("r_addr") != null) {
+                dto.setR_addr(map.get("r_addr").toString());
+            }
+
+            if (map.get("r_img") != null) {
+                dto.setR_img(map.get("r_img").toString());
+            }
 
             if (map.get("mukja_c_name") != null) {
                 dto.setMukja_c_name(
@@ -102,6 +129,19 @@ public class RestaurantESService {
                 dto.setMn_name(
                     map.get("mn_name").toString()
                 );
+            }
+            if (map.get("r_point") != null) {
+                dto.setR_point(
+                    Integer.parseInt(map.get("r_point").toString())
+                );
+            }
+
+            if (map.get("r_time") != null) {
+                dto.setR_time(map.get("r_time").toString());
+            }
+
+            if (map.get("r_rest") != null) {
+                dto.setR_rest(map.get("r_rest").toString());
             }
 
             list.add(dto);
@@ -187,5 +227,15 @@ public class RestaurantESService {
         }
 
         return result;
+    }
+    
+    public void delete(int r_no) throws Exception {
+
+        DeleteRequest request =
+                new DeleteRequest("restaurants", String.valueOf(r_no));
+        
+        request.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+        
+        client.delete(request, RequestOptions.DEFAULT);
     }
 }

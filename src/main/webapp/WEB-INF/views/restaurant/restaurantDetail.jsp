@@ -1,19 +1,34 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>식당 상세</title>
 </head>
+
 <body>
 	<button type="button" onclick="history.back()">←</button>
 	<button type="button" onclick="location.href='/main'">home</button>
 	<br><br>
 	
 	<!-- 식당 이미지 -->
-	<img src="${restaurant.r_img}" alt="${restaurant.r_name}" width="300">
-	<br><br>
+	<c:choose>
+
+	    <c:when test="${fn:startsWith(restaurant.r_img, 'http')}">
+	        <img src="${restaurant.r_img}"
+	             alt="${restaurant.r_name}"
+	             width="300">
+	    </c:when>
+	
+	    <c:otherwise>
+	        <img src="/upload/${restaurant.r_img}"
+	             alt="${restaurant.r_name}"
+	             width="300">
+	    </c:otherwise>
+
+	</c:choose>
 	
 	<h2>${restaurant.r_name}</h2>
 	
@@ -31,13 +46,36 @@
 	<hr>
 	
 	<!-- 예약 -->
-	<!-- 날짜 · 인원 · 시간 선택 -->
-	<h3>예약</h3>
-		<form action="/reservation/writeForm" method="get">
-	        <input type="hidden" name="r_no" value="${restaurant.r_no}">
-	        <button type="submit">날짜 · 인원 · 시간</button>
-	    </form>
+	<h3 id="reservation">예약</h3>
+	<form action="/reservation/writeForm" method="get">
 	
+		<input type="hidden" name="r_no"  value="${restaurant.r_no}">
+		
+		<!-- 날짜 -->
+    	<input type="date" name="res_day" required>
+		
+		<!-- 인원 -->
+	    <select name="res_count" required>
+	        <option value="">인원 선택</option>
+	        <option value="1">1명</option>
+	        <option value="2">2명</option>
+	        <option value="3">3명</option>
+	        <option value="4">4명</option>
+	    </select>
+	
+	    <!-- 시간 -->
+	    <select name="res_time" required>
+	        <option value="">시간 선택</option>
+	        <option value="12:00">12:00</option>
+	        <option value="13:00">13:00</option>
+	        <option value="18:00">18:00</option>
+	        <option value="19:00">19:00</option>
+	    </select>
+	
+	    <button type="submit">예약하기</button>
+	
+	</form>
+
 	<hr>
 	
 	<!-- 메뉴 -->
@@ -64,31 +102,14 @@
 	<br>
 	</c:forEach>
 	<hr>
-	
-	<!-- 추천 리뷰 -->
-    <h3>추천 리뷰</h3>
     
-		<!-- 추천 리뷰 -->
+	<!-- 추천 리뷰 -->
     <h3>추천 리뷰</h3>
 
     <div>★ ${restaurant.r_point} (${reviewCount})</div>
     <br>
-    
-    <c:forEach var="review" items="${restaurantESList}">
-        <div>
-            <c:if test="${not empty review.rvimg_img}">
-                <img src="${review.rvimg_img}" width="120">
-                <br>
-            </c:if>
-            
-            ★ ${review.rv_point} &nbsp; ${review.u_name}
-            <br>
-            ${review.rv_content}
-            
-        </div>
-        <br>
 
-    </c:forEach>
+
     
 	<form action="/" method="get">
 		<input type="hidden" name="r_no" value="${restaurant.r_no}">
@@ -114,15 +135,6 @@
 	</form>
 		<br>
 		
-	 <!-- 예약 -->
-	<div>
-       <c:forEach var="date" items="${dateList}">
-          <form action="/reservation/writeForm" method="get" style="display:inline;">
-	          <input type="hidden" name="r_no" value="${restaurant.r_no}">
-	          <input type="hidden" name="res_day" value="${date}">
-	          <button type="submit">${date}<br>예약 가능</button>
-          </form>
-       </c:forEach>
             
  	<!-- 페이징 -->
     <c:forEach begin="1" end="${totalPage}" var="i">
@@ -130,8 +142,29 @@
         <a href="/restaurant/category?mukja_c_no=${mukja_c_no}&page=${i}">
             ${i}
         </a>
-
+	
+	
+	
+	<!-- 하단 고정 예약 바 -->
+	<div class="bottom-reservation">
+	
+	    <!-- 북마크 -->
+	    <form action="/" method="get">
+	        <input type="hidden" name="r_no" value="${restaurant.r_no}">
+	        <button type="submit" class="bookmark-btn">
+	            ♡<br>
+	            북마크
+	        </button>
+	    </form>
+	
+	
+	    <!-- 예약하기 -->
+	    <a href="/" class="reservation-btn">
+	        예약하기
+	    </a>
+	</div>
+	
     </c:forEach>
-        </div>
+    </div>
 </body>
 </html>

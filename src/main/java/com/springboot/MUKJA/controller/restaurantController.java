@@ -1,5 +1,6 @@
 package com.springboot.MUKJA.controller;
 
+import java.io.File;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,12 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.MUKJA.dao.restaurantDAO;
+import com.springboot.MUKJA.dao.reviewDAO;
 import com.springboot.MUKJA.dao.usersDAO;
 import com.springboot.MUKJA.dto.restaurantDTO;
 import com.springboot.MUKJA.dto.usersDTO;
-import com.springboot.MUKJA.dao.reviewDAO;
 import com.springboot.MUKJA.service.RestaurantESService;
 
 @Controller
@@ -33,76 +35,116 @@ public class restaurantController {
 	@Autowired
 	private reviewDAO reviewdao;
 	
-    // Elasticsearch 식당 검색
-	 @RequestMapping("/restaurant/search")
-	    public String restaurantSearch(@RequestParam("keyword") String keyword, Model model) throws Exception {
-
-	        List<restaurantDTO> list = service.search(keyword);
-	        model.addAttribute("list", list);
-	        model.addAttribute("keyword", keyword);
-
-	        return "restaurant/restaurantESList";
-	    }
 	
-//	// 메인 화면 식당 목록 조회
-//  @RequestMapping("/main")
-//	public String main(Model model) {
-//
-//	    int start = 0;
-//	    int pageSize = 20;
-//
-//	    List<restaurantDTO> restaurantList = restaurantdao.mainrestaurantList(start, pageSize);
-//
-//	    model.addAttribute("restaurantList", restaurantList);
-//
-//	    return "main";
-//	}
+	@RequestMapping("/restaurant/es/index")
+	public String restaurantESIndex() throws Exception {
+
+	    List<restaurantDTO> list = restaurantdao.restaurantESList();
+	    for (restaurantDTO dto : list) {
+	        service.save(dto);
+	    }
+
+	    return "redirect:/main";
+	}
+	
+    // Elasticsearch 식당 검색
+	@RequestMapping("/restaurant/search")
+	public String restaurantSearch(
+	        @RequestParam("keyword") String keyword,
+	        Model model) throws Exception {
+
+	    List<restaurantDTO> restaurantList = service.search(keyword);
+	    
+	    for (restaurantDTO restaurant : restaurantList) {
+	        int reviewCount = reviewdao.reviewCount(restaurant.getR_no());
+	        restaurant.setReviewCount(reviewCount);
+	    }
+
+	    model.addAttribute("restaurantList", restaurantList);
+	    model.addAttribute("keyword", keyword);
+	    model.addAttribute("categoryList", restaurantdao.foodcategoryList());
+	    model.addAttribute("regionList", restaurantdao.regionList());
+
+	    return "restaurant/restaurantList";
+	}
 	
 	  	// 음식종류별 식당 목록
 	    @RequestMapping("/restaurant/category")
 	    public String restaurantListCategory(
 	            @RequestParam("mukja_c_no") int mukja_c_no,
 	            @RequestParam(value = "page", defaultValue = "1") int page,
-	            Model model) {
+	            Principal principal, Model model) {
 
 	        int pageSize = 20;
 	        int start = (page - 1) * pageSize;
 
 	        List<restaurantDTO> restaurantList
-	            = restaurantdao.restaurantListCategory(
-	                    mukja_c_no,
-	                    start,
-	                    pageSize
-	            );
+	            = restaurantdao.restaurantListCategory(mukja_c_no,start,pageSize);
 
-	        int count
-	            = restaurantdao.restaurantCountCategory(mukja_c_no);
-
-	        int totalPage
-	            = (int) Math.ceil((double) count / pageSize);
+	        int count = restaurantdao.restaurantCountCategory(mukja_c_no);
+	        int totalPage = (int) Math.ceil((double) count / pageSize);
 
 	        model.addAttribute("restaurantList", restaurantList);
 	        model.addAttribute("categoryList", restaurantdao.foodcategoryList());
+	        model.addAttribute("regionList", restaurantdao.regionList());
 
 	        model.addAttribute("mukja_c_no", mukja_c_no);
 	        model.addAttribute("page", page);
 	        model.addAttribute("totalPage", totalPage);
 	        model.addAttribute("count", count);
+	        
+	        if (principal != null) {
+	            usersDTO user =
+	                    usersdao.findById(principal.getName());
 
-	        return "restaurant/restaurantList";
+	            model.addAttribute("user", user);
+	        }
+
+	        return "main";
 	    }
-	 
 	    
+	    // 지역별 식당 목록
+	    @RequestMapping("/restaurant/region")
+	    public String restaurantListRegion(
+	            @RequestParam("r_region") String r_region,
+	            @RequestParam(value = "page", defaultValue = "1") int page,
+	            Principal principal, Model model) {
+
+	        int pageSize = 20;
+	        int start = (page - 1) * pageSize;
+
+	        List<restaurantDTO> restaurantList = restaurantdao.restaurantListRegion(r_region,start,pageSize);
+
+	        int count = restaurantdao.restaurantCountRegion(r_region);
+	        int totalPage = (int) Math.ceil((double) count / pageSize);
+
+	        model.addAttribute("restaurantList", restaurantList);
+	        model.addAttribute("categoryList", restaurantdao.foodcategoryList());
+	        model.addAttribute("regionList", restaurantdao.regionList());
+	        model.addAttribute("r_region", r_region);
+	        model.addAttribute("page", page);
+	        model.addAttribute("totalPage", totalPage);
+	        model.addAttribute("count", count);
+
+	        if (principal != null) {
+	            usersDTO user =
+	                    usersdao.findById(principal.getName());
+
+	            model.addAttribute("user", user);
+	        }
+
+	        return "main";
+	    }
+	    
+	    // 식당 하나 선택했을때 상세
 	    @RequestMapping("/restaurant/detail")
 	    public String restaurantDetail(@RequestParam("r_no") int r_no, Model model) {
 
 	        restaurantDTO restaurant = restaurantdao.restaurantDetail(r_no);
-
 	        int reviewCount = reviewdao.reviewCount(r_no);
 
 	        // 오늘부터 7일
 	        List<LocalDate> dateList = new ArrayList<>();
-
 	        LocalDate today = LocalDate.now();
 
 	        for (int i = 0; i < 7; i++) {
@@ -125,11 +167,41 @@ public class restaurantController {
 	     return "restaurant/restaurantWriteForm";
 	 }
 	 
+	 
 	// 식당 등록 처리
-	 @RequestMapping("/restaurant/Insert")
-	 public String restaurantInsert(restaurantDTO dto) {
+	 @RequestMapping("/restaurant/insert")
+	 public String restaurantInsert(
+	         restaurantDTO dto,
+	         @RequestParam(value = "r_upload", required = false) MultipartFile file,
+	         Principal principal) throws Exception {
 
+	     if (file != null && !file.isEmpty()) {
+
+	         String fileName = file.getOriginalFilename();
+
+	         File saveFile = new File("C:/upload/" + fileName);
+
+	         file.transferTo(saveFile);
+
+	         dto.setR_img(fileName);
+	     }
+
+	     // DB 저장
 	     restaurantdao.restaurantInsert(dto);
+
+	     // OWNER와 식당 연결
+	     usersDTO user = usersdao.findById(principal.getName());
+
+	     user.setR_no(dto.getR_no());
+
+	     usersdao.usersRestaurantUpdate(user);
+
+	     // DB에서 다시 조회
+	     restaurantDTO savedRestaurant =
+	             restaurantdao.restaurantDetail(dto.getR_no());
+
+	     // Elasticsearch 저장
+	     service.save(savedRestaurant);
 
 	     return "redirect:/main";
 	 }
@@ -144,13 +216,12 @@ public class restaurantController {
 	     boolean isAdmin = authentication.getAuthorities()
 	    		 .stream()
 	    		 .anyMatch(auth -> auth.getAuthority()
-	    				 .equals("ROLE_ADMIN"));
+	    		 .equals("ROLE_ADMIN"));
 
 	     // 관리자가 아니면서 자기 식당도 아니면 접근 차단
 	     if (!isAdmin && user.getR_no() != r_no) {return "redirect:/main";}
 
-	     restaurantDTO restaurant =
-	             restaurantdao.restaurantDetail(r_no);
+	     restaurantDTO restaurant = restaurantdao.restaurantDetail(r_no);
 
 	     model.addAttribute("restaurant", restaurant);
 	     model.addAttribute("categoryList", restaurantdao.foodcategoryList());
@@ -161,30 +232,58 @@ public class restaurantController {
 	 
 	// 식당 수정 처리
 	 @RequestMapping("/restaurant/update")
-	 public String restaurantUpdate( restaurantDTO dto, Principal principal, Authentication authentication) {
+	 public String restaurantUpdate(
+	         restaurantDTO dto,
+	         @RequestParam("old_r_img") String old_r_img,
+	         @RequestParam(value = "r_upload", required = false) MultipartFile file,
+	         Principal principal,
+	         Authentication authentication) throws Exception {
 
 	     usersDTO user = usersdao.findById(principal.getName());
 
-	     boolean isAdmin = authentication.getAuthorities() 
-	    		 .stream()
-	    		 .anyMatch(auth ->auth.getAuthority()
-	    				 .equals("ROLE_ADMIN"));
+	     boolean isAdmin = authentication.getAuthorities()
+	             .stream()
+	             .anyMatch(auth ->auth.getAuthority().equals("ROLE_ADMIN"));
 
-	     // OWNER는 자기 식당만 수정 가능
-	     if (!isAdmin && user.getR_no() != dto.getR_no()) {return "redirect:/main";}
+	     if (!isAdmin && user.getR_no() != dto.getR_no()) {
+	         return "redirect:/main";
+	     }
+
+	     // 새 사진을 등록한 경우
+	     if (file != null && !file.isEmpty()) {
+	         String fileName = file.getOriginalFilename();
+
+	         File saveFile = new File("C:/upload/" + fileName);
+	         file.transferTo(saveFile);
+
+	         dto.setR_img(fileName);
+	     } else {
+	    	 
+	         // 사진을 안 넣은 경우 기존 사진 유지
+	         dto.setR_img(old_r_img);
+	     }
 
 	     restaurantdao.restaurantUpdate(dto);
 
-	     return "redirect:/restaurant/detail?r_no="+ dto.getR_no();
+	  // 수정된 식당 다시 조회
+	  restaurantDTO updatedRestaurant =
+	          restaurantdao.restaurantDetail(dto.getR_no());
+
+	  // Elasticsearch도 갱신
+	  service.save(updatedRestaurant);
+
+	  return "redirect:/restaurant/detail?r_no=" + dto.getR_no();
 	 }
 	 
 	 
 	 @RequestMapping("/restaurant/delete")
-	 public String restaurantDelete(@RequestParam("r_no") int r_no) {
+	 public String restaurantDelete(@RequestParam("r_no") int r_no,
+			 						@RequestParam("keyword") String keyword) throws Exception  {
 
 	     restaurantdao.restaurantDelete(r_no);
-
-	     return "redirect:/main";
+	     service.delete(r_no);
+	     
+	     return "redirect:/restaurant/search?keyword=" + keyword;
 	 }
 	 
 	 

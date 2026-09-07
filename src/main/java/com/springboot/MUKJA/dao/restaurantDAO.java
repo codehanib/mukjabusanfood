@@ -27,6 +27,16 @@ public interface restaurantDAO {
 	            @Param("start") int start,
 	            @Param("pageSize") int pageSize);
 	    
+	    // 지역 목록
+	    public List<String> regionList();
+	    
+	    // 지역별 식당 목록
+	    public List<restaurantDTO> restaurantListRegion(
+	            @Param("r_region") String r_region,
+	            @Param("start") int start,
+	            @Param("pageSize") int pageSize
+	    );
+	    
 		// 식당 하나의 기본 정보 select
 		public restaurantDTO restaurantDetail(int r_no);
 		
@@ -35,6 +45,9 @@ public interface restaurantDAO {
 		
 		// 음식종류별 식당 개수
 		public int restaurantCountCategory(@Param("mukja_c_no") int mukja_c_no);
+		
+		// 지역별 식당 개수
+		public int restaurantCountRegion(@Param("r_region") String r_region);
 		
 		// 식당 등록 insert
 		public int restaurantInsert(restaurantDTO dto);
