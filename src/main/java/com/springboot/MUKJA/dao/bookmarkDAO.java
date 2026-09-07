@@ -2,10 +2,12 @@ package com.springboot.MUKJA.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.springboot.MUKJA.dto.bookmarkDTO;
 
+@Mapper
 public interface bookmarkDAO {
 	
 	// 북마크 조회

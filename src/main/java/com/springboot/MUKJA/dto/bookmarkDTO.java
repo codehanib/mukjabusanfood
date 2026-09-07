@@ -11,4 +11,5 @@ public class bookmarkDTO {
 	private String r_img;
 	private String r_name;
 	private String r_region;
+	private String r_point;
 }

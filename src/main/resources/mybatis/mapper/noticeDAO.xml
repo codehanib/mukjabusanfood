@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.MUKJA.dao.noticeDAO">
+	<!-- 공지 목록 조회 -->
+	<select id="noticeList" resultType="com.springboot.MUKJA.dto.noticeDTO">
+	    select nt_no,nt_title,nt_reg_date
+	     from mukja_notice order by nt_no desc
+	</select>
+	
+	<!-- 공지 내용 조회 -->
+	<select id="noticeView" resultType="com.springboot.MUKJA.dto.noticeDTO">
+		select nt_no,nt_title,nt_content,nt_img,nt_reg_date,u_no
+		 from mukja_notice
+		 where nt_no=#{nt_no}
+	</select>
+	
+	<!-- 공지 작성(관리자) -->
+	<insert id="noticeInsert">
+		insert into mukja_notice(nt_no,nt_title,nt_content,nt_img,nt_reg_date,u_no)
+		 values(mukja_notice_seq.NEXTVAL,#{nt_title},#{nt_content},#{nt_img},SYSDATE,#{u_no})
+	</insert>
+	
+	<!-- 공지 수정(관리자) -->
+	<update id="noticeUpdate">
+		update mukja_notice set nt_title=#{nt_title},nt_content=#{nt_content},nt_img=#{nt_img}
+		 where nt_no=#{nt_no}
+	</update>
+	
+	<!-- 공지 삭제(관리자) -->
+	<delete id="noticeDelete">
+		delete from mukja_notice where nt_no=#{nt_no}
+	</delete>
+</mapper>

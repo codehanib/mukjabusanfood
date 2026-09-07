@@ -2,10 +2,12 @@ package com.springboot.MUKJA.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.springboot.MUKJA.dto.inquiryDTO;
 
+@Mapper	
 public interface inquiryDAO {
 	
 	// 관리자의 문의 전체 조회
