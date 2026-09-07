@@ -10,15 +10,12 @@
     body { font-family: '맑은 고딕', sans-serif; margin: 20px; background-color: #f8f9fa; color: #333; }
     .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     
-    /* 헤더 및 상태 */
     .detail-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #222; padding-bottom: 15px; margin-bottom: 25px; }
     .order-title { font-size: 1.5em; font-weight: bold; }
     .status-tag { background: #FF5722; color: white; padding: 6px 14px; border-radius: 20px; font-weight: bold; }
 
-    /* 섹션 제목 */
     .section-title { font-size: 1.15em; font-weight: bold; color: #222; margin-top: 25px; margin-bottom: 12px; border-left: 4px solid #FF5722; padding-left: 10px; }
 
-    /* 테이블 공통 */
     .info-table, .menu-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
     .info-table th { width: 25%; background: #f1f3f5; text-align: left; padding: 10px 12px; border: 1px solid #dee2e6; }
     .info-table td { padding: 10px 12px; border: 1px solid #dee2e6; }
@@ -26,17 +23,15 @@
     .menu-table th { background: #e9ecef; padding: 12px; text-align: center; border: 1px solid #dee2e6; }
     .menu-table td { padding: 12px; text-align: center; border: 1px solid #dee2e6; }
 
-    /* 메뉴 이미지 */
     .menu-img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
 
-    /* 최종 금액 계산 박스 */
     .total-box { background: #fff3e0; padding: 20px; border-radius: 6px; text-align: right; font-size: 1.2em; font-weight: bold; color: #e65100; margin-top: 20px; }
 
-    /* 하단 버튼 바 */
     .btn-bar { display: flex; justify-content: space-between; margin-top: 30px; }
     .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-decoration: none; }
     .btn-back { background: #6c757d; color: white; }
     .btn-print { background: #343a40; color: white; }
+    .btn-action { background: #28a745; color: white; font-size: 1em; padding: 8px 16px; border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -49,24 +44,22 @@
         <div class="status-tag">${delivery.d_stats}</div>
     </div>
 
-    <!-- 2. 매장(restaurant) 및 고객 기본 정보 -->
+    <!-- 2. 매장 및 주문 접수 정보 -->
     <div class="section-title">🏪 매장 및 주문 접수 정보</div>
     <table class="info-table">
         <tr>
-            <th>가게 이름</th>
-            <td>${restaurant.r_name} (#${restaurant.r_no})</td>
-            <th>가게 주소</th>
-            <td>${restaurant.r_addr}</td>
+            <th>가게 번호</th>
+            <td>식당 #${delivery.r_no}</td>
+            <th>주문 접수 시간</th>
+            <td><fmt:formatDate value="${delivery.d_reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
         </tr>
         <tr>
-            <th>주문 일시</th>
-            <td><fmt:formatDate value="${delivery.d_reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
             <th>회원 번호</th>
-            <td>회원 #${delivery.u_no}</td>
+            <td colspan="3">회원 #${delivery.u_no}</td>
         </tr>
     </table>
 
-    <!-- 3. 배달 및 예상 시간 산출 정보 -->
+    <!-- 3. 배달 및 시간 계산 상세 -->
     <div class="section-title">🚚 배달 및 시간 계산 상세</div>
     <table class="info-table">
         <tr>
@@ -98,7 +91,47 @@
         </tr>
     </table>
 
-    <!-- 4. 주문한 음식 메뉴 상세 목록 (menu + dv_menu JOIN) -->
+    <!-- 3-1. 점주 주문 승인 및 배달 상태 변경 폼 -->
+    <c:if test="${delivery.d_stats == '주문확인'}">
+        <div class="section-title">⚡ 주문 수락 처리</div>
+        <div style="background: #fff3e0; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+            <form action="${pageContext.request.contextPath}/store/order/accept" method="post" style="display: flex; align-items: center; gap: 15px;">
+                <input type="hidden" name="d_no" value="${delivery.d_no}">
+                <label style="font-weight: bold;">조리 예상 시간 선택:</label>
+                <select name="d_cooking_time" style="padding: 8px 12px; font-size: 1em; border-radius: 4px; border: 1px solid #ccc;">
+                    <option value="15">15분</option>
+                    <option value="20" selected>20분</option>
+                    <option value="30">30분</option>
+                    <option value="40">40분</option>
+                </select>
+                <button type="submit" class="btn btn-action">주문 승인 및 거리시간 자동계산</button>
+            </form>
+        </div>
+    </c:if>
+
+    <c:if test="${delivery.d_stats != '주문확인' && delivery.d_stats != '배달완료'}">
+        <div class="section-title">🚚 배달 진행 상태 변경</div>
+        <div style="background: #e8f4f8; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+            <form action="${pageContext.request.contextPath}/store/order/updateStatus" method="post" style="display: flex; align-items: center; gap: 15px;">
+                <input type="hidden" name="d_no" value="${delivery.d_no}">
+                
+                <c:if test="${delivery.d_stats == '주문승인'}">
+                    <input type="hidden" name="nextStatus" value="조리중">
+                    <button type="submit" class="btn btn-action" style="background: #007bff;">🍳 조리 시작 (조리중)</button>
+                </c:if>
+                <c:if test="${delivery.d_stats == '조리중'}">
+                    <input type="hidden" name="nextStatus" value="배달중">
+                    <button type="submit" class="btn btn-action" style="background: #007bff;">🛵 라이더 출발 (배달중)</button>
+                </c:if>
+                <c:if test="${delivery.d_stats == '배달중'}">
+                    <input type="hidden" name="nextStatus" value="배달완료">
+                    <button type="submit" class="btn btn-action" style="background: #28a745;">✅ 배달 완료 처리</button>
+                </c:if>
+            </form>
+        </div>
+    </c:if>
+
+    <!-- 4. 주문한 음식 메뉴 상세 목록 -->
     <div class="section-title">🍽️ 주문 메뉴 상품 내역</div>
     <table class="menu-table">
         <thead>

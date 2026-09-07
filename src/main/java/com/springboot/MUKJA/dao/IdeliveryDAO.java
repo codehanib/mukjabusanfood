@@ -25,4 +25,9 @@ public interface IdeliveryDAO {
 
     // 6. 고객용: 내 배달 주문 내역 목록 조회
     List<deliveryDTO> selectOrdersByUser(int u_no);
+    
+ // 7. 점주 전체 주문 목록 조회
+    List<deliveryDTO> selectOrderList();
 }
+
+

@@ -11,7 +11,7 @@ public class deliveryDTO {
 	private String d_stats;
 	private Date d_reg_date;
 	private int d_cooking_time;
-	private int d_delivert_time;
+	private int d_delivery_time;
 	private Date d_arrival_time;
 	private int d_lat;
 	private int d_lng;
