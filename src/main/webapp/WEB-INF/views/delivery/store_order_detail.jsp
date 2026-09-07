@@ -31,7 +31,8 @@
     .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-decoration: none; }
     .btn-back { background: #6c757d; color: white; }
     .btn-print { background: #343a40; color: white; }
-    .btn-action { background: #28a745; color: white; font-size: 1em; padding: 8px 16px; border-radius: 4px; }
+    .btn-action { background: #28a745; color: white; font-size: 1em; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-reject { background: #dc3545; color: white; font-size: 1em; padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -82,6 +83,9 @@
             <th>최종 도착 예정 시각</th>
             <td colspan="3" style="color: #d84315; font-weight: bold;">
                 <c:choose>
+                    <c:when test="${delivery.d_stats == '주문거절'}">
+                        <span style="color:#dc3545;">❌ 주문이 거절되었습니다.</span>
+                    </c:when>
                     <c:when test="${not empty delivery.d_arrival_time}">
                         <fmt:formatDate value="${delivery.d_arrival_time}" pattern="yyyy-MM-dd HH:mm:ss"/> 도착 예정
                     </c:when>
@@ -91,10 +95,11 @@
         </tr>
     </table>
 
-    <!-- 3-1. 점주 주문 승인 및 배달 상태 변경 폼 -->
+    <!-- 3-1. 점주 주문 승인 및 거절 처리 폼 -->
     <c:if test="${delivery.d_stats == '주문확인'}">
-        <div class="section-title">⚡ 주문 수락 처리</div>
-        <div style="background: #fff3e0; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+        <div class="section-title">⚡ 주문 수락 및 거절 처리</div>
+        <div style="background: #fff3e0; padding: 20px; border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+            <!-- 주문 승인 폼 -->
             <form action="${pageContext.request.contextPath}/store/order/accept" method="post" style="display: flex; align-items: center; gap: 15px;">
                 <input type="hidden" name="d_no" value="${delivery.d_no}">
                 <label style="font-weight: bold;">조리 예상 시간 선택:</label>
@@ -106,10 +111,17 @@
                 </select>
                 <button type="submit" class="btn btn-action">주문 승인 및 거리시간 자동계산</button>
             </form>
+
+            <!-- 주문 거절 폼 -->
+            <form action="${pageContext.request.contextPath}/store/order/reject" method="post" style="display: inline;" onsubmit="return confirm('정말 이 주문을 거절하시겠습니까?');">
+                <input type="hidden" name="d_no" value="${delivery.d_no}">
+                <button type="submit" class="btn btn-reject">❌ 주문 거절</button>
+            </form>
         </div>
     </c:if>
 
-    <c:if test="${delivery.d_stats != '주문확인' && delivery.d_stats != '배달완료'}">
+    <!-- 3-2. 배달 진행 상태 변경 폼 -->
+    <c:if test="${delivery.d_stats != '주문확인' && delivery.d_stats != '배달완료' && delivery.d_stats != '주문거절'}">
         <div class="section-title">🚚 배달 진행 상태 변경</div>
         <div style="background: #e8f4f8; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
             <form action="${pageContext.request.contextPath}/store/order/updateStatus" method="post" style="display: flex; align-items: center; gap: 15px;">
@@ -193,6 +205,29 @@
     </div>
 
 </div>
+
+<!-- 실시간 Ajax Polling (3초 간격 상태 동기화) -->
+<script>
+(function() {
+    var dNo = "${delivery.d_no}";
+    var currentStats = "${delivery.d_stats}";
+
+    function checkStatusChange() {
+        if (!dNo || currentStats === '배달완료' || currentStats === '주문거절') return;
+        
+        fetch("${pageContext.request.contextPath}/delivery/api/status?d_no=" + dNo)
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data && data.d_stats && data.d_stats !== currentStats) {
+                    location.reload();
+                }
+            })
+            .catch(function(err) { console.error("상태 변경 확인 중 오류:", err); });
+    }
+
+    setInterval(checkStatusChange, 3000);
+})();
+</script>
 
 </body>
 </html>

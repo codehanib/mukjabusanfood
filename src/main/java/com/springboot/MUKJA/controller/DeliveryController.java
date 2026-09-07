@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springboot.MUKJA.dao.IdeliveryDAO;
 import com.springboot.MUKJA.dao.Idv_menuDAO;
@@ -174,9 +175,27 @@ public class DeliveryController {
 	    return "delivery/store_order_history"; // JSP 파일 경로
 	}
 	
+	// 실시간 상태 확인 API
+	@GetMapping("/delivery/api/status")
+	@ResponseBody
+	public deliveryDTO getDeliveryStatusApi(@RequestParam("d_no") int d_no) {
+	    return deliveryDao.selectOrderById(d_no);
+	}
 	
 	
 	
+	// 점주 주문 거절 처리
+	@PostMapping("/store/order/reject")
+	public String rejectOrder(@RequestParam("d_no") int d_no) {
+	    deliveryDTO dto = new deliveryDTO();
+	    dto.setD_no(d_no);
+	    dto.setD_stats("주문거절");
+	    
+	    // DB의 d_stats를 '주문거절'로 업데이트
+	    deliveryDao.updateOrderStatus(dto);
+	    
+	    return "redirect:/store/order/detail?d_no=" + d_no;
+	}
 	
 	
 	

@@ -50,6 +50,9 @@
     <!-- 도착 예정 시간 및 카운트다운 -->
     <div class="timer-box">
         <c:choose>
+            <c:when test="${delivery.d_stats == '주문거절'}">
+                <span style="color: #d32f2f;">❌ 점주님의 사정으로 주문이 거절되었습니다.</span>
+            </c:when>
             <c:when test="${not empty delivery.d_arrival_time}">
                 남은 예상 시간: <span id="remainingTime">계산 중...</span>
                 <br><small style="font-size: 0.7em; color: #666;">(조리시간 ${delivery.d_cooking_time}분 + 배달시간 ${delivery.d_delivery_time}분 반영)</small>
@@ -158,92 +161,43 @@
 })();
 </script>
 
-<!-- 2. 카카오 지도 SDK 단일 호출 및 마커 시뮬레이션 -->
+<!-- 2. 카카오 지도 SDK & 외부 delivery_map.js 불러오기 -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false"></script>
+<script src="${pageContext.request.contextPath}/js/delivery_map.js"></script>
+
+<!-- 3. 외부 JS의 initDeliveryMap 함수 호출 -->
 <script>
-kakao.maps.load(function() {
-    var mapContainer = document.getElementById('map');
-    if (!mapContainer) return;
-
-    // 식당 위치 (부산 연제구 연산동)
-    var storeLat = 35.1795588;
-    var storeLng = 129.0756416;
-
-    // DB 데이터 파싱
-    var rawLat = parseFloat("${delivery.d_lat}");
-    var rawLng = parseFloat("${delivery.d_lng}");
-
-    // [정수 잘림 및 위경도 바뀜 자동 방어 로직]
-    var destLat = rawLat;
-    var destLng = rawLng;
-
-    // 1. 위경도가 반대로 들어왔을 경우 교정
-    if (rawLat > 100) {
-        destLat = rawLng;
-        destLng = rawLat;
-    }
-
-    // 2. 소수점이 잘려서 35.0 또는 129.0 (바다 좌표)으로 들어온 경우 예외 처리
-    if (isNaN(destLat) || Math.floor(destLat) === 35 && destLat < 35.1) {
-        destLat = 35.1765; // 기본 배송지 위도
-    }
-    if (isNaN(destLng) || Math.floor(destLng) === 129 && destLng < 129.05) {
-        destLng = 129.0785; // 기본 배송지 경도
-    }
-
-    var storePos = new kakao.maps.LatLng(storeLat, storeLng);
-    var destPos = new kakao.maps.LatLng(destLat, destLng);
-    var status = "${delivery.d_stats}";
-
-    var map = new kakao.maps.Map(mapContainer, {
-        center: new kakao.maps.LatLng((storeLat + destLat) / 2, (storeLng + destLng) / 2),
-        level: 5
-    });
-
-    // 1. 가게 마커
-    var storeMarker = new kakao.maps.Marker({ position: storePos, map: map });
-    new kakao.maps.InfoWindow({
-        content: '<div style="padding:5px;font-size:12px;font-weight:bold;">🏪 가게 위치</div>'
-    }).open(map, storeMarker);
-
-    // 2. 배송지 마커
-    var destMarker = new kakao.maps.Marker({ position: destPos, map: map });
-    new kakao.maps.InfoWindow({
-        content: '<div style="padding:5px;font-size:12px;font-weight:bold;">🏠 배송지</div>'
-    }).open(map, destMarker);
-
-    // 3. 점선 경로 (Polyline)
-    new kakao.maps.Polyline({
-        path: [storePos, destPos],
-        strokeWeight: 4,
-        strokeColor: '#FF5722',
-        strokeOpacity: 0.8,
-        strokeStyle: 'shortdash',
-        map: map
-    });
-
-    // 4. 라이더 위치
-    if (status === '조리중' || status === '배달중' || status === '배달완료') {
-        var ratio = 0.15;
-        if (status === '배달중') ratio = 0.65;
-        if (status === '배달완료') ratio = 1.0;
-
-        var riderLat = storeLat + (destLat - storeLat) * ratio;
-        var riderLng = storeLng + (destLng - storeLng) * ratio;
-        var riderPos = new kakao.maps.LatLng(riderLat, riderLng);
-
-        var riderMarker = new kakao.maps.Marker({ position: riderPos, map: map });
-        new kakao.maps.InfoWindow({
-            content: '<div style="padding:5px;font-size:12px;color:#007bff;font-weight:bold;">🛵 라이더 (' + status + ')</div>'
-        }).open(map, riderMarker);
-    }
-
-    // 5. 화면 영역 맞춤
-    var bounds = new kakao.maps.LatLngBounds();
-    bounds.extend(storePos);
-    bounds.extend(destPos);
-    map.setBounds(bounds);
-});
+initDeliveryMap(
+    35.1795588,             // 식당 위도
+    129.0756416,            // 식당 경도
+    "${delivery.d_lat}",    // 배송지 위도
+    "${delivery.d_lng}",    // 배송지 경도
+    "${delivery.d_stats}"   // 배달 상태
+);
 </script>
+
+<!-- 4. 실시간 Ajax Polling (3초 간격 상태 동기화) -->
+<script>
+(function() {
+    var dNo = "${delivery.d_no}";
+    var currentStats = "${delivery.d_stats}";
+
+    function checkStatusChange() {
+        if (!dNo || currentStats === '배달완료' || currentStats === '주문거절') return;
+        
+        fetch("${pageContext.request.contextPath}/delivery/api/status?d_no=" + dNo)
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data && data.d_stats && data.d_stats !== currentStats) {
+                    location.reload();
+                }
+            })
+            .catch(function(err) { console.error("상태 변경 확인 중 오류:", err); });
+    }
+
+    setInterval(checkStatusChange, 3000);
+})();
+</script>
+
 </body>
 </html>
