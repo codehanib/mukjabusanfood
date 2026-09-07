@@ -5,16 +5,22 @@
 <mapper namespace="com.springboot.MUKJA.dao.bookmarkDAO">
 	<!-- 북마크 조회 -->
 	<select id="bookmarkList" resultType="com.springboot.MUKJA.dto.bookmarkDTO">
-	    select b.bk_no, b.r_no, b.u_no, r.r_img, r.r_name, r.r_region
+	    select b.bk_no, b.r_no, b.u_no, r.r_img, r.r_name, r.r_region, r.r_point
 	     from bookmark b JOIN restaurant r
 	     on b.r_no = r.r_no where b.u_no = #{u_no}
 	</select>
-	<!-- 북마크 여부 확인 -->
-	
+	<!-- 북마크 여부 확인 1 or 0 반환 -->
+	<select id="bookmarkCheck" resultType="int">
+		select count(*) from bookmark where r_no=#{r_no} AND u_no=#{u_no}
+	</select>
 	<!-- 북마크 생성 -->
 	<insert id="bookmarkInsert">
 		insert into bookmark(bk_no,r_no,u_no)
 		 values(bookmark_seq.NEXTVAL,#{r_no},#{u_no})
 	</insert>
+	<!-- 북마크 삭제 -->
+	<delete id="bookmarkDelete">
+		delete from bookmark where bk_no=#{bk_no}
+	</delete>
 	
 </mapper>
