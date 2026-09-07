@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,23 +27,10 @@
     .timer-box { background: #fff3e0; border: 1px solid #ffe0b2; padding: 15px; text-align: center; font-size: 1.2em; font-weight: bold; color: #d84315; margin-bottom: 20px; }
 </style>
 
-<!-- 카카오 지도 API (발급받은 appkey 연결 필요) -->
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services"></script>
-<!-- js 파일가져오기(시각화) -->
-<script src="${pageContext.request.contextPath}/js/delivery_map.js"></script>
-<!-- 외부 함수를 호출 -->
-<script>
-	// 페이지 로드 완료시 외부함수 호출
-	window.onload = function(){
-		var storeLat = ${not empty storeLat ? storeLat : 35.1795588};
-		var storeLng = ${not empty storeLng ? storeLng : 129.0756416};
-		var destLat = ${delivery.d_lat};
-        var destLng = ${delivery.d_lng};
-        var status = "${delivery.d_stats}";
-    // 외부 js파일 함수호출
-        initDeliveryMap(storeLat, storeLng, destLat, destLng, status);
-	};
-</script>
+<%-- 도착 예정 시각 ISO 날짜 포맷 변환 --%>
+<c:if test="${not empty delivery.d_arrival_time}">
+    <fmt:formatDate value="${delivery.d_arrival_time}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="isoArrivalTime"/>
+</c:if>
 
 </head>
 <body>
@@ -114,7 +102,7 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach var="menu" items="${menuList}">
+            <c:forEach var="menu" items="${not empty menuList ? menuList : orderMenuList}">
                 <tr>
                     <td>${menu.mn_no}</td>
                     <td>${menu.dvm_count}개</td>
@@ -125,29 +113,137 @@
     </table>
 </div>
 
-<!-- 도착 예정 시간 실시간 카운트다운 스크립트 -->
+<!-- 1. 실시간 타이머 스크립트 -->
 <script>
-    <c:if test="${not empty delivery.d_arrival_time}">
-        var arrivalTime = new Date("${delivery.d_arrival_time}").getTime();
+(function() {
+    var arrivalTimeString = "${isoArrivalTime}";
+    var arrivalTimeMillis = arrivalTimeString ? new Date(arrivalTimeString).getTime() : 0;
+    var currentStatus = "${delivery.d_stats}";
 
-        function updateTimer() {
-            var now = new Date().getTime();
-            var diff = arrivalTime - now;
+    function updateTimer() {
+        var timerElement = document.getElementById("remainingTime");
+        if (!timerElement) return;
 
-            if (diff <= 0) {
-                document.getElementById("remainingTime").innerText = "곧 도착 또는 배달 완료!";
-                return;
-            }
-
-            var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            document.getElementById("remainingTime").innerText = minutes + "분 " + seconds + "초";
+        if (currentStatus === '배달완료') {
+            timerElement.innerHTML = "<span style='color:#28a745; font-weight:bold;'>🎉 배달이 완료되었습니다!</span>";
+            return;
         }
 
-        setInterval(updateTimer, 1000);
-        updateTimer();
-    </c:if>
+        if (!arrivalTimeMillis || isNaN(arrivalTimeMillis)) {
+            timerElement.innerText = "주문 확인 중입니다.";
+            return;
+        }
+
+        var now = new Date().getTime();
+        var distance = arrivalTimeMillis - now;
+
+        if (distance <= 0) {
+            timerElement.innerText = "곧 도착 예정입니다.";
+            return;
+        }
+
+        var hours = Math.floor(distance / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (hours > 0) {
+            timerElement.innerText = hours + "시간 " + minutes + "분 " + seconds + "초";
+        } else {
+            timerElement.innerText = minutes + "분 " + seconds + "초";
+        }
+    }
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
+})();
 </script>
 
+<!-- 2. 카카오 지도 SDK 단일 호출 및 마커 시뮬레이션 -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false"></script>
+<script>
+kakao.maps.load(function() {
+    var mapContainer = document.getElementById('map');
+    if (!mapContainer) return;
+
+    // 식당 위치 (부산 연제구 연산동)
+    var storeLat = 35.1795588;
+    var storeLng = 129.0756416;
+
+    // DB 데이터 파싱
+    var rawLat = parseFloat("${delivery.d_lat}");
+    var rawLng = parseFloat("${delivery.d_lng}");
+
+    // [정수 잘림 및 위경도 바뀜 자동 방어 로직]
+    var destLat = rawLat;
+    var destLng = rawLng;
+
+    // 1. 위경도가 반대로 들어왔을 경우 교정
+    if (rawLat > 100) {
+        destLat = rawLng;
+        destLng = rawLat;
+    }
+
+    // 2. 소수점이 잘려서 35.0 또는 129.0 (바다 좌표)으로 들어온 경우 예외 처리
+    if (isNaN(destLat) || Math.floor(destLat) === 35 && destLat < 35.1) {
+        destLat = 35.1765; // 기본 배송지 위도
+    }
+    if (isNaN(destLng) || Math.floor(destLng) === 129 && destLng < 129.05) {
+        destLng = 129.0785; // 기본 배송지 경도
+    }
+
+    var storePos = new kakao.maps.LatLng(storeLat, storeLng);
+    var destPos = new kakao.maps.LatLng(destLat, destLng);
+    var status = "${delivery.d_stats}";
+
+    var map = new kakao.maps.Map(mapContainer, {
+        center: new kakao.maps.LatLng((storeLat + destLat) / 2, (storeLng + destLng) / 2),
+        level: 5
+    });
+
+    // 1. 가게 마커
+    var storeMarker = new kakao.maps.Marker({ position: storePos, map: map });
+    new kakao.maps.InfoWindow({
+        content: '<div style="padding:5px;font-size:12px;font-weight:bold;">🏪 가게 위치</div>'
+    }).open(map, storeMarker);
+
+    // 2. 배송지 마커
+    var destMarker = new kakao.maps.Marker({ position: destPos, map: map });
+    new kakao.maps.InfoWindow({
+        content: '<div style="padding:5px;font-size:12px;font-weight:bold;">🏠 배송지</div>'
+    }).open(map, destMarker);
+
+    // 3. 점선 경로 (Polyline)
+    new kakao.maps.Polyline({
+        path: [storePos, destPos],
+        strokeWeight: 4,
+        strokeColor: '#FF5722',
+        strokeOpacity: 0.8,
+        strokeStyle: 'shortdash',
+        map: map
+    });
+
+    // 4. 라이더 위치
+    if (status === '조리중' || status === '배달중' || status === '배달완료') {
+        var ratio = 0.15;
+        if (status === '배달중') ratio = 0.65;
+        if (status === '배달완료') ratio = 1.0;
+
+        var riderLat = storeLat + (destLat - storeLat) * ratio;
+        var riderLng = storeLng + (destLng - storeLng) * ratio;
+        var riderPos = new kakao.maps.LatLng(riderLat, riderLng);
+
+        var riderMarker = new kakao.maps.Marker({ position: riderPos, map: map });
+        new kakao.maps.InfoWindow({
+            content: '<div style="padding:5px;font-size:12px;color:#007bff;font-weight:bold;">🛵 라이더 (' + status + ')</div>'
+        }).open(map, riderMarker);
+    }
+
+    // 5. 화면 영역 맞춤
+    var bounds = new kakao.maps.LatLngBounds();
+    bounds.extend(storePos);
+    bounds.extend(destPos);
+    map.setBounds(bounds);
+});
+</script>
 </body>
 </html>

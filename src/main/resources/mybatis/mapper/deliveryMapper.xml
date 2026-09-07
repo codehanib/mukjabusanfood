@@ -1,41 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper 
-	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.springboot.MUKJA.dto.deliveryDAO">
-	<!-- 주문 등록 (시퀀스 사용 및 생성된 PK 반환) -->
-<insert id="insertDelivery" parameterType="com.springboot.MUKJA.dto.deliveryDTO">
-    <selectKey keyProperty="d_no" resultType="int" order="BEFORE">
-        SELECT seq_delivery_d_no.NEXTVAL FROM dual
-    </selectKey>
-    INSERT INTO delivery (d_no, d_addr, d_lat, d_lng, r_no, u_no)
-    VALUES (#{d_no}, #{d_addr}, #{d_lat}, #{d_lng}, #{r_no}, #{u_no})
-</insert>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- 점주 승인시 시간 정보 및 상태 업데이트 -->
-<update id="updateOrderAccept" parameterType="com.springboot.MUKJA.dto.deliveryDTO">
-    UPDATE delivery
-    SET d_stats = '주문승인',
-        d_cooking_time = #{d_cooking_time},
-        d_delivery_time = #{d_delivery_time},
-        d_arrival_time = #{d_arrival_time}
-    WHERE d_no = #{d_no}
-</update>
+<mapper namespace="com.springboot.MUKJA.dao.IdeliveryDAO">
 
-<!-- 특정 배달 주문 번호(d_no)의 상세 메뉴 목록 조인 쿼리 -->
-<select id="selectOrderMenuList" resultType="com.springboot.MUKJA.dto.dv_menuDTO">
-    SELECT 
-        dm.dvm_no,
-        dm.dvm_count,
-        dm.dvm_price,
-        dm.d_no,
-        dm.mn_no,
-        m.mn_name,
-        m.mn_content,
-        m.mn_img
-    FROM dv_menu dm
-    JOIN menu m ON dm.mn_no = m.mn_no
-    WHERE dm.d_no = #{d_no}
-</select>
+    <!-- 1. 고객 주문 등록 -->
+    <insert id="insertDelivery"
+            parameterType="com.springboot.MUKJA.dto.deliveryDTO">
+
+        <selectKey keyProperty="d_no"
+                   resultType="int"
+                   order="BEFORE">
+            SELECT seq_delivery_d_no.NEXTVAL FROM dual
+        </selectKey>
+
+        INSERT INTO delivery (
+            d_no, d_addr, d_lat, d_lng,
+            r_no, u_no, d_stats, d_reg_date
+        )
+        VALUES (
+            #{d_no}, #{d_addr}, #{d_lat}, #{d_lng},
+            #{r_no}, #{u_no}, '주문확인', SYSDATE
+        )
+
+    </insert>
+
+
+    <!-- 주문 메뉴 목록 -->
+    <select id="selectOrderMenuList"
+            resultType="com.springboot.MUKJA.dto.dv_menuDTO">
+
+        SELECT
+            dm.dvm_no,
+            dm.dvm_count,
+            dm.dvm_price,
+            dm.d_no,
+            dm.mn_no,
+            m.mn_name,
+            m.mn_content,
+            m.mn_img
+        FROM dv_menu dm
+        JOIN menu m ON dm.mn_no = m.mn_no
+        WHERE dm.d_no = #{d_no}
+
+    </select>
+
+
+    <!-- 2. 식당별 전체 주문 -->
+    <select id="selectOrdersByRestaurant"
+            parameterType="int"
+            resultType="com.springboot.MUKJA.dto.deliveryDTO">
+
+        SELECT
+            d_no, d_addr, d_lat, d_lng,
+            d_cooking_time, d_delivery_time,
+            d_arrival_time, d_stats, d_reg_date,
+            r_no, u_no
+        FROM delivery
+        WHERE r_no = #{r_no}
+        ORDER BY d_reg_date DESC
+
+    </select>
+
+
+    <!-- 3. 주문 승인 -->
+    <update id="updateOrderAccept"
+            parameterType="com.springboot.MUKJA.dto.deliveryDTO">
+
+        UPDATE delivery
+        SET
+            d_stats = '주문승인',
+            d_cooking_time = #{d_cooking_time},
+            d_delivery_time = #{d_delivery_time},
+            d_arrival_time = #{d_arrival_time}
+        WHERE d_no = #{d_no}
+
+    </update>
+
+
+    <!-- 4. 상태 변경 -->
+    <update id="updateOrderStatus"
+            parameterType="com.springboot.MUKJA.dto.deliveryDTO">
+
+        UPDATE delivery
+        SET d_stats = #{d_stats}
+        WHERE d_no = #{d_no}
+
+    </update>
+
+
+    <!-- 5. 주문 단건 조회 -->
+    <select id="selectOrderById"
+            parameterType="int"
+            resultType="com.springboot.MUKJA.dto.deliveryDTO">
+
+        SELECT
+            d_no, d_addr, d_lat, d_lng,
+            d_cooking_time, d_delivery_time,
+            d_arrival_time, d_stats, d_reg_date,
+            r_no, u_no
+        FROM delivery
+        WHERE d_no = #{d_no}
+
+    </select>
+
+
+    <!-- 6. 내 주문 내역 -->
+    <select id="selectOrdersByUser"
+            parameterType="int"
+            resultType="com.springboot.MUKJA.dto.deliveryDTO">
+
+        SELECT
+            d_no, d_addr, d_lat, d_lng,
+            d_cooking_time, d_delivery_time,
+            d_arrival_time, d_stats, d_reg_date,
+            r_no, u_no
+        FROM delivery
+        WHERE u_no = #{u_no}
+        ORDER BY d_reg_date DESC
+
+    </select>
+    
+    <!--  7. 점주  주문 상세리스트 페이지 -->
+	 <select id="selectOrderList" resultType="com.springboot.MUKJA.dto.deliveryDTO">
+	    SELECT * FROM delivery ORDER BY d_no DESC
+	 </select>
 
 </mapper>
