@@ -44,6 +44,7 @@
             <input type="submit" value="로그인" class="btn-login">
 
             <a href="/login/writeForm" class="btn-join">회원가입</a>
+            <a href="/main" class="btn-join">비회원 메인</a>
 
             <!-- 하단 안내 -->
             <p class="login-guide">

@@ -35,6 +35,9 @@
 		<a href="/admin/usersList">
 		    회원목록
 		</a>
+		<a href="/reservation/reservationInsert?r_no=1">
+    예약하기
+</a>
 	</sec:authorize>
 	
 	<br>
@@ -121,6 +124,7 @@
 	        </c:if>
 	
 	    </c:forEach>
+	    
 	</table>
 	<br>
 	

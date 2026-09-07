@@ -2,14 +2,18 @@ package com.springboot.MUKJA.dto;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 @Data
 public class reservationDTO {
+	
 	private int res_no;
 	private String res_num;
 	private String res_name;
 	private String res_tel;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date res_day;
 	private String res_time;
 	private int res_count;
