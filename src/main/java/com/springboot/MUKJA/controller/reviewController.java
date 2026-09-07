@@ -30,26 +30,12 @@ public class reviewController {
 	private usersDAO udao;
 	
 	// 리뷰 작성폼으로 가기 수정필요
-	@RequestMapping("/rev")
+	@RequestMapping("/users/reviewWrite")
 	public String reviewWriteForm(Authentication auth) {
 		String u_id = auth.getName();
 		usersDTO users = udao.findById(u_id);
 		int u_no = users.getU_no();
 		return "restaurant/reviewWriteForm";
-	}
-	
-	// 식당 페이지 리뷰 조회(3개)
-	@RequestMapping("/restaurant/view")
-	public String reviewPList(@RequestParam("r_no") int r_no,
-								Model model) {
-		List<reviewDTO> reviewList = rvdao.reviewPList(r_no);
-		int reviewCount = rvdao.reviewCount(r_no);
-		
-		model.addAttribute("rvPList",reviewList);
-		model.addAttribute("rvcount",reviewCount);
-		model.addAttribute("r_no", r_no);
-		
-		return "restaurant";
 	}
 	
 	// 리뷰 페이지 리뷰 조회
@@ -102,7 +88,7 @@ public class reviewController {
 		rvdto.setReviewImages(rvimgList);
 		rvService.reviewInsert(rvdto);
 		
-		return "restaurant/reviewtest";
+		return "redirect:/restaurant/detail?r_no=" + r_no;
 	}
 	
 	// 리뷰 수정

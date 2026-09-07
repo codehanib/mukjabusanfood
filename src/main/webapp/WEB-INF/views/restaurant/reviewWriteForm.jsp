@@ -8,7 +8,7 @@
 </head>
 <body>
 	<form name="reviewwriteform" method="post" action="/restaurant/reviewInsert" enctype="multipart/form-data">
-		<input type="hidden" name="r_no" value="1">
+		<input type="hidden" name="r_no" value="2012">
 		평점 : <input type="radio" id="star5" name="rv_point" value="5">
 			  <input type="radio" id="star4" name="rv_point" value="4">
 			  <input type="radio" id="star3" name="rv_point" value="3">
