@@ -44,5 +44,5 @@ public interface usersDAO {
 	public int mukja_inquiry(int u_no);
 	public int review(int u_no);
 	public int reservation(int u_no);
-	
+	public int usersRestaurantUpdate(usersDTO dto);
 }

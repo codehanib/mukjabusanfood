@@ -266,6 +266,18 @@ document.addEventListener("DOMContentLoaded", function() {
             emailVerified = false;
         });
     }
+	const uidInput = document.getElementById("u_id");
+	    const saveIdCheckbox = document.getElementById("saveId");
+	    if (uidInput && saveIdCheckbox) {
+	        const cookies = document.cookie.split("; ");
+	        for (const c of cookies) {
+	            const [key, value] = c.split("=");
+	            if (key === "savedId" && value) {
+	                uidInput.value = decodeURIComponent(value);
+	                saveIdCheckbox.checked = true;
+	            }
+	        }
+	    }
 });
 function checkSignupError() {
     const params = new URLSearchParams(location.search);
@@ -334,5 +346,25 @@ function checkFindPasswordError() {
     const params = new URLSearchParams(location.search);
     if (params.get("error") === "notVerified") {
         alert("이메일 인증을 먼저 완료해주세요.");
+    }
+}
+
+function saveIdCookie() {
+    const saveId = document.getElementById("saveId");
+    const u_id = document.getElementById("u_id").value;
+
+    if (saveId.checked) {
+        document.cookie = "savedId=" + encodeURIComponent(u_id) + "; path=/; max-age=" + (60*60*24*30);
+    } else {
+        document.cookie = "savedId=; path=/; max-age=0";
+    }
+    return true;
+}
+
+
+function checkLoginError() {
+    const params = new URLSearchParams(location.search);
+    if (params.get("error") === "true") {
+        alert("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
 }

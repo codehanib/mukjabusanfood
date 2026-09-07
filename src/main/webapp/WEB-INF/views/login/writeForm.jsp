@@ -64,14 +64,7 @@
 					</tr>
 					<tr class="join-phone">
 						<th><label for="u_tel">휴대전화</label></th>
-						<td><select name="u_tel" id="u_tel">
-								<option value="010">010</option>
-								<option value="011">011</option>
-								<option value="016">016</option>
-								<option value="017">017</option>
-								<option value="018">018</option>
-								<option value="019">019</option>
-						</select> - <input type="text" name="u_tel2" id="u_tel2" size="4"
+						<td><input type="text" name="u_tel1" id="u_tel1" value="010" maxlength="3"> - <input type="text" name="u_tel2" id="u_tel2" size="4"
 							maxlength="4" placeholder="0000"> - <input type="text"
 							name="u_tel3" id="u_tel3" size="4" maxlength="4"
 							placeholder="0000"></td>
