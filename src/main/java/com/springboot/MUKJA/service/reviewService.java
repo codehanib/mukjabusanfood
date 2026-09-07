@@ -1,8 +1,9 @@
 package com.springboot.MUKJA.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.MUKJA.dao.reviewDAO;
 import com.springboot.MUKJA.dto.reviewDTO;
@@ -43,6 +44,11 @@ public class reviewService {
 				rvdao.reviewImgInsert(rvimg);
 			}
 		}
+	}
+	
+	// 식당 페이지에서 리뷰 3개 출력
+	public List<reviewDTO> reviewPList(int r_no) {
+	    return rvdao.reviewPList(r_no);
 	}
 	
 }

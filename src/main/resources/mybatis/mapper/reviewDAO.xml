@@ -27,7 +27,7 @@
 	
 	<!-- 식당 상세페이지의 리뷰 3개 출력 -->
 	<select id="reviewPList" resultMap="reviewResultMap">
-	    select
+	    SELECT
 	        rv.rv_no,
 	        rv.rv_point,
 	        rv.rv_content,
@@ -37,30 +37,33 @@
 	        u.u_name,
 	        ri.rvimg_no,
 	        ri.rvimg_img
-	     from
-	        ( select * from
-	                ( select
-	                        rv_no,
-	                        rv_point,
-	                        rv_content,
-	                        rv_reg_date,
-	                        r_no,
-	                        u_no
-	                    from r_review
-	                    where r_no = #{r_no}
-	                    order by rv_reg_date desc
-	                ) where ROWNUM &lt;= 3
+	    FROM
+	        (
+	            SELECT *
+	            FROM (
+	                SELECT
+	                    rv_no,
+	                    rv_point,
+	                    rv_content,
+	                    rv_reg_date,
+	                    r_no,
+	                    u_no
+	                FROM r_review
+	                WHERE r_no = #{r_no}
+	                ORDER BY rv_reg_date DESC
+	            )
+	            WHERE ROWNUM &lt;= 3
 	        ) rv
-	     JOIN users u
-	        on rv.u_no = u.u_no
-	     LEFT JOIN r_review_img ri
-	        on rv.rv_no = ri.rv_no
-	     order by rv.rv_reg_date desc, ri.rvimg_no
+	    LEFT JOIN users u
+	        ON rv.u_no = u.u_no
+	    LEFT JOIN r_review_img ri
+	        ON rv.rv_no = ri.rv_no
+	    ORDER BY rv.rv_reg_date DESC, ri.rvimg_no
 	</select>
 	
 	<!-- 리뷰리스트 출력 -->
 	<select id="reviewList" resultMap="reviewResultMap">
-		select
+		SELECT
 	        rv.rv_no,
 	        rv.rv_point,
 	        rv.rv_content,
@@ -70,13 +73,13 @@
 	        u.u_name,
 	        ri.rvimg_no,
 	        ri.rvimg_img
-	     from r_review rv
-	     JOIN users u
-	        on rv.u_no = u.u_no
-	     LEFT JOIN r_review_img ri
-	        on rv.rv_no = ri.rv_no
-	     where rv.r_no = #{r_no}
-	     order by rv.rv_reg_date desc, ri.rvimg_no
+		FROM r_review rv
+		LEFT JOIN users u
+		     ON rv.u_no = u.u_no
+		LEFT JOIN r_review_img ri
+		     ON rv.rv_no = ri.rv_no
+		WHERE rv.r_no = #{r_no}
+		ORDER BY rv.rv_reg_date DESC, ri.rvimg_no
 	</select>
 	
 	<!-- 리뷰등록 -->
