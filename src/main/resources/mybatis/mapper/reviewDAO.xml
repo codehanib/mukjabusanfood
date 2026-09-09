@@ -109,6 +109,5 @@
 	<!-- 리뷰삭제 -->
 	<delete id="reviewDelete">
 		delete from r_review where rv_no = #{rv_no}
-		 and u_no = #{u_no}
 	</delete>
 </mapper>

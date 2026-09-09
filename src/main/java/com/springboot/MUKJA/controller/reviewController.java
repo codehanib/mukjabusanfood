@@ -29,25 +29,31 @@ public class reviewController {
 	@Autowired
 	private usersDAO udao;
 	
-	// 리뷰 작성폼으로 가기 수정필요
+	// 리뷰 작성폼으로 가기
 	@RequestMapping("/users/reviewWrite")
-	public String reviewWriteForm(Authentication auth) {
-		String u_id = auth.getName();
-		usersDTO users = udao.findById(u_id);
-		int u_no = users.getU_no();
+	public String reviewWriteForm(@RequestParam("r_no")int r_no,Model model) {
+		
+		model.addAttribute("r_no",r_no);
+		
 		return "restaurant/reviewWriteForm";
 	}
 	
 	// 리뷰 페이지 리뷰 조회
 	@RequestMapping("/restaurant/review")
-	public String reviewList(@RequestParam("r_no") int r_no,
+	public String reviewList(Authentication auth,
+								@RequestParam("r_no") int r_no,
 								Model model) {
+		String u_id = auth.getName();
+		usersDTO users = udao.findById(u_id);
+		int u_no = users.getU_no();
+		
 		List<reviewDTO> reviewList = rvdao.reviewList(r_no);
 		int reviewCount = rvdao.reviewCount(r_no);
 		
 		model.addAttribute("rvList",reviewList);
 		model.addAttribute("rvcount",reviewCount);
 		model.addAttribute("r_no",r_no);
+		model.addAttribute("loginUserNo",u_no);
 		
 		return "restaurant/reviews";
 	}
@@ -130,13 +136,9 @@ public class reviewController {
 	
 	// 리뷰 삭제
 	@RequestMapping("/restaurant/reviewDelete")
-	public String reviewDelete(int rv_no,Authentication auth) {
+	public String reviewDelete(int rv_no) {
 		
-		String u_id = auth.getName();
-		usersDTO users = udao.findById(u_id);
-		int u_no = users.getU_no();
-		
-		rvdao.reviewDelete(rv_no, u_no);
+		rvdao.reviewDelete(rv_no);
 		
 		return "redirect:reviewlist";
 	}

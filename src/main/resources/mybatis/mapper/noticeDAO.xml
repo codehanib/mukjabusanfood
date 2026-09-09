@@ -19,7 +19,7 @@
 	<!-- 공지 작성(관리자) -->
 	<insert id="noticeInsert">
 		insert into mukja_notice(nt_no,nt_title,nt_content,nt_img,nt_reg_date,u_no)
-		 values(mukja_notice_seq.NEXTVAL,#{nt_title},#{nt_content},#{nt_img},SYSDATE,#{u_no})
+		 values(mukja_notice_seq.NEXTVAL,#{nt_title, jdbcType=VARCHAR},#{nt_content},#{nt_img, jdbcType=VARCHAR},SYSDATE,#{u_no})
 	</insert>
 	
 	<!-- 공지 수정(관리자) -->
