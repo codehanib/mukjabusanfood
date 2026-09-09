@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,9 @@ public class reservationController {
     
     @Autowired
     private usersDAO usersDAO;
+    
+    @Autowired
+    private org.springframework.mail.javamail.JavaMailSender mailSender;
     
     @GetMapping("/reservationInsert")
     public String resvationC(@RequestParam("r_no") int r_no,
@@ -141,6 +145,57 @@ public class reservationController {
     	}
     	model.addAttribute("myList",guestList);
     	return "reservation/myList";
+    }
+    
+    @GetMapping("/ownerList")
+    public String ownerReservationList(Model model,Authentication authentication) {
+    	usersDTO owner = usersDAO.findById(authentication.getName());
+    	List<reservationDTO> list = reservationDAO.ownerReservationList(owner.getR_no());
+    	model.addAttribute("list",list);
+    	return "reservation/ownerList";
+    }
+    
+    @PostMapping("/ownerStatusUpdate")
+    public String ownerStatusUpdate(@RequestParam("res_no") int res_no,
+            @RequestParam("res_stats") String res_stats,
+            @RequestParam("r_no") int r_no,
+            @RequestParam("res_day") String res_day) throws Exception {
+
+        reservationDAO.reservationStatusUpdate(res_no, res_stats);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date parsedDay = sdf.parse(res_day);
+        reservationDAO.recalculateWait(r_no, parsedDay);
+        // 완료로 바뀌면 이메일 발송함
+        if ("완료".equals(res_stats)) {
+            reservationDTO dto = reservationDAO.reservationDetail(res_no);
+            if (dto.getU_no() != null) {
+                usersDTO user = usersDAO.usersView(dto.getU_no());
+                if (user != null && user.getU_email() != null) {
+                    sendReservationConfirmEmail(user.getU_email(), dto);
+                }
+            }
+        }
+        
+
+        return "redirect:/reservation/ownerList";
+    }
+
+    private void sendReservationConfirmEmail(String toEmail, reservationDTO dto) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDay = sdf.format(dto.getRes_day());
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("[MUKJA] 예약이 확정되었습니다");
+        message.setText(
+            "예약자: " + dto.getRes_name() + "\n" +
+            "예약날짜: " + formattedDay + "\n" +
+            "예약시간: " + dto.getRes_time() + "\n" +
+            "인원: " + dto.getRes_count() + "명\n" +
+            "예약확인번호: " + dto.getRes_num()
+        );
+        mailSender.send(message);
     }
     
 }

@@ -50,4 +50,9 @@ public interface reservationDAO {
 		public List<reservationDTO> myReservationGuest(@Param("res_tel") String res_tel);
 		// 예약전 대기줄 확인
 		public int reservationWaitCount(@Param("r_no") int r_no, @Param("res_day") Date res_day);
+		// 사장님 예약확인
+		public List<reservationDTO> ownerReservationList(@Param("r_no") int r_no);
+		public int reservationStatusUpdate(@Param("res_no") int res_no, @Param("res_stats") String res_stats);
+		public int recalculateWait(@Param("r_no") int r_no, @Param("res_day") Date res_day);
+
 }

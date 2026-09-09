@@ -20,24 +20,33 @@
 	    <button type="submit">검색</button>
 	</form>
 	<br>
-	<sec:authorize access="hasRole('USER')">
+	<sec:authorize access="isAnonymous()">
+		<a href="/login/login">
+	    	로그인
+		</a>
+	</sec:authorize>
+	<sec:authorize access="isAnonymous()">
+		<a href="/login/writeForm">
+	    	회원가입
+		</a>
+	</sec:authorize>
+	<br>
+	 <sec:authorize access="hasRole('USER')">
 		<a href="/users/userviewForm">
 	    	회원 자세히보기
 		</a>
 	</sec:authorize>
-	<br>
-	<a href="/logout">
-    	로그아웃
-	</a>
+	<sec:authorize access="hasAnyRole('USER','ADMIN','OWNER')">
+		<a href="/logout">
+	    	로그아웃
+		</a>
+	</sec:authorize>
 	<br>
 	
 	<sec:authorize access="hasRole('ADMIN')">
 		<a href="/admin/usersList">
 		    회원목록
 		</a>
-		<a href="/reservation/reservationInsert?r_no=1">
-    예약하기
-</a>
 	</sec:authorize>
 	
 	<br>
@@ -49,6 +58,10 @@
 		<br>
 		<a href="/restaurant/updateForm?r_no=${user.r_no}">
     		식당 수정
+		</a>
+		<br>
+		<a href="/reservation/ownerList">
+    		주문 목록
 		</a>
 	</sec:authorize>
 

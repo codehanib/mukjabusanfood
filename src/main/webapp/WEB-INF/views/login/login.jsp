@@ -46,13 +46,14 @@
             <a href="/login/writeForm" class="btn-join">회원가입</a>
             <a href="/main" class="btn-join">비회원 메인</a>
 			<a href="/reservation/guestForm">임시로비회원 예약목록확인</a>
+			
             <!-- 하단 안내 -->
             <p class="login-guide">
                 회원이 아니신가요?
                 <a href="/login/writeForm">회원가입</a>
                 후 다양한 서비스를 이용해 보세요.
             </p>
-
+	
         </form>
 
         <p class="copyright">© 2026 MUKJA. All rights reserved.</p>
