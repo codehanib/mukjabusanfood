@@ -11,11 +11,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.springboot.MUKJA.dao.IcartMenuDAO;
 import com.springboot.MUKJA.dao.IdeliveryDAO;
 import com.springboot.MUKJA.dao.Idv_menuDAO;
+import com.springboot.MUKJA.dto.cartMenuDTO;
 import com.springboot.MUKJA.dto.deliveryDTO;
 import com.springboot.MUKJA.dto.dv_menuDTO;
 import com.springboot.MUKJA.service.DeliveryService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class DeliveryController {
@@ -28,6 +32,9 @@ public class DeliveryController {
 	
 	@Autowired
 	private DeliveryService deliveryService;
+	
+	@Autowired
+	private IcartMenuDAO cartMenuDao;
 	
 	// 1. 고객: 주문 상세 현황 페이지 이동
 	@GetMapping("/delivery/detail")
@@ -199,7 +206,131 @@ public class DeliveryController {
 	
 	
 	
+	// ================= [관리자 배달 통합 관제 기능] =================
 	
+	// 1. 관리자 배달 관제 대시보드 페이지 이동
+	@GetMapping("/delivery/admin_delivery_manage")
+	public String adminDeliveryManage(
+			@RequestParam(value = "restaurantKeyword", required = false) String restaurantKeyword,
+			@RequestParam(value = "orderIdKeyword", required = false) String orderIdKeyword,
+			@RequestParam(value = "d_stats", required = false) String d_stats,
+			Model model) {
+		
+		//전체 배달 주문 목록 조회
+		List<deliveryDTO> allDeliveryList = deliveryDao.selectOrderList();
+		
+		//관리자 KPI 카운트 집계
+		int todayTotalCount = (allDeliveryList != null) ? allDeliveryList.size() : 0;
+		int deliveringCount = 0;
+		int todayTotalAmount = 0;
+		
+		if (allDeliveryList != null) {
+			for (deliveryDTO delivery : allDeliveryList) {
+				if("배달중".equals(delivery.getD_stats())) {
+					deliveringCount++;
+				}
+			}
+		}
+		
+		//model에 전달
+		model.addAttribute("allDeliveryList",allDeliveryList);
+		model.addAttribute("todayTotalCount",todayTotalCount);
+		model.addAttribute("deliveringCount",deliveringCount);
+		model.addAttribute("todayTotalAmount",todayTotalAmount);
+		
+		return "delivery/admin_delivery_manage";
+	}
+	
+	// 2.관리자 강제 상태 변경 (강제 취소/ 강제 완료)
+	@PostMapping("/delivery/forceUpdate")
+	public String forceUpdateOrder(
+			@RequestParam("d_no") int d_no,
+			@RequestParam("actionType") String actionType) {
+		
+		deliveryDTO dto = new deliveryDTO();
+		dto.setD_no(d_no);
+		
+		if ("CANCEL".equals(actionType)) {
+			dto.setD_stats("주문거절");
+		} else if ("COMPLETE".equals(actionType)) {
+			dto.setD_stats("배달완료");
+		}
+		
+	// DB 상태 업데이트
+		deliveryDao.updateOrderStatus(dto);
+		
+	// 다시 관리자 페이지로 리다이렉트
+		return "redirect:/delivery/admin_delivery_manage";
+	}
+		
+	
+	// ================= [고객 배달 주문 접수 처리] =================
+	
+	// 1. 고객 배달 주문 작성 페이지 이동 (GET)
+	@GetMapping("/delivery/order")
+	public String deliveryOrderForm(
+	        @RequestParam(value = "r_no", defaultValue = "1") int r_no,
+	        @RequestParam(value = "mc_no", defaultValue = "1") int mc_no,
+	        @RequestParam(value="u_no", required = false) Integer reqUno,
+	        HttpSession session, // 세션에서 정보가져오기
+	        Model model) {
+	    
+	  
+	    
+	
+	    //회원정보 결정하기
+	    int finalUno = 1066; 
+	    
+	    if (reqUno != null) {
+	    	finalUno = reqUno; // 1순위 :url 값
+	    } else if (session.getAttribute("u_no") != null) {
+	    	finalUno = (Integer) session.getAttribute("u_no"); // 2순위:세션값
+	    }
+	    
+	    // 2.모델에 전달
+	    
+	    // db 에서 장바구니 정보 가져오기
+	    List<cartMenuDTO> cartList = cartMenuDao.selectCartMenuList(mc_no);
+	    
+	    // 총 금액 계산 (단가*수량)
+	    int totalPrice = 0;
+	    for (cartMenuDTO item : cartList) {
+	    	totalPrice += (item.getMcm_price() * item.getMcm_count());
+	    }
+	    
+	    // 회원정보
+	    model.addAttribute("u_no",finalUno);
+	    // 식당 번호
+	    model.addAttribute("r_no", r_no);
+	    // 장바구니 번호
+	    model.addAttribute("mc_no",mc_no);
+	    //장바구니 정보
+	    model.addAttribute("cartList",cartList);
+	    // 메뉴 총가격
+	    model.addAttribute("totalPrice",totalPrice);
+	    //배달비
+	    model.addAttribute("deliveryFee",3000);
+	    
+	    return "delivery/delivery_order"; // /WEB-INF/views/delivery/delivery_order.jsp
+	}
+
+	@PostMapping("/delivery/order/create")
+	public String createOrder(deliveryDTO dto, @RequestParam(value="u_no", defaultValue="5") int u_no) {
+	    
+	    // 폼에서 u_no 바인딩이 실패해 0이 들어온 경우, 직접 전달받은 파라미터값(5)을 세팅
+	    if (dto.getU_no() <= 0) {
+	        dto.setU_no(u_no);
+	    }
+
+	    System.out.println("==========================================");
+	    System.out.println("최종 DB에 저장될 DTO 정보: " + dto.toString());
+	    System.out.println("==========================================");
+
+	    // DB 저장
+	    deliveryDao.insertDelivery(dto);
+	    
+	    return "redirect:/delivery/detail?d_no=" + dto.getD_no();
+	}
 	
 	
 	

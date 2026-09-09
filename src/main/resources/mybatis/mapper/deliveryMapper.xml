@@ -4,26 +4,23 @@
 
 <mapper namespace="com.springboot.MUKJA.dao.IdeliveryDAO">
 
-    <!-- 1. 고객 주문 등록 -->
-    <insert id="insertDelivery"
-            parameterType="com.springboot.MUKJA.dto.deliveryDTO">
-
-        <selectKey keyProperty="d_no"
-                   resultType="int"
-                   order="BEFORE">
-            SELECT seq_delivery_d_no.NEXTVAL FROM dual
-        </selectKey>
-
-        INSERT INTO delivery (
-            d_no, d_addr, d_lat, d_lng,
-            r_no, u_no, d_stats, d_reg_date
-        )
-        VALUES (
-            #{d_no}, #{d_addr}, #{d_lat}, #{d_lng},
-            #{r_no}, #{u_no}, '주문확인', SYSDATE
-        )
-
-    </insert>
+   <!-- 1. 고객 주문 등록 -->
+	<insert id="insertDelivery" parameterType="com.springboot.MUKJA.dto.deliveryDTO">
+	
+	    <selectKey keyProperty="d_no" resultType="int" order="BEFORE">
+	        SELECT delivery_seq.NEXTVAL FROM dual
+	    </selectKey>
+	
+	    INSERT INTO delivery (
+	        d_no, d_addr, d_lat, d_lng,
+	        r_no, u_no, d_stats, d_reg_date
+	    )
+	    VALUES (
+	        #{d_no}, #{d_addr}, #{d_lat}, #{d_lng},
+	        #{r_no}, #{u_no}, '주문확인', SYSDATE
+	    )
+	
+	</insert>
 
 
     <!-- 주문 메뉴 목록 -->

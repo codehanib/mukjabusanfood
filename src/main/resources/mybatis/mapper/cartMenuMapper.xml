@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.MUKJA.dao.IcartMenuDAO">
+
+    <!-- mukja_cart 및 menu 테이블 조인 조회 -->
+    <select id="selectCartMenuList" resultType="com.springboot.MUKJA.dto.cartMenuDTO">
+        SELECT 
+            cm.mcm_no,
+            cm.mcm_count,
+            cm.mcm_price,
+            cm.mc_no,
+            cm.mn_no,
+            m.mn_name
+        FROM cart_menu cm
+        INNER JOIN mukja_cart c ON cm.mc_no = c.mc_no
+        LEFT JOIN menu m ON cm.mn_no = m.mn_no
+        WHERE cm.mc_no = #{mc_no}
+        ORDER BY cm.mcm_no ASC
+    </select>
+
+    <update id="updateCartMenuCount">
+        UPDATE cart_menu
+        SET mcm_count = #{mcm_count}
+        WHERE mcm_no = #{mcm_no}
+    </update>
+
+    <delete id="deleteCartMenu">
+        DELETE FROM cart_menu 
+        WHERE mcm_no = #{mcm_no}
+    </delete>
+
+    <delete id="clearCartMenu">
+        DELETE FROM cart_menu 
+        WHERE mc_no = #{mc_no}
+    </delete>
+
+</mapper>
