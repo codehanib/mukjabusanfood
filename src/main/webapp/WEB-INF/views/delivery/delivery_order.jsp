@@ -31,6 +31,22 @@
 <!-- 카카오 주소검색 및 좌표변환 API -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services"></script>
+
+<!-- ==================== 포트원 연결 =================== -->
+<!-- 1. 포트원 v1 sdk 라이브러리 -->
+<script src="https://cdn.iamport.kr/v1/iamport/js"></script>
+
+<!-- 2. JSP 변수를 js 객체로 전달 -->
+<script>
+	const ORDER_DATA = {
+		rName: "${r_name}",
+		totalPrice: parseInt("${totalPrice + deliveryFee}")
+	};
+</script>
+
+<!--  3. 외부 payment.js 파일 로드 -->
+<script src="${pageContext.request.contextPath}/js/payment.js"></script>
+
 </head>
 <body>
 

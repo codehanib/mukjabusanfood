@@ -22,7 +22,10 @@ public class cartController {
 
     // 1. 장바구니 목록 조회
     @GetMapping
-    public String cartPage(@RequestParam(value = "mc_no", defaultValue = "1") int mc_no, Model model) {
+    public String cartPage(@RequestParam(value = "mc_no", defaultValue = "1") int mc_no, 
+    					   @RequestParam(value = "r_no", defaultValue = "1") int r_no,
+    					   @RequestParam(value = "r_name", defaultValue = "야키토리숯") String r_name,
+    						Model model) {
         List<cartMenuDTO> cartList = cartMenuDao.selectCartMenuList(mc_no);
 
         // 총 금액 계산 (단가 * 수량)
@@ -30,10 +33,14 @@ public class cartController {
         for (cartMenuDTO item : cartList) {
             totalPrice += (item.getMcm_price() * item.getMcm_count());
         }
+        
+      
 
         model.addAttribute("cartList", cartList);
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("mc_no", mc_no);
+        model.addAttribute("r_name",r_name);
+        model.addAttribute("r_no",r_no);
 
         return "cart/cart"; // /WEB-INF/views/cart/cart.jsp
     } // <--- 누락되었던 닫는 중괄호 추가

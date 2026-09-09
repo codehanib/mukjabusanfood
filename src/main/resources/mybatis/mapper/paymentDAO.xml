@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.MUKJA.dao.paymentDAO">
+
+    <!-- 결제 정보 저장 -->
+    <insert id="paymentInsert" parameterType="com.springboot.MUKJA.dto.paymentDTO">
+        INSERT INTO mukja_payment (
+            py_no, 
+            py_type, 
+            py_price, 
+            py_reg_date, 
+            py_stats, 
+            res_no, 
+            d_no
+        ) VALUES (
+            mukja_payment_seq.NEXTVAL,
+            #{py_type},
+            #{py_price},
+            SYSDATE,
+            '결제완료',
+            #{res_no, jdbcType=INTEGER},
+            #{d_no, jdbcType=INTEGER}
+        )
+    </insert>
+
+    <!-- 결제 목록 조회 -->
+    <select id="paymentList" resultType="com.springboot.MUKJA.dto.paymentDTO">
+        SELECT * FROM mukja_payment ORDER BY py_no DESC
+    </select>
+
+    <!-- 결제 상세 조회 -->
+    <select id="paymentView" resultType="com.springboot.MUKJA.dto.paymentDTO">
+        SELECT * FROM mukja_payment WHERE py_no = #{py_no}
+    </select>
+
+    <!-- 결제 정보 삭제 -->
+    <delete id="paymentDelete">
+        DELETE FROM mukja_payment WHERE py_no = #{py_no}
+    </delete>
+
+</mapper>

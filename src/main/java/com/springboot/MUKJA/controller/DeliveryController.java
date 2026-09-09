@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.springboot.MUKJA.dao.IcartMenuDAO;
 import com.springboot.MUKJA.dao.IdeliveryDAO;
 import com.springboot.MUKJA.dao.Idv_menuDAO;
+import com.springboot.MUKJA.dao.paymentDAO;
 import com.springboot.MUKJA.dto.cartMenuDTO;
 import com.springboot.MUKJA.dto.deliveryDTO;
 import com.springboot.MUKJA.dto.dv_menuDTO;
+import com.springboot.MUKJA.dto.paymentDTO;
 import com.springboot.MUKJA.service.DeliveryService;
 
 import jakarta.servlet.http.HttpSession;
@@ -35,6 +37,9 @@ public class DeliveryController {
 	
 	@Autowired
 	private IcartMenuDAO cartMenuDao;
+	
+	@Autowired
+	private paymentDAO paymentDao;
 	
 	// 1. 고객: 주문 상세 현황 페이지 이동
 	@GetMapping("/delivery/detail")
@@ -333,8 +338,57 @@ public class DeliveryController {
 	}
 	
 	
-	
-	
+// ==================== 결제 ============================ //
+	@PostMapping("/delivery/order")
+	public String processOrder(
+	        @RequestParam("u_no") int u_no,
+	        @RequestParam("r_no") int r_no,
+	        @RequestParam("mc_no") int mc_no,
+	        @RequestParam(value = "py_type", defaultValue = "배달") String py_type,
+	        @RequestParam("totalPrice") int totalPrice,
+	        @RequestParam("deliveryFee") int deliveryFee,
+	        @RequestParam("d_addr") String d_addr,
+	        @RequestParam("d_detail_addr") String d_detail_addr
+	) {
+	    // 1. 배달 기본 레코드 생성 및 DB 저장
+	    deliveryDTO delivery = new deliveryDTO();
+	    delivery.setU_no(u_no);
+	    delivery.setR_no(r_no);
+	    delivery.setD_addr(d_addr + " " + d_detail_addr);
+	    delivery.setD_stats("주문접수"); // 기본 상태값
+
+	    deliveryDao.insertDelivery(delivery);
+	    int generatedDno = delivery.getD_no(); // 생성된 배달 번호 획득
+
+	    // 2. 장바구니 메뉴들을 배달 상세 메뉴(dv_menu) 테이블로 복사/저장
+	    List<cartMenuDTO> cartList = cartMenuDao.selectCartMenuList(mc_no);
+	    if (cartList != null && !cartList.isEmpty()) {
+	        for (cartMenuDTO item : cartList) {
+	            dv_menuDTO dvMenu = new dv_menuDTO();
+	            dvMenu.setD_no(generatedDno);             // 방금 생성된 배달 번호
+	            dvMenu.setMn_no(item.getMn_no());         // 메뉴 번호
+	            dvMenu.setDvm_count(item.getMcm_count()); // 주문 수량
+	            dvMenu.setDvm_price(item.getMcm_price()); // 메뉴 가격
+
+	            // dvMenuDao의 저장 메서드 호출
+	            dvMenuDao.insertDeliveryMenu(dvMenu);
+	        }
+	    }
+
+	    // 3. 결제 DB 저장
+	    paymentDTO pydto = new paymentDTO();
+	    pydto.setPy_type(py_type);
+	    pydto.setPy_price(totalPrice + deliveryFee); // 총 메뉴 금액 + 배달비
+	    pydto.setD_no(generatedDno);
+
+	    paymentDao.paymentInsert(pydto);
+
+	    // 4. 주문 완결에 따른 장바구니(cart_menu) 전체 비우기
+	    cartMenuDao.clearCartMenu(mc_no);
+
+	    // 5. 고객 주문 상세(실시간 배달 추적) 페이지로 이동
+	    return "redirect:/delivery/detail?d_no=" + generatedDno;
+	}
 	
 	
 	

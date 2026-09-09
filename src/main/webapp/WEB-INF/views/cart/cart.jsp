@@ -9,7 +9,11 @@
 <style>
     body { font-family: '맑은 고딕', sans-serif; margin: 20px; background-color: #f8f9fa; }
     .cart-container { max-width: 700px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .header-box { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #FF5722; padding-bottom: 10px; margin-bottom: 20px; }
+    .header-box { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #FF5722; padding-bottom: 12px; margin-bottom: 20px; }
+    
+    /* 식당명 링크 스타일 추가 */
+    .store-link { display: inline-block; margin-top: 6px; font-size: 0.95em; color: #555; text-decoration: none; font-weight: bold; }
+    .store-link:hover { color: #FF5722; text-decoration: underline; }
     
     .cart-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
     .cart-table th, .cart-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
@@ -31,7 +35,13 @@
 
 <div class="cart-container">
     <div class="header-box">
-        <h2>🛒 장바구니</h2>
+        <div>
+            <h2 style="margin: 0;">🛒 장바구니</h2>
+            <!-- 식당명 클릭 시 해당 식당 상세/메뉴 페이지로 이동 -->
+            <a href="${pageContext.request.contextPath}/restaurant/detail?r_no=${r_no}" class="store-link">
+                🏪 ${not empty r_name ? r_name : '가게 바로가기'} ➔
+            </a>
+        </div>
         <c:if test="${not empty cartList}">
             <form action="${pageContext.request.contextPath}/cart/clear" method="POST">
                 <input type="hidden" name="mc_no" value="${mc_no}">
@@ -88,9 +98,9 @@
     </div>
 
     <c:if test="${not empty cartList}">
-		<button type="button" class="btn-order" onclick="location.href='${pageContext.request.contextPath}/delivery/order?r_no=1&mc_no=${mc_no}'">
-		    주문 작성 및 결제하기 ➔
-		</button>
+        <button type="button" class="btn-order" onclick="location.href='${pageContext.request.contextPath}/delivery/order?r_no=${r_no}&mc_no=${mc_no}'">
+            주문 작성 및 결제하기 ➔
+        </button>
     </c:if>
 </div>
 
