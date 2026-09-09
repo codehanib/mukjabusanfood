@@ -25,4 +25,5 @@ public class reservationDTO {
 	
 	private Integer u_no;
     private Integer r_no;
+    private String r_name;
 }

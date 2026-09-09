@@ -70,24 +70,56 @@
 	<!-- 예약 목록 -->
 	<select id="myReservationList"
 		resultType="com.springboot.MUKJA.dto.reservationDTO">
-		select * from reservation
-		where u_no = #{u_no}
-			and res_stats != '취소'
-		order by res_day asc
+		select r.*, rt.r_name 
+		from reservation r
+		left join restaurant rt on r.r_no = rt.r_no
+		where r.u_no = #{u_no}
+			and r.res_stats != '취소'
+		order by r.res_day asc
 	</select>
 	
 	<!-- 비회원 예약 목록 -->
-	<select id="myReservationGuest"
-		resultType="com.springboot.MUKJA.dto.reservationDTO">
-		select * from reservation
-		 where res_tel = #{res_tel}
-		 and res_stats != '취소'
-		 order by res_day asc
-	</select>
+	<select id="myReservationGuest" resultType="com.springboot.MUKJA.dto.reservationDTO">
+    select r.*, rt.r_name
+    from reservation r
+    left join restaurant rt on r.r_no = rt.r_no
+    where r.res_tel = #{res_tel}
+      and r.res_stats != '취소'
+    order by r.res_day asc
+</select>
 	
 	<!-- 예약 대기줄 확인 -->
 	<select id="reservationWaitCount" resultType="int">
 		select count(*) from reservation
 		where r_no = #{r_no} and res_day = #{res_day} and res_stats = '대기중'
 	</select>
+	
+	<!-- 사장님 대기중 확인 -->
+	<select id="ownerReservationList" resultType="com.springboot.MUKJA.dto.reservationDTO">
+		select * from reservation
+		where r_no = #{r_no} and res_stats = '대기중'
+		order by res_day asc
+	</select>
+	
+	<!-- 예약 상태 변경 -->
+	<update id="reservationStatusUpdate">
+		update reservation
+			set res_stats =#{res_stats}, res_update = SYSDATE
+		where res_no = #{res_no}
+	</update>
+	<update id="recalculateWait">
+    update reservation
+    set res_wait = (
+        select count(*)
+        from reservation r2
+        where r2.r_no = reservation.r_no
+          and r2.res_day = reservation.res_day
+          and r2.res_stats = '대기중'
+          and r2.res_reg_date &lt; reservation.res_reg_date
+    )
+    where r_no = #{r_no}
+      and res_day = #{res_day}
+      and res_stats = '대기중'
+</update>
+	
 </mapper>

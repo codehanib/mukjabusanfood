@@ -35,7 +35,7 @@
 				<c:forEach var="res" items="${myList}">
 					<tr>
 						<td>${res.res_num}</td>
-						<td>${res.r_no}</td>
+						<td>${res.r_name}</td>
 						<td><fmt:formatDate value="${res.res_day}" pattern="yyyy-MM-dd"/></td>
 						<td>${res.res_time}</td>
 						<td>${res.res_count}</td>

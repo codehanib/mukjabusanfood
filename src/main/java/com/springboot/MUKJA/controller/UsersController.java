@@ -49,7 +49,7 @@ public class UsersController {
     public String usersInsert(HttpServletRequest request, usersDTO dto, HttpSession session) {
         String u_id = request.getParameter("u_id");
         String u_name = request.getParameter("u_name");
-        String u_tel = request.getParameter("u_tel");
+        String u_tel1 = request.getParameter("u_tel1");
         String u_tel2 = request.getParameter("u_tel2");
         String u_tel3 = request.getParameter("u_tel3");
         String u_addr = request.getParameter("u_addr");
@@ -72,7 +72,7 @@ public class UsersController {
 
         dto.setU_id(u_id);
         dto.setU_name(u_name);
-        dto.setU_tel(u_tel + "-" + u_tel2 + "-" + u_tel3);
+        dto.setU_tel(u_tel1 + "-" + u_tel2 + "-" + u_tel3);
         dto.setU_addr(u_addr + "," + u_addr2);
         dto.setU_zipno(u_zipno);
         dto.setU_email(fullEmail);
@@ -205,7 +205,7 @@ public class UsersController {
     @PostMapping("/users/usersUpdate")
     public String usersUpdate(HttpServletRequest request) {
         String u_id = request.getParameter("u_id");
-        String u_tel = request.getParameter("u_tel");
+        String u_tel1 = request.getParameter("u_tel1");
         String u_tel2 = request.getParameter("u_tel2");
         String u_tel3 = request.getParameter("u_tel3");
         String u_addr = request.getParameter("u_addr");
@@ -216,7 +216,7 @@ public class UsersController {
 
         usersDTO dto = new usersDTO();
         dto.setU_id(u_id);
-        dto.setU_tel(u_tel + "-" + u_tel2 + "-" + u_tel3);
+        dto.setU_tel(u_tel1 + "-" + u_tel2 + "-" + u_tel3);
         dto.setU_addr(u_addr + "," + u_addr2);
         dto.setU_zipno(u_zipno);
         dto.setU_email(u_email + "@" + u_email2);
