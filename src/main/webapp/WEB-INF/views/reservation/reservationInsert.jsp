@@ -27,14 +27,14 @@
 							value="${loginName}" placeholder="이름을 입력해주세요"></td>
 					</tr>
 					<tr>
-	<th><label for="res_tel">연락처</label></th>
-	<td><input type="text" name="res_tel1" id="res_tel1"
-		value="${empty tel1 ? '010' : tel1}" maxlength="3"> - <input type="text"
-		name="res_tel2" id="res_tel2" size="4" maxlength="4"
-		value="${tel2}" placeholder="0000"> - <input type="text" name="res_tel3"
-		id="res_tel3" size="4" maxlength="4"
-		value="${tel3}" placeholder="0000"></td>
-</tr>
+						<th><label for="res_tel">연락처</label></th>
+						<td><input type="text" name="res_tel1" id="res_tel1"
+							value="${empty tel1 ? '010' : tel1}" maxlength="3"> - <input
+							type="text" name="res_tel2" id="res_tel2" size="4" maxlength="4"
+							value="${tel2}" placeholder="0000"> - <input type="text"
+							name="res_tel3" id="res_tel3" size="4" maxlength="4"
+							value="${tel3}" placeholder="0000"></td>
+					</tr>
 					<tr>
 						<th><label for="res_day">예약날짜</label></th>
 						<td><input type="date" name="res_day" id="res_day"
@@ -69,11 +69,11 @@
 							min="1" placeholder="인원수를 입력해주세요" value="${res_count}"></td>
 					</tr>
 					<c:if test="${payment}">
-    <tr>
-        <th>결제금액</th>
-        <td>1,000원</td>
-    </tr>
-</c:if>
+						<tr>
+							<th>결제금액</th>
+							<td>1,000원</td>
+						</tr>
+					</c:if>
 				</table>
 
 				<div>

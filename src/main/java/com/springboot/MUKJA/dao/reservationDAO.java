@@ -1,5 +1,6 @@
 package com.springboot.MUKJA.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -42,4 +43,11 @@ public interface reservationDAO {
 		
 		// 예약 삭제 delete
 		public int reservationDelete(@Param("res_no") int res_no);		
+		
+		// 예약 목록 확인
+		public List<reservationDTO> myReservationList(@Param("u_no") int u_no);
+		// 비회원 목록 확인
+		public List<reservationDTO> myReservationGuest(@Param("res_tel") String res_tel);
+		// 예약전 대기줄 확인
+		public int reservationWaitCount(@Param("r_no") int r_no, @Param("res_day") Date res_day);
 }

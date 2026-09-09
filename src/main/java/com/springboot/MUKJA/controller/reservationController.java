@@ -1,6 +1,8 @@
 package com.springboot.MUKJA.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ public class reservationController {
             @RequestParam(value = "res_day", required = false) String res_day,
             @RequestParam(value = "res_count", required = false) String res_count,
             @RequestParam(value = "res_time", required = false) String res_time,
-            Model model, Authentication authentication) {
+            Model model, Authentication authentication) throws Exception {
 
         List<Integer> paymentRequired = Arrays.asList(1704, 1699, 1692);
         boolean payment = paymentRequired.contains(r_no);
@@ -42,6 +44,13 @@ public class reservationController {
         model.addAttribute("res_count", res_count);
         model.addAttribute("res_time", res_time);
         model.addAttribute("payment", payment);
+        
+        if(res_day != null && !res_day.isEmpty()) {
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        	Date parsedDay = sdf.parse(res_day);
+        	int waitCount = reservationDAO.reservationWaitCount(r_no, parsedDay);
+        	model.addAttribute("waitCount",waitCount);
+        }
 
         if (authentication != null && authentication.isAuthenticated()
                 && !"anonymousUser".equals(authentication.getName())) {
@@ -92,4 +101,46 @@ public class reservationController {
         model.addAttribute("dto", dto);
         return "reservation/reservationDetail";
     }
+    
+    // 예약목록 확인
+    @GetMapping("/myList")
+    public String myResvationList(Model model, Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getName())) {
+        	return "redirect:/login/login";
+        }
+          usersDTO loginUser = usersDAO.findById(authentication.getName());
+          List<reservationDTO> myList = reservationDAO.myReservationList(loginUser.getU_no());
+          
+          
+          model.addAttribute("myList",myList);
+        
+
+        return "reservation/myList";
+    }
+    
+    //비회원 예약목록
+    @GetMapping("/guestForm")
+    public String guestForm() {
+    	return "reservation/guestForm";
+    }
+    
+    @PostMapping("/guestSearch")
+    public String guestSearch(
+    		@RequestParam("res_tel1") String tel1,
+            @RequestParam("res_tel2") String tel2,
+            @RequestParam("res_tel3") String tel3,
+            Model model) {
+    	String res_tel = tel1 + "-" + tel2 + "-" + tel3;
+    	List<reservationDTO> guestList = reservationDAO.myReservationGuest(res_tel);
+    	
+    	if(guestList.isEmpty()) {
+    		model.addAttribute("msg","일치하는 예약이 없습니다.");
+    		return "reservation/guestForm";
+    	}
+    	model.addAttribute("myList",guestList);
+    	return "reservation/myList";
+    }
+    
 }

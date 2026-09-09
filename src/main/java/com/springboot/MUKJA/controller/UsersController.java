@@ -42,7 +42,7 @@ public class UsersController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/login/login";
+        return "redirect:/main";
     }
 
     @PostMapping("/usersInsert")
