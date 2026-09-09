@@ -119,4 +119,12 @@
         DELETE FROM restaurant WHERE r_no = #{r_no}
     </delete>
     
+    
+    
+    
+    <!-- 메뉴 조회 -->
+	<select id="menuList" resultType="com.springboot.MUKJA.dto.menuDTO">
+	    SELECT * FROM menu
+	    WHERE r_no = #{r_no}
+	</select>
 </mapper>

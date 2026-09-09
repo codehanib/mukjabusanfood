@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public class RestaurantService {
 
     public String formatRestaurantTime(String rTime) {
-
+    	
         // 영업시간이 없는 경우
         if (rTime == null
                 || rTime.trim().isEmpty()
@@ -228,5 +228,131 @@ public class RestaurantService {
         }
 
         return result.toString();
+    }
+    
+    // 상세페이지용 영업시간
+    public String formatRestaurantDetailTime(String rTime) {
+
+        if (rTime == null
+                || rTime.trim().isEmpty()
+                || rTime.toLowerCase().contains("nan")) {
+
+            return "영업시간 정보 없음";
+        }
+
+        // 공백 정리
+        rTime = rTime.replaceAll("\\s+", " ").trim();
+
+        // ★ 여기로 이동
+        rTime = rTime.replace("매일·", "__DAILY__");
+
+        // ★ 반복된 매일 제거
+        rTime = rTime.replaceAll(
+            "\\s*__DAILY__(?=(?:새벽\\s*)?\\d{1,2}:\\d{2}\\s*·?\\s*(?:까지\\s*)?라스트오더)",
+            " "
+        );
+        
+        // 브레이크 타임 앞 요일 제거
+        rTime = rTime.replaceAll(
+            "(월|화|수|목|금|토|일)·(?=\\d{1,2}:\\d{2}\\s*~\\s*(?:새벽\\s*)?\\d{1,2}:\\d{2}\\s*·?\\s*브레이크\\s*타임)",
+            ""
+        );
+        
+        // 여러 시간 앞 잘못 붙은 요일 제거
+        rTime = rTime.replaceAll(
+        	    "(월|화|수|목|금|토|일)·(?=\\d{1,2}:\\d{2}\\s*,)",
+        	    ""
+        	);
+        
+        // 라스트오더 앞에 붙어 있는 요일 제거
+        // 예: 월·20:30·라스트오더 → 20:30·라스트오더
+        rTime = rTime.replaceAll(
+            "(월|화|수|목|금|토|일)·(?=(?:새벽\\s*)?\\d{1,2}:\\d{2}\\s*·?\\s*(?:까지\\s*)?라스트오더)",
+            ""
+        );
+
+        // 브레이크타임 줄바꿈
+        rTime = rTime.replaceAll(
+            "(\\d{1,2}:\\d{2}\\s*~\\s*(?:새벽\\s*)?\\d{1,2}:\\d{2})\\s*·?\\s*브레이크\\s*타임",
+            "<br>&nbsp;&nbsp;&nbsp;&nbsp;$1&nbsp;&nbsp;브레이크 타임"
+        );
+
+        // 여러 시간 라스트오더 줄바꿈
+        rTime = rTime.replaceAll(
+            "(\\d{1,2}:\\d{2}\\s*,\\s*(?:새벽\\s*)?\\d{1,2}:\\d{2})\\s*·\\s*라스트오더",
+            "<br>&nbsp;&nbsp;&nbsp;&nbsp;$1&nbsp;&nbsp;라스트오더"
+        );
+
+        // 일반 라스트오더 줄바꿈
+        rTime = rTime.replaceAll(
+            "((?:새벽\\s*)?\\d{1,2}:\\d{2})\\s*·\\s*라스트오더",
+            "<br>&nbsp;&nbsp;&nbsp;&nbsp;$1&nbsp;&nbsp;라스트오더"
+        );
+
+        // 다음 요일 앞에서 줄바꿈
+        rTime = rTime.replaceAll(
+            "\\s+(?=(월|화|수|목|금|토|일)·)",
+            "<br>"
+        );
+        
+        // 요일 뒤 · 제거
+        rTime = rTime.replaceAll(
+            "(월|화|수|목|금|토|일)·",
+            "$1&nbsp;&nbsp;"
+        );
+
+        // 남은 · 제거
+        rTime = rTime.replace("·", " ");
+        
+        // 매일 복원
+        rTime = rTime.replace("__DAILY__", "매일&nbsp;&nbsp;");
+        
+        return rTime;
+    }
+    
+ // 오늘 요일의 영업시간만 가져오기
+    public String getTodayRestaurantTime(String rTime) {
+
+        if (rTime == null
+                || rTime.trim().isEmpty()
+                || rTime.toLowerCase().contains("nan")) {
+            return "영업시간 정보 없음";
+        }
+
+        // 오늘 요일 구하기
+        String[] days = {"월", "화", "수", "목", "금", "토", "일"};
+
+        int dayIndex = java.time.LocalDate.now()
+                .getDayOfWeek()
+                .getValue() - 1;
+
+        String today = days[dayIndex];
+
+        // 상세페이지용으로 먼저 가공
+        String formatted = formatRestaurantDetailTime(rTime);
+
+        // 오늘 요일 시작 위치
+        String marker = today + "&nbsp;&nbsp;";
+
+        int start = formatted.indexOf(marker);
+
+        if (start == -1) {
+            return "오늘 영업시간 정보 없음";
+        }
+
+        // 다음 요일 위치 찾기
+        int end = formatted.length();
+
+        for (String day : days) {
+
+            String nextMarker = "<br>" + day + "&nbsp;&nbsp;";
+            int next = formatted.indexOf(nextMarker, start + marker.length());
+
+            if (next != -1 && next < end) {
+                end = next;
+            }
+        }
+
+        return formatted.substring(start, end);
     }
 }

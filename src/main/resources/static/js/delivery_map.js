@@ -126,3 +126,42 @@ function initDeliveryMap(rawStoreLat, rawStoreLng, rawDestLat, rawDestLng, statu
         map.setBounds(bounds);
     });
 }
+
+function initRestaurantMap(rawLat, rawLng, containerId) {
+
+    containerId = containerId || 'map';
+
+    kakao.maps.load(function() {
+
+        var container = document.getElementById(containerId);
+
+        if (!container) {
+            console.error("지도 영역을 찾을 수 없습니다.");
+            return;
+        }
+
+        var lat = parseFloat(rawLat);
+        var lng = parseFloat(rawLng);
+
+        if (isNaN(lat) || isNaN(lng)) {
+            console.error("식당 위도 또는 경도가 없습니다.");
+            return;
+        }
+
+        var position = new kakao.maps.LatLng(lat, lng);
+
+        var map = new kakao.maps.Map(container, {
+            center: position,
+            level: 3
+        });
+
+        var marker = new kakao.maps.Marker({
+            position: position,
+            map: map
+        });
+
+        new kakao.maps.InfoWindow({
+            content: '<div style="padding:5px;font-size:12px;">🏪 식당 위치</div>'
+        }).open(map, marker);
+    });
+}

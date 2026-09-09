@@ -4,6 +4,7 @@ import java.io.File;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.springboot.MUKJA.dao.reviewDAO;
 import com.springboot.MUKJA.dao.usersDAO;
 import com.springboot.MUKJA.dto.restaurantDTO;
 import com.springboot.MUKJA.dto.usersDTO;
+import com.springboot.MUKJA.dto.menuDTO;
 import com.springboot.MUKJA.service.RestaurantESService;
 import com.springboot.MUKJA.service.RestaurantService;
 import com.springboot.MUKJA.service.reviewService;
@@ -148,19 +150,26 @@ public class restaurantController {
 	    public String restaurantDetail(@RequestParam("r_no") int r_no, Model model) {
 
 	        restaurantDTO restaurant = restaurantdao.restaurantDetail(r_no);
-	        
-	        // 영업시간 가공
+
 	        restaurant.setDisplay_time(
-	            restaurantService.formatRestaurantTime(
+	            restaurantService.formatRestaurantDetailTime(
 	                restaurant.getR_time()
 	            )
 	        );
-	        
+
+	        restaurant.setToday_time(
+	            restaurantService.getTodayRestaurantTime(
+	                restaurant.getR_time()
+	            )
+	        );
+
 	        int reviewCount = reviewdao.reviewCount(r_no);
 
-	        // 오늘부터 7일
 	        List<LocalDate> dateList = new ArrayList<>();
 	        LocalDate today = LocalDate.now();
+
+	        List<Integer> paymentRequired = Arrays.asList(1704, 1699, 1692);
+	        boolean payment = paymentRequired.contains(r_no);
 
 	        for (int i = 0; i < 7; i++) {
 	            dateList.add(today.plusDays(i));
@@ -170,6 +179,7 @@ public class restaurantController {
 	        model.addAttribute("reviewCount", reviewCount);
 	        model.addAttribute("dateList", dateList);
 	        model.addAttribute("rvPList", rvService.reviewPList(r_no));
+	        model.addAttribute("payment", payment);
 
 	        return "restaurant/restaurantDetail";
 	    }

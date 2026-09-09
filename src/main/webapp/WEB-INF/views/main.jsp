@@ -52,7 +52,7 @@
 		</a>
 	</sec:authorize>
 
-		<!-- 음식종류 -->
+	<!-- 음식종류 -->
 	<form action="/restaurant/category" method="get">
 	    <select name="mukja_c_no" onchange="this.form.submit()">
 	        <option value="">음식종류 선택</option>
@@ -69,13 +69,11 @@
 	<form action="/restaurant/region" method="get">
 	    <select name="r_region" onchange="this.form.submit()">
 	        <option value="">지역 선택</option>
-	
-	        <c:forEach var="region" items="${regionList}">
-	            <option value="${region}">
-	                ${region}
-	            </option>
-	        </c:forEach>
-	
+		        <c:forEach var="region" items="${regionList}">
+		            <option value="${region}">
+		                ${region}
+		            </option>
+		        </c:forEach>
 	    </select>
 	</form>
 	
@@ -92,14 +90,15 @@
 	            <!-- 대표 이미지 -->
 	            <c:choose>
 	                <c:when test="${fn:startsWith(restaurant.r_img, 'http')}">
-	                <a href="/restaurant/detail?r_no=${restaurant.r_no}">
-	                    <img src="${restaurant.r_img}" width="150" height="150">
-	                </a>
+		                <a href="/restaurant/detail?r_no=${restaurant.r_no}">
+		                    <img src="${restaurant.r_img}" width="150" height="150">
+		                </a>
 	                </c:when>
 	
 	                <c:otherwise>
-	                    <img src="/upload/${restaurant.r_img}"
-	                         width="150" height="150">
+		                <a href="/restaurant/detail?r_no=${restaurant.r_no}">
+		                    <img src="/upload/${restaurant.r_img}" width="150" height="150">
+		                 </a>
 	                </c:otherwise>
 	            </c:choose>
 	

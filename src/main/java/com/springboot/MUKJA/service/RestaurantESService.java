@@ -132,7 +132,7 @@ public class RestaurantESService {
             }
             if (map.get("r_point") != null) {
                 dto.setR_point(
-                    Integer.parseInt(map.get("r_point").toString())
+                		Double.parseDouble(map.get("r_point").toString())
                 );
             }
 
