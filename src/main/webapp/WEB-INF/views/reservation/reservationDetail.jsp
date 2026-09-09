@@ -14,7 +14,7 @@
 		<div>
 			<h2>예약이 접수되었습니다</h2>
 			<p>
-				예약번호는 <strong>${dto.res_num}</strong>번입니다.
+				대기번호는 <strong>${dto.res_num}</strong>번입니다.
 			</p>
 
 			<table width="500">
@@ -45,7 +45,7 @@
 				</tr>
 				<tr>
     <th>대기현황</th>
-    <td>확인번호 ${dto.res_num}번 · 내 앞에 ${dto.res_wait}팀 대기중</td>
+    <td>대기번호 ${dto.res_num}번 · 내 앞에 ${dto.res_wait}팀 대기중</td>
 </tr>
 			</table>
 

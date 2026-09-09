@@ -59,9 +59,11 @@
         <a href="/users/passwordCheckForm?mode=delete">
             회원 탈퇴
         </a>
+        <a href="/reservation/myList">내 예약 목록</a>
         <a href="/main">
             메인
         </a>
+        
     </div>
 </body>
 </html>
