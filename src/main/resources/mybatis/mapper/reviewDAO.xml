@@ -82,6 +82,27 @@
 		ORDER BY rv.rv_reg_date DESC, ri.rvimg_no
 	</select>
 	
+	<!-- 리뷰 1개 출력(수정페이지용) -->
+	<select id="reviewUP" resultMap="reviewResultMap">
+	    SELECT
+	        rv.rv_no,
+	        rv.rv_point,
+	        rv.rv_content,
+	        rv.rv_reg_date,
+	        rv.r_no,
+	        rv.u_no,
+	        u.u_name,
+	        ri.rvimg_no,
+	        ri.rvimg_img
+	    FROM r_review rv
+	    LEFT JOIN users u
+	        ON rv.u_no = u.u_no
+	    LEFT JOIN r_review_img ri
+	        ON rv.rv_no = ri.rv_no
+	    WHERE rv.rv_no = #{rv_no}
+	    ORDER BY ri.rvimg_no
+	</select>
+	
 	<!-- 리뷰등록 -->
 	<insert id="reviewInsert">
 		<selectKey keyProperty="rv_no" resultType="int" order="BEFORE">
@@ -98,7 +119,7 @@
 	
 	<!-- 리뷰수정 -->
 	<update id="reviewUpdate">
-		update r_rivew set rv_point=#{rv_point},rv_content=#{rv_content}
+		update r_review set rv_point=#{rv_point},rv_content=#{rv_content}
 		 where rv_no=#{rv_no} and u_no=#{u_no}
 	</update>
 	<!-- 리뷰이미지삭제(수정용) -->
