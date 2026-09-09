@@ -121,7 +121,7 @@
                     <tr>
                         <td><strong>#${delivery.d_no}</strong></td>
                         <td>
-                            <strong>[#${delivery.r_no}]</strong> ${delivery.r_name != null ? delivery.r_name : '식당정보'}
+                            <strong>[#${delivery.r_no}]</strong> 식당 #${delivery.r_no}
                         </td>
                         <td>회원번호 #${delivery.u_no}</td>
                         <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
@@ -136,7 +136,7 @@
                             <a href="${pageContext.request.contextPath}/store/order/detail?d_no=${delivery.d_no}" class="btn-admin btn-view">상세보기</a>
 
                             <!-- 2. 관리자 강제 상태 변경 / 개입 버튼 -->
-                            <form action="${pageContext.request.contextPath}/admin/delivery/forceUpdate" method="POST" style="display:inline;">
+                            <form action="${pageContext.request.contextPath}/delivery/forceUpdate" method="POST" style="display:inline;">
                                 <input type="hidden" name="d_no" value="${delivery.d_no}">
                                 
                                 <c:if test="${delivery.d_stats != '배달완료' && delivery.d_stats != '주문거절'}">

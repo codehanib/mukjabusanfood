@@ -13,8 +13,8 @@ public class deliveryDTO {
 	private int d_cooking_time;
 	private int d_delivery_time;
 	private Date d_arrival_time;
-	private int d_lat;
-	private int d_lng;
+	private double d_lat;
+	private double d_lng;
 	private int r_no;
 	private int u_no;
 }
