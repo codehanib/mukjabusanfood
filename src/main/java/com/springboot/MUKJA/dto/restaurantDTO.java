@@ -8,9 +8,9 @@ public class restaurantDTO {
 	private String r_name;
 	private String r_addr;
 	private String r_region;
-	private int r_lat;
-	private int r_lon;
-	private int r_point;
+	private double r_lat;
+	private double r_lon;
+	private double r_point;
 	private String r_info;
 	private String r_desc;
 	private String r_time;
@@ -19,11 +19,16 @@ public class restaurantDTO {
 	
 	private int mukja_c_no;
     private String mukja_c_name;
-
-    private String mn_name;
     
     private int reviewCount;
     private String simple_time;
     private String display_time;
     private String rest_day;
+    private String today_time;
+    
+    private String mn_name;
+    private String mn_content;
+    private int mn_price;
+    private String mn_img;
+
 }
