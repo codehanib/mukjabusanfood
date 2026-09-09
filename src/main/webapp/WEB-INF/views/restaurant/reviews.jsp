@@ -19,8 +19,8 @@
 	 				<tr>
 	 					<td colspan="2">${rv.u_name}
 	 					<c:if test="${loginUserNo == rv.u_no}">
-	 					<a href="/restaurant/reviewUpdate?r_no=${rv.r_no}">수정</a>
-	 					 <a href="/restaurant/reviewDelete?r_no${rv.r_no}">삭제</a>
+	 					<a href="/users/reviewUpdateForm?rv_no=${rv.rv_no}">수정</a>
+	 					 <a href="/restaurant/reviewDelete?rv_no=${rv.rv_no}&r_no=${rv.r_no}">삭제</a>
 	 					</c:if>
 	 					</td>
 	 				</tr>

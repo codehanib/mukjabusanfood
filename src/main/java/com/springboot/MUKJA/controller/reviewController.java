@@ -97,6 +97,17 @@ public class reviewController {
 		return "redirect:/restaurant/detail?r_no=" + r_no;
 	}
 	
+	// 리뷰 수정폼으로 가기
+	@RequestMapping("/users/reviewUpdateForm")
+	public String reviewUpdateForm(@RequestParam("rv_no") int rv_no, Model model) {
+
+	    reviewDTO rvupdate = rvdao.reviewUP(rv_no);
+
+	    model.addAttribute("rvUP", rvupdate);
+
+	    return "restaurant/reviewUpdateForm";
+	}
+	
 	// 리뷰 수정
 	@RequestMapping("/restaurant/reviewUpdate")
 	public String reviewUpdate(Authentication auth,reviewDTO rvdto,
@@ -128,18 +139,20 @@ public class reviewController {
 		}		
 		
 		rvdto.setU_no(u_no);
+		rvdto.setR_no(r_no);
 		rvdto.setReviewImages(rvimgList);
 		rvService.reviewUpdate(rvdto);
 		
-		return "redirect:reviewlist";
+		return "redirect:/restaurant/review?r_no="+r_no;
 	}
 	
 	// 리뷰 삭제
 	@RequestMapping("/restaurant/reviewDelete")
-	public String reviewDelete(int rv_no) {
+	public String reviewDelete(@RequestParam("rv_no") int rv_no,
+								@RequestParam("r_no") int r_no) {
 		
 		rvdao.reviewDelete(rv_no);
 		
-		return "redirect:reviewlist";
+		return "redirect:/restaurant/review?r_no="+r_no;
 	}
 }
