@@ -150,7 +150,10 @@ public class restaurantController {
 	    public String restaurantDetail(@RequestParam("r_no") int r_no, Model model) {
 
 	        restaurantDTO restaurant = restaurantdao.restaurantDetail(r_no);
-
+	        
+	        List<menuDTO> menuList = restaurantdao.menuList(r_no);
+	        List<restaurantDTO> menuBoardImageList = restaurantdao.menuBoardImageList(r_no);
+	        
 	        restaurant.setDisplay_time(
 	            restaurantService.formatRestaurantDetailTime(
 	                restaurant.getR_time()
@@ -180,6 +183,8 @@ public class restaurantController {
 	        model.addAttribute("dateList", dateList);
 	        model.addAttribute("rvPList", rvService.reviewPList(r_no));
 	        model.addAttribute("payment", payment);
+	        model.addAttribute("menuList", menuList);
+	        model.addAttribute("menuBoardImageList", menuBoardImageList);
 
 	        return "restaurant/restaurantDetail";
 	    }

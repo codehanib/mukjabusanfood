@@ -52,11 +52,9 @@ public class RestaurantESService {
                 new IndexRequest("restaurants")
                 .id(String.valueOf(dto.getR_no()))
                 .source(map);
+        request.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
 
         client.index(request, RequestOptions.DEFAULT);
-
-        System.out.println("ES INDEX ID : " + dto.getR_no());
-        System.out.println("ES INDEX 식당명 : " + dto.getR_name());
     }
 
 
@@ -82,10 +80,6 @@ public class RestaurantESService {
 
         SearchResponse response =
                 client.search(request, RequestOptions.DEFAULT);
-
-        System.out.println("검색어 = " + keyword);
-        System.out.println("총 검색 결과 = "
-                + response.getHits().getTotalHits());
 
         List<restaurantDTO> list = new ArrayList<>();
 

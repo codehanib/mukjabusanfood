@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -157,9 +159,14 @@
 	
 	<!-- 메뉴 -->
     <h3>메뉴</h3>
-    
+    <div>메뉴판</div>
+    <c:forEach var="img" items="${menuBoardImageList}">
+	    <img src="${img.mbi_img}">
+	</c:forEach>
+	
+	<hr>
+	   
     <c:forEach var="menu" items="${menuList}">
-    	<input type="hidden" name="r_no" value="${restaurant.r_no}">
 		<table border="1">
 			<tr>
 	           <td>${menu.mn_name}<br>
@@ -176,7 +183,6 @@
 	                </td>
 	            </tr>
 		</table>
-			<br>
 	</c:forEach>
 	<hr>
     
@@ -189,15 +195,21 @@
              <table border="1">
                 <tr>
                    <td colspan="2">${rv.u_name}</td>
+                	<c:if test="${loginUserNo == rv.u_no}">
+	 					<a href="/restaurant/reviewUpdate?r_no=${rv.r_no}">수정</a>
+	 					 <a href="/restaurant/reviewDelete?r_no${rv.r_no}">삭제</a>
+	 				</c:if>
+	 				</td>
                 </tr>
                 <tr>
-                   <td>${rv.rv_point}</td>
-                   <td>${rv.rv_reg_date}</td>
+                   <td>★ ${rv.rv_point}</td>
+                   <td><fmt:formatDate value="${rv.rv_reg_date}" pattern="yyyy/MM/dd"/></td>
                 </tr>
                 <tr>
                    <td colspan="2">
                       <c:forEach var="rg" items="${rv.reviewImages}">
                       <c:choose>
+                      
                       	<c:when test="${rg.rvimg_img == null || rg.rvimg_img == ''}">
                                 <!-- 이미지 없음 -->
                         </c:when>
@@ -212,8 +224,10 @@
                      </c:choose>
                      </c:forEach>
                    </td>
+                <tr>
                    <td colspan="2">${rv.rv_content}</td>
                 </tr>
+                
              </table>
           </c:forEach>
        </c:when>
