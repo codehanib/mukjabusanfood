@@ -18,7 +18,7 @@
     <!-- 메인 식당 목록 : 번호 순 + 페이징 -->
     <select id="mainrestaurantList" resultType="com.springboot.MUKJA.dto.restaurantDTO">
         SELECT * from restaurant
-        	ORDER BY r_no DESC
+        	ORDER BY r_no
 	    	OFFSET #{start} ROWS
 	    	FETCH NEXT #{pageSize} ROWS ONLY
     </select>
@@ -105,7 +105,7 @@
 	</insert>
 
     <!-- 식당 수정 -->
-  <update id="restaurantUpdate" parameterType="com.springboot.MUKJA.dto.restaurantDTO">
+ 	<update id="restaurantUpdate" parameterType="com.springboot.MUKJA.dto.restaurantDTO">
 	    UPDATE restaurant 
 	   		SET r_name = #{r_name}, r_addr = #{r_addr}, r_region = #{r_region},
            	r_lat = #{r_lat}, r_lon = #{r_lon}, r_point = #{r_point},
@@ -122,9 +122,18 @@
     
     
     
+    <!-- 메뉴판 조회 -->
+	<select id="menuBoardImageList"
+	        resultType="com.springboot.MUKJA.dto.restaurantDTO">
+	    SELECT mbi_no, mbi_img, r_no
+	    FROM menuboardimg
+	    WHERE r_no = #{r_no}
+	    ORDER BY mbi_no
+	</select>
+	
     <!-- 메뉴 조회 -->
 	<select id="menuList" resultType="com.springboot.MUKJA.dto.menuDTO">
 	    SELECT * FROM menu
-	    WHERE r_no = #{r_no}
+	    where r_no = #{r_no}
 	</select>
 </mapper>

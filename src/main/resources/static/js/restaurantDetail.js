@@ -84,73 +84,89 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
+	// ==========================================
+	// 영업시간
+	// ==========================================
 
+	const source = document.getElementById("businessHoursSource");
+	const todayElement = document.getElementById("todayBusinessHours");
+	const allElement = document.getElementById("businessHoursAll");
+	const summaryElement = document.querySelector(".business-hours-summary");
 
-    // ==========================================
-    // 영업시간
-    // ==========================================
+	if (source && todayElement && allElement) {
 
-    const source = document.getElementById("businessHoursSource");
+	    const sourceText = source.innerText.trim().toLowerCase();
 
-    const todayElement = document.getElementById("todayBusinessHours");
+	    // 영업시간 없는 경우 전체 숨김
+	    if (!sourceText || sourceText.includes("영업시간 정보 없음") || sourceText.includes("nan")) {
+	        if (summaryElement) {
+	            summaryElement.style.display = "none";
+	        }
 
-    const allElement = document.getElementById("businessHoursAll");
+	        allElement.style.display = "none";
+	        return;
+	    }
 
-    if (source && todayElement && allElement) {
+	    const days = ["일", "월", "화", "수", "목", "금", "토"];
+	    const todayIndex = new Date().getDay();
+	    const today = days[todayIndex];
 
-        const days = ["일", "월", "화", "수", "목", "금", "토"];
+	    const lines = source.innerHTML.split("<br>");
 
-        const today = days[new Date().getDay()];
+	    const firstText = lines[0]
+	        .replace(/&nbsp;/g, " ")
+	        .trim();
 
-        const lines = source.innerHTML.split("<br>");
+	    // 매일 영업
+	    if (firstText.startsWith("매일")) {
 
-        const todayLines = [];
+	        todayElement.innerHTML = lines.join("<br>");
+	        allElement.innerHTML = "";
 
-        const otherLines = [];
+	    } else {
 
-        const firstText = lines[0]
-            .replace(/&nbsp;/g, " ")
-            .trim();
+	        // 요일별 영업시간 묶기
+	        const dayData = {};
+	        let currentDay = null;
 
-        if (firstText.startsWith("매일")) {
+	        lines.forEach(function (line) {
 
-            todayElement.innerHTML = lines.join("<br>");
+	            const text = line.replace(/&nbsp;/g, " ").trim();
 
-            allElement.innerHTML = "";
+	            const match = text.match(/^([월화수목금토일])/);
 
-        } else {
+	            if (match) {
+	                currentDay = match[1];
+	                dayData[currentDay] = [line];
 
-            let isToday = false;
+	            } else if (currentDay) {
+	                dayData[currentDay].push(line);
+	            }
 
-            lines.forEach(function (line) {
+	        });
 
-                const text = line.replace(/&nbsp;/g, " ").trim();
+	        // 오늘 영업시간
+	        if (dayData[today]) {
+	            todayElement.innerHTML = dayData[today].join("<br>");
+	        }
 
-                if (/^[월화수목금토일]/.test(text)) {
+	        // 오늘 다음 요일부터 순서대로
+	        const orderedLines = [];
 
-                    isToday = text.startsWith(today);
+	        for (let i = 1; i < 7; i++) {
 
-                }
+	            const day = days[(todayIndex + i) % 7];
 
-                if (isToday) {
+	            if (dayData[day]) {
+	                orderedLines.push(dayData[day].join("<br>"));
+	            }
 
-                    todayLines.push(line);
+	        }
 
-                } else {
+	        allElement.innerHTML = orderedLines.join("<br>");
 
-                    otherLines.push(line);
-
-                }
-
-            });
-
-            todayElement.innerHTML = todayLines.join("<br>");
-
-            allElement.innerHTML = otherLines.join("<br>");
-
-        }
-
-    }
+	    }
+	}
 
 });
 

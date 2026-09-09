@@ -59,6 +59,9 @@ public interface restaurantDAO {
 		// 식당 삭제 delete
 		public int restaurantDelete(int r_no);
 		
+		//메뉴판
+		List<restaurantDTO> menuBoardImageList(@Param("r_no") int r_no);
+				
 		//메뉴
 		public List<menuDTO> menuList(@Param("r_no")int r_no);
 		

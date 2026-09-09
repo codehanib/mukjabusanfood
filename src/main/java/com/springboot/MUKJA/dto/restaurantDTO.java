@@ -1,5 +1,7 @@
 package com.springboot.MUKJA.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -30,5 +32,8 @@ public class restaurantDTO {
     private String mn_content;
     private int mn_price;
     private String mn_img;
+    
+    private int mbi_no;
+ 	private String mbi_img;
 
 }
