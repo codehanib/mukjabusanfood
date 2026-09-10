@@ -1,0 +1,29 @@
+/* 리뷰 작성폼과 수정폼의 CSS */
+	.star-rating {
+	    display: inline-block;
+	}
+	.stars {
+	    display: flex;
+	}	
+	.star {
+	    position: relative;
+	    display: inline-block;
+	    width: 33px;
+	    height: 30px;
+	    font-size: 30px;
+	    line-height: 35px;
+	    color: #ddd;
+	    cursor: pointer;
+	}
+	.star.full {
+	    color: #ffc107;
+	}
+	.star.half::before {
+	    content: "★";
+	    position: absolute;
+	    left: 0;
+	    top: 0;
+	    width: 50%;
+	    overflow: hidden;
+	    color: #ffc107;
+	}

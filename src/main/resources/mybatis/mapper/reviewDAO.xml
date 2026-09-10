@@ -131,4 +131,11 @@
 	<delete id="reviewDelete">
 		delete from r_review where rv_no = #{rv_no}
 	</delete>
+	
+	<!-- 리뷰 평점 계산 -->
+	<select id="reviewAvg" resultType="double">
+	    select NVL(AVG(rv_point), 0)
+	     from r_review
+	     where r_no = #{r_no}
+	</select>
 </mapper>
