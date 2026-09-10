@@ -5,14 +5,14 @@
 <mapper namespace="com.springboot.MUKJA.dao.paymentDAO">
 
     <!-- 결제 정보 저장 -->
-    <insert id="paymentInsert" parameterType="com.springboot.MUKJA.dto.paymentDTO">
+    <!-- 배달 전용 결제 쿼리 -->
+	<insert id="paymentInsert" parameterType="com.springboot.MUKJA.dto.paymentDTO">
         INSERT INTO mukja_payment (
             py_no, 
             py_type, 
             py_price, 
             py_reg_date, 
             py_stats, 
-            res_no, 
             d_no
         ) VALUES (
             mukja_payment_seq.NEXTVAL,
@@ -20,10 +20,29 @@
             #{py_price},
             SYSDATE,
             '결제완료',
-            #{res_no, jdbcType=INTEGER},
-            #{d_no, jdbcType=INTEGER}
+            #{d_no}
         )
     </insert>
+    
+    <!-- 식당 예약 전용 결제 저장 쿼리 예시 -->
+	<insert id="reservationPaymentInsert" parameterType="com.springboot.MUKJA.dto.paymentDTO">
+	    INSERT INTO mukja_payment (
+	        py_no, 
+	        py_type, 
+	        py_price, 
+	        py_reg_date, 
+	        py_stats, 
+	        res_no
+	    ) VALUES (
+	        mukja_payment_seq.NEXTVAL,
+	        #{py_type},
+	        #{py_price},
+	        SYSDATE,
+	        '결제완료',
+	        #{res_no}
+	    )
+	</insert>
+    
 
     <!-- 결제 목록 조회 -->
     <select id="paymentList" resultType="com.springboot.MUKJA.dto.paymentDTO">

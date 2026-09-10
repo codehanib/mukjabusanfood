@@ -32,6 +32,8 @@
     <fmt:formatDate value="${delivery.d_arrival_time}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="isoArrivalTime"/>
 </c:if>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
 
@@ -66,6 +68,20 @@
     <!-- 2. 위도/경도 기반 지도 및 이동 시뮬레이션 -->
     <h3>📍 실시간 배달 위치 추적 (시뮬레이션)</h3>
     <div id="map"></div>
+    
+    <!-- 차트 -->
+    <div style="width: 100%; max-width: 800px; margin: 30px auto; padding: 20px; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); box-sizing: border-box;">
+    <h3 style="font-size: 16px; color: #333; margin-bottom: 15px; font-weight: bold;">
+        📊 요일/시간대별 실시간 평균 배달 소요 시간
+    </h3>
+    
+    <!-- 💡 높이를 명시적으로 280px로 지정 -->
+    <div style="height: 280px; position: relative;">
+        <canvas id="deliveryTimeChart"></canvas>
+    </div>
+</div>
+ 
+</div>
 
     <!-- 3. 기본적인 주문 상세 정보 -->
     <h3>📝 주문 상세 정보</h3>
@@ -197,6 +213,62 @@ initDeliveryMap(
 
     setInterval(checkStatusChange, 3000);
 })();
+</script>
+
+<script>
+    // 1. 서버에서 넘어온 List<Map> 데이터를 안전하게 JS 배열로 매핑
+    var hours = [];
+    var minutes = [];
+
+    <c:forEach var="stat" items="${timeStats}">
+        hours.push("${stat.DELIVERY_HOUR}");
+        minutes.push(parseInt("${stat.AVG_MINUTES}"));
+    </c:forEach>
+
+    // 2. 만약 데이터가 비어있을 경우 대비한 안전장치 (기본값 세팅)
+    /*
+    if (hours.length === 0) {
+        hours = ['11시', '12시', '13시', '17시', '18시', '19시', '20시'];
+        minutes = [25, 42, 32, 30, 48, 52, 38];
+    }
+    */
+
+    var ctx = document.getElementById('deliveryTimeChart').getContext('2d');
+    
+    var deliveryTimeChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: hours, 
+            datasets: [{
+                label: '평균 소요시간 (분)',
+                data: minutes, 
+                borderColor: '#FF5722',
+                backgroundColor: 'rgba(255, 87, 34, 0.08)',
+                borderWidth: 3,
+                pointBackgroundColor: '#FF5722',
+                pointRadius: 4,
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 70,
+                    grid: { color: '#f0f0f0' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
 </script>
 
 </body>

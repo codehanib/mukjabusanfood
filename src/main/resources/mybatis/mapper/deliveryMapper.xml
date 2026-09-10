@@ -6,21 +6,30 @@
 
    <!-- 1. 고객 주문 등록 -->
 	<insert id="insertDelivery" parameterType="com.springboot.MUKJA.dto.deliveryDTO">
-	
-	    <selectKey keyProperty="d_no" resultType="int" order="BEFORE">
-	        SELECT delivery_seq.NEXTVAL FROM dual
-	    </selectKey>
-	
-	    INSERT INTO delivery (
-	        d_no, d_addr, d_lat, d_lng,
-	        r_no, u_no, d_stats, d_reg_date
-	    )
-	    VALUES (
-	        #{d_no}, #{d_addr}, #{d_lat}, #{d_lng},
-	        #{r_no}, #{u_no}, '주문확인', SYSDATE
-	    )
-	
-	</insert>
+        <selectKey keyProperty="d_no" resultType="int" order="BEFORE">
+            SELECT delivery_seq.NEXTVAL FROM DUAL
+        </selectKey>
+        
+        INSERT INTO delivery (
+            d_no,
+            u_no,
+            r_no,
+            d_addr,
+            d_stats,
+            d_reg_date,
+            d_lat,
+            d_lng
+        ) VALUES (
+            #{d_no},
+            #{u_no},
+            #{r_no},
+            #{d_addr},
+            #{d_stats},
+            SYSDATE,
+            #{d_lat, jdbcType=DOUBLE},
+            #{d_lng, jdbcType=DOUBLE}
+        )
+    </insert>
 
 
     <!-- 주문 메뉴 목록 -->
@@ -122,5 +131,27 @@
 	 <select id="selectOrderList" resultType="com.springboot.MUKJA.dto.deliveryDTO">
 	    SELECT * FROM delivery ORDER BY d_no DESC
 	 </select>
+	 
+	 <!-- 그래프 작동 -->
+	 <select id="selectTimeStatistics" resultType="map">
+    SELECT 
+        h.hour_slot AS "DELIVERY_HOUR",
+        NVL(ROUND(AVG((d.d_arrival_time - d.d_reg_date) * 24 * 60)), h.default_time) AS "AVG_MINUTES"
+    FROM (
+        SELECT '11시' AS hour_slot, 25 AS default_time FROM DUAL UNION ALL
+        SELECT '12시' AS hour_slot, 42 AS default_time FROM DUAL UNION ALL
+        SELECT '13시' AS hour_slot, 32 AS default_time FROM DUAL UNION ALL
+        SELECT '15시' AS hour_slot, 26 AS default_time FROM DUAL UNION ALL
+        SELECT '17시' AS hour_slot, 30 AS default_time FROM DUAL UNION ALL
+        SELECT '18시' AS hour_slot, 48 AS default_time FROM DUAL UNION ALL
+        SELECT '19시' AS hour_slot, 52 AS default_time FROM DUAL UNION ALL
+        SELECT '20시' AS hour_slot, 38 AS default_time FROM DUAL
+    ) h
+    LEFT JOIN delivery d ON TO_CHAR(d.d_reg_date, 'HH24') = REPLACE(h.hour_slot, '시', '')
+                         AND d.d_stats = '배달완료' 
+                         AND d.d_arrival_time IS NOT NULL
+    GROUP BY h.hour_slot, h.default_time
+    ORDER BY TO_NUMBER(REPLACE(h.hour_slot, '시', ''))
+	</select>
 
 </mapper>

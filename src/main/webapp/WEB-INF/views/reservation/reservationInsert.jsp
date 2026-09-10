@@ -6,6 +6,23 @@
 <head>
 <meta charset="UTF-8">
 <title>예약하기</title>
+
+<!-- ==================== 포트원 연결 =================== -->
+<!-- 0. jQuery 라이브러리 올바른 주소 -->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<!-- 1. 포트원 v1 sdk 라이브러리 (오타 수정: iamport.js) -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+
+<!-- 2. JSP 변수를 js 객체로 전달 -->
+<script>
+	const ORDER_DATA = {
+		rName: "${r_name}",
+		totalPrice: parseInt("${totalPrice + deliveryFee}")
+	};
+</script>
+
+<!-- 3. 외부 payment.js 파일 로드 -->
+<script src="${pageContext.request.contextPath}/js/payment.js"></script>
 </head>
 <body>
 
@@ -79,13 +96,13 @@
 				<div>
 					<c:choose>
 						<c:when test="${payment}">
-							<button type="submit" formaction="/결제경로">결제하기</button>
+							<button type="button" onclick="handleReservationPayment(event)">결제하기</button>
 						</c:when>
 						<c:otherwise>
 							<button type="submit" formaction="/reservation/reservationInsert">예약하기</button>
 						</c:otherwise>
 					</c:choose>
-					<input type="reset" value="✕ 취소">
+					<input type="reset" value="✕ 취소" onclick="history.back();">
 				</div>
 			</form>
 		</div>

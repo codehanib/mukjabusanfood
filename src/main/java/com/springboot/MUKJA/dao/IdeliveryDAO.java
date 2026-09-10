@@ -1,6 +1,7 @@
 package com.springboot.MUKJA.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -26,8 +27,11 @@ public interface IdeliveryDAO {
     // 6. 고객용: 내 배달 주문 내역 목록 조회
     List<deliveryDTO> selectOrdersByUser(int u_no);
     
- // 7. 점주 전체 주문 목록 조회
+ 	// 7. 점주 전체 주문 목록 조회
     List<deliveryDTO> selectOrderList();
+    
+    // 8. 시간대별 배달 소요시간 통계
+    List<Map<String, Object>> selectTimeStatistics();
 }
 
 
