@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-	
-	
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -21,30 +21,39 @@
 
 		<!-- 예약 확인 -->
 		<c:choose>
-			<c:when test = "${not empty myList}">
-			<table width="700" border="1">
-				<tr>
-					<th>대기번호</th>
-					<th>식당</th>
-					<th>예약날짜</th>
-					<th>예약시간</th>
-					<th>인원</th>
-					<th>상태</th>
-					<th>상세</th>
-				</tr>
-				<c:forEach var="res" items="${myList}">
+			<c:when test="${not empty myList}">
+				<table width="700" border="1">
 					<tr>
-						<td>${res.res_num}</td>
-						<td>${res.r_no}</td>
-						<td><fmt:formatDate value="${res.res_day}" pattern="yyyy-MM-dd"/></td>
-						<td>${res.res_time}</td>
-						<td>${res.res_count}</td>
-						<td>${res.res_stats}</td>
-						<td><a href="/reservation/reservationDetail?res_no=${res.res_no}">보기</a></td>
+						<th>대기번호</th>
+						<th>식당</th>
+						<th>예약날짜</th>
+						<th>예약시간</th>
+						<th>인원</th>
+						<th>상태</th>
+						<th>상세</th>
 					</tr>
-				</c:forEach>
-			</table>	
-		</c:when>
+					<c:forEach var="res" items="${myList}">
+						<tr>
+							<td>${res.res_num}</td>
+							<td>${res.r_no}</td>
+							<td><fmt:formatDate value="${res.res_day}"
+									pattern="yyyy-MM-dd" /></td>
+							<td>${res.res_time}</td>
+							<td>${res.res_count}</td>
+							<td>${res.res_stats}</td>
+							<td><a
+								href="/reservation/reservationDetail?res_no=${res.res_no}">보기</a>
+								<form action="/reservation/guestCancel" method="post"
+									style="display: inline">
+									<input type="hidden" name="res_no" value="${res.res_no}">
+									<input type="hidden" name="res_name" value="${res.res_name}">
+									<input type="hidden" name="res_tel" value="${res.res_tel}">
+									<button type="submit" onclick="return confirm('예약을 취소하시겠습니까?')">취소</button>
+								</form></td>
+						</tr>
+					</c:forEach>
+				</table>
+			</c:when>
 			<c:otherwise>
 				<p>예약 내역이 없습니다.</p>
 			</c:otherwise>

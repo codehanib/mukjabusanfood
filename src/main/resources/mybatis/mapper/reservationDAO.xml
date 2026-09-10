@@ -74,8 +74,19 @@
 		from reservation r
 		left join restaurant rt on r.r_no = rt.r_no
 		where r.u_no = #{u_no}
-			and r.res_stats != '취소'
-		order by r.res_day asc
+  and r.res_stats = '대기중'
+order by r.res_day asc
+	</select>
+	
+	<!-- 예약 기록 -->
+	<select id="myReservationHistory"
+		resultType="com.springboot.MUKJA.dto.reservationDTO">
+		select r.*, rt.r_name 
+		from reservation r
+		left join restaurant rt on r.r_no = rt.r_no
+		where r.u_no = #{u_no}
+  and r.res_stats = '완료'
+order by r.res_day desc
 	</select>
 	
 	<!-- 비회원 예약 목록 -->
@@ -83,9 +94,8 @@
     select r.*, rt.r_name
     from reservation r
     left join restaurant rt on r.r_no = rt.r_no
-    where r.res_tel = #{res_tel}
-      and r.res_stats != '취소'
-    order by r.res_day asc
+    where r.res_tel = #{res_tel} and r.res_name = #{res_name} and r.res_stats = '대기중'
+    order by r.res_day desc
 </select>
 	
 	<!-- 예약 대기줄 확인 -->

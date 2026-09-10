@@ -83,7 +83,7 @@ public class UsersController {
 
         usersDAO.usersInsert(dto);
         emailVerificationService.clearToken(emailVerifyToken);
-        return "redirect:/login/login";
+        return "redirect:/login/login?login=true";
     }
 
     @RequestMapping("/jusoPopup")

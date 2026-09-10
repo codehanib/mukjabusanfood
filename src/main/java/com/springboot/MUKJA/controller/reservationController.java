@@ -40,7 +40,7 @@ public class reservationController {
             @RequestParam(value = "res_time", required = false) String res_time,
             Model model, Authentication authentication) throws Exception {
 
-        List<Integer> paymentRequired = Arrays.asList(1704, 1699, 1692);
+        List<Integer> paymentRequired = Arrays.asList(1,3,5,7,1704, 1699, 1692);
         boolean payment = paymentRequired.contains(r_no);
 
         model.addAttribute("r_no", r_no);
@@ -82,7 +82,7 @@ public class reservationController {
 
         dto.setRes_tel(tel1 + "-" + tel2 + "-" + tel3);
 
-        List<Integer> paymentRequired = Arrays.asList(1704, 1699, 1692);
+        List<Integer> paymentRequired = Arrays.asList(1,3,5,7,1704, 1699, 1692);
         if (paymentRequired.contains(dto.getR_no())) {
             dto.setRes_price(1000);
         }
@@ -116,10 +116,13 @@ public class reservationController {
         }
           usersDTO loginUser = usersDAO.findById(authentication.getName());
           List<reservationDTO> myList = reservationDAO.myReservationList(loginUser.getU_no());
+          List<reservationDTO> history = reservationDAO.myReservationHistory(loginUser.getU_no());
+
           
           
           model.addAttribute("myList",myList);
-        
+          model.addAttribute("history",history);
+
 
         return "reservation/myList";
     }
@@ -132,27 +135,20 @@ public class reservationController {
     
     @PostMapping("/guestSearch")
     public String guestSearch(
-    		@RequestParam("res_tel1") String tel1,
+            @RequestParam("res_name") String res_name,
+            @RequestParam("res_tel1") String tel1,
             @RequestParam("res_tel2") String tel2,
             @RequestParam("res_tel3") String tel3,
             Model model) {
-    	String res_tel = tel1 + "-" + tel2 + "-" + tel3;
-    	List<reservationDTO> guestList = reservationDAO.myReservationGuest(res_tel);
-    	
-    	if(guestList.isEmpty()) {
-    		model.addAttribute("msg","일치하는 예약이 없습니다.");
-    		return "reservation/guestForm";
-    	}
-    	model.addAttribute("myList",guestList);
-    	return "reservation/myList";
-    }
-    
-    @GetMapping("/ownerList")
-    public String ownerReservationList(Model model,Authentication authentication) {
-    	usersDTO owner = usersDAO.findById(authentication.getName());
-    	List<reservationDTO> list = reservationDAO.ownerReservationList(owner.getR_no());
-    	model.addAttribute("list",list);
-    	return "reservation/ownerList";
+        String res_tel = tel1 + "-" + tel2 + "-" + tel3;
+        List<reservationDTO> guestList = reservationDAO.myReservationGuest(res_tel, res_name);
+
+        if (guestList.isEmpty()) {
+            model.addAttribute("msg", "일치하는 예약이 없습니다.");
+            return "reservation/guestForm";
+        }
+        model.addAttribute("myList", guestList);
+        return "reservation/guestList";
     }
     
     @PostMapping("/ownerStatusUpdate")
@@ -198,4 +194,46 @@ public class reservationController {
         mailSender.send(message);
     }
     
+    // 예약 취소
+    @PostMapping("/cancel")
+    public String cancel(@RequestParam("res_no") int res_no,Authentication authentication) {
+    	reservationDTO dto = reservationDAO.reservationDetail(res_no);
+    	
+    	if (authentication != null && authentication.isAuthenticated()
+    			&& !"anonymousUser".equals(authentication.getName())) {
+    		usersDTO loginUser = usersDAO.findById(authentication.getName());
+    		if(dto.getU_no() == null || dto.getU_no() != loginUser.getU_no()) {
+    			return "redirect:/reservation/myList";
+    		}  	
+    	}else {
+    		return "redirect:/login/login";
+    	}
+    	reservationDAO.reservationStatusUpdate(res_no, "취소");
+    	reservationDAO.recalculateWait(dto.getR_no(), dto.getRes_day());
+    	
+    	return "redirect:/reservation/myList";
+    }
+    @PostMapping("/guestCancel")
+    public String guestCancel(@RequestParam("res_no") int res_no,
+            @RequestParam("res_name") String res_name,
+            @RequestParam("res_tel") String res_tel,
+            Model model) {
+
+        reservationDTO dto = reservationDAO.reservationDetail(res_no);
+
+        if (dto == null || !res_name.equals(dto.getRes_name())) {
+            return "redirect:/reservation/guestForm";
+        }
+
+        reservationDAO.reservationStatusUpdate(res_no, "취소");
+        reservationDAO.recalculateWait(dto.getR_no(), dto.getRes_day());
+
+        List<reservationDTO> guestList = reservationDAO.myReservationGuest(res_tel, res_name);
+        if (guestList.isEmpty()) {
+            model.addAttribute("msg", "일치하는 예약이 없습니다.");
+            return "reservation/guestForm";
+        }
+        model.addAttribute("myList", guestList);
+        return "reservation/guestList";
+    }
 }
