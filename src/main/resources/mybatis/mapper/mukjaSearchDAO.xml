@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.MUKJA.dao.mukjaSearchDAO">
+
+    <insert id="searchLogInsert"
+            parameterType="com.springboot.MUKJA.dto.mukjaSearchDTO">
+
+        INSERT INTO MUKJA_SEARCH (
+            ms_no,
+            ms_word
+        )
+        VALUES (
+            mukja_search_seq.NEXTVAL,
+            #{ms_word}
+        )
+
+    </insert>
+
+</mapper>
