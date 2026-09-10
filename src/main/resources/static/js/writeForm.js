@@ -368,3 +368,9 @@ function checkLoginError() {
         alert("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
 }
+function loginSuccess() {
+    const params = new URLSearchParams(location.search);
+    if (params.get("login") === "true") {
+        alert("회원가입이 완료되었습니다.");
+    }
+}

@@ -7,7 +7,7 @@
 <title>LOGIN</title>
 <script src="/js/writeForm.js"></script>
 </head>
-<body class="login-body" onload="checkLoginError();">
+<body class="login-body" onload="checkLoginError(); loginSuccess();">
 
     <div class="login-wrapper">
 
@@ -53,6 +53,11 @@
                 <a href="/login/writeForm">회원가입</a>
                 후 다양한 서비스를 이용해 보세요.
             </p>
+            <hr>
+            내 실험장
+            <a href="/reservation/guestForm">
+		    비회원 예약확인
+		</a>
 	
         </form>
 
