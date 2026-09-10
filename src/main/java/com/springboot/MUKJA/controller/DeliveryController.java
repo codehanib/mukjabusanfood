@@ -2,9 +2,11 @@ package com.springboot.MUKJA.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,10 +53,16 @@ public class DeliveryController {
 		double storeLat = 35.1795588;
 		double storeLng = 129.0756416;
 		
+		// 시간대별 데이터 조회
+		List<Map<String, Object>> timeStats = deliveryDao.selectTimeStatistics();
+		System.out.println(">>> DB에서 가져온 timeStats 데이터 개수: " + (timeStats != null ? timeStats.size() : "null"));
+		
+		
 		model.addAttribute("delivery",delivery);
 		model.addAttribute("menuList",menuList);
 		model.addAttribute("storeLat",storeLat);
 		model.addAttribute("storeLng",storeLng);
+		model.addAttribute("timeStats",timeStats);
 		
 		return "delivery/delivery_detail";
 	}
@@ -284,7 +292,7 @@ public class DeliveryController {
 	    
 	
 	    //회원정보 결정하기
-	    int finalUno = 1066; 
+	    int finalUno = 1083; 
 	    
 	    if (reqUno != null) {
 	    	finalUno = reqUno; // 1순위 :url 값
@@ -340,6 +348,7 @@ public class DeliveryController {
 	
 // ==================== 결제 ============================ //
 	@PostMapping("/delivery/order")
+	@Transactional
 	public String processOrder(
 	        @RequestParam("u_no") int u_no,
 	        @RequestParam("r_no") int r_no,
@@ -348,7 +357,9 @@ public class DeliveryController {
 	        @RequestParam("totalPrice") int totalPrice,
 	        @RequestParam("deliveryFee") int deliveryFee,
 	        @RequestParam("d_addr") String d_addr,
-	        @RequestParam("d_detail_addr") String d_detail_addr
+	        @RequestParam("d_detail_addr") String d_detail_addr,
+	        @RequestParam(value="d_lat", defaultValue ="35.1765") double d_lat,
+	        @RequestParam(value="d_lng", defaultValue ="129.0785") double d_lng
 	) {
 	    // 1. 배달 기본 레코드 생성 및 DB 저장
 	    deliveryDTO delivery = new deliveryDTO();
@@ -356,6 +367,8 @@ public class DeliveryController {
 	    delivery.setR_no(r_no);
 	    delivery.setD_addr(d_addr + " " + d_detail_addr);
 	    delivery.setD_stats("주문접수"); // 기본 상태값
+	    delivery.setD_lat(d_lat);
+	    delivery.setD_lng(d_lng);
 
 	    deliveryDao.insertDelivery(delivery);
 	    int generatedDno = delivery.getD_no(); // 생성된 배달 번호 획득

@@ -4,7 +4,24 @@
 
 <mapper namespace="com.springboot.MUKJA.dao.Idv_menuDAO">
 
-    <!-- 배달 주문 번호(d_no)에 해당하는 상세 메뉴 목록 조회 -->
+    <!-- 1. 주문 상세 메뉴 등록 (장바구니 메뉴들을 주문 메뉴로 저장) -->
+    <insert id="insertDeliveryMenu" parameterType="com.springboot.MUKJA.dto.dv_menuDTO">
+        INSERT INTO dv_menu (
+            dvm_no,
+            dvm_count,
+            dvm_price,
+            d_no,
+            mn_no
+        ) VALUES (
+            dv_menu_seq.NEXTVAL,
+            #{dvm_count},
+            #{dvm_price},
+            #{d_no},
+            #{mn_no}
+        )
+    </insert>
+
+    <!-- 2. 배달 주문 번호(d_no)에 해당하는 상세 메뉴 목록 조회 -->
     <select id="selectDeliveryMenusByOrder" parameterType="int" resultType="com.springboot.MUKJA.dto.dv_menuDTO">
         SELECT 
             dm.dvm_no,

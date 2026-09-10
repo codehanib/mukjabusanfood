@@ -33,8 +33,10 @@
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services"></script>
 
 <!-- ==================== 포트원 연결 =================== -->
-<!-- 1. 포트원 v1 sdk 라이브러리 -->
-<script src="https://cdn.iamport.kr/v1/iamport/js"></script>
+<!-- 0. jQuery 라이브러리 올바른 주소 -->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<!-- 1. 포트원 v1 sdk 라이브러리 (오타 수정: iamport.js) -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 
 <!-- 2. JSP 변수를 js 객체로 전달 -->
 <script>
@@ -44,7 +46,7 @@
 	};
 </script>
 
-<!--  3. 외부 payment.js 파일 로드 -->
+<!-- 3. 외부 payment.js 파일 로드 -->
 <script src="${pageContext.request.contextPath}/js/payment.js"></script>
 
 </head>
@@ -53,17 +55,19 @@
 <div class="form-container">
     <h2>🛒 배달 주문 작성</h2>
     
-    <form action="${pageContext.request.contextPath}/delivery/order/create" method="POST" onsubmit="return prepareSubmit();">
-        <!-- 식당번호 및 회원번호 (hidden) -->
+    <!-- id="orderForm" 지정 및 컨트롤러 매핑 URL 통일 (/delivery/order) -->
+    <form id="orderForm" action="${pageContext.request.contextPath}/delivery/order" method="POST">
+        <!-- 컨트롤러 전송용 hidden 파라미터들 -->
         <input type="hidden" name="r_no" value="${r_no}">
         <input type="hidden" name="u_no" value="${u_no}">
+        <input type="hidden" name="mc_no" value="${mc_no}">
+        <input type="hidden" name="totalPrice" value="${totalPrice}">
+        <input type="hidden" name="deliveryFee" value="${deliveryFee}">
+        <input type="hidden" name="py_type" value="배달">
         
-        <!-- 자동 추출될 위도/경도 값 -->
+        <!-- 위도/경도 값 -->
         <input type="hidden" name="d_lat" id="d_lat" value="35.1765">
         <input type="hidden" name="d_lng" id="d_lng" value="129.0785">
-
-        <!-- DB 전송용 최종 결합 주소 hidden 필드 -->
-        <input type="hidden" name="d_addr" id="d_addr">
 
         <!-- 1. 주문 메뉴 내역 (JSTL 반복문) -->
         <div class="section-title">🍽️ 주문 메뉴 확인</div>
@@ -76,7 +80,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- 컨트롤러의 cartList를 반복 출력 -->
                 <c:forEach var="item" items="${cartList}">
                     <tr>
                         <td>${item.mn_name}</td>
@@ -87,7 +90,6 @@
                     </tr>
                 </c:forEach>
                 
-                <!-- 메뉴가 없을 때 예외 처리 -->
                 <c:if test="${empty cartList}">
                     <tr>
                         <td colspan="3" style="text-align: center; color: #888; padding: 20px;">
@@ -115,20 +117,20 @@
             </div>
         </div>
 
-        <!-- 3. 배달 주소 입력 -->
+        <!-- 3. 배달 주소 입력 (payment.js의 id="d_addr", id="d_detail_addr"와 통일) -->
         <div class="section-title">📍 배달지 정보</div>
         <div class="form-group">
-            <label for="d_addr_basic">배달 주소</label>
-            <input type="text" id="d_addr_basic" readonly required placeholder="주소 검색 버튼을 눌러주세요">
+            <label for="d_addr">배달 주소</label>
+            <input type="text" id="d_addr" name="d_addr" readonly required placeholder="주소 검색 버튼을 눌러주세요">
             <button type="button" onclick="execDaumPostcode()">주소 검색</button>
         </div>
 
         <div class="form-group">
-            <label for="d_addr_detail">상세 주소</label>
-            <input type="text" id="d_addr_detail" placeholder="예: 101동 202호">
+            <label for="d_detail_addr">상세 주소</label>
+            <input type="text" id="d_detail_addr" name="d_detail_addr" placeholder="예: 101동 202호">
         </div>
 
-        <button type="submit" style="width: 100%; padding: 14px; font-size: 1.1em; margin-top: 15px;">주문 결제하기</button>
+        <button type="button" style="width: 100%; padding: 14px; font-size: 1.1em; margin-top: 15px;" onclick="requestPay(event)">주문 결제하기</button>
     </form>
 </div>
 
@@ -138,7 +140,7 @@
         new daum.Postcode({
             oncomplete: function(data) {
                 var addr = data.address;
-                document.getElementById("d_addr_basic").value = addr;
+                document.getElementById("d_addr").value = addr;
 
                 var geocoder = new kakao.maps.services.Geocoder();
 
@@ -151,20 +153,6 @@
                 });
             }
         }).open();
-    }
-    
-    // 폼 제출 전 주소 결합
-    function prepareSubmit() {
-        var basicAddr = document.getElementById("d_addr_basic").value;
-        var detailAddr = document.getElementById("d_addr_detail").value;
-        
-        if (!basicAddr) {
-            alert("주소를 검색하여 입력해 주세요.");
-            return false;
-        }
-        
-        document.getElementById("d_addr").value = (basicAddr + " " + detailAddr).trim();
-        return true;
     }
 </script>
 </body>
