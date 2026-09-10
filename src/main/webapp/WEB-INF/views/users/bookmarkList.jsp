@@ -5,36 +5,39 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>북마크 목록</title>
+<title>bookmark list</title>
 </head>
 <body>
-	<h2>찜 목록</h2>
+	<h2>찜한 가게</h2>
 	<c:choose>
 	<c:when test="${not empty bklist}">
 		<c:forEach var="bk" items="${bklist}">
-			<table border="1">
+			<table width="700">
 			    <tr>
-			        <td rowspan="3">
-			             <img src="${bk.r_img}" width="200" height="200">
+			        <td rowspan="4" width="200">
+			             <img src="${bk.r_img}" width="200" height="200" height="200">
 			        </td>
-			        <td>${bk.r_name}</td>
-			        <td rowspan="3">
+			        <td width="300" height="20">${bk.r_name}</td>
+			        <td rowspan="4">
 			        	<p><a href="/restaurant/detail?r_no=${bk.r_no}">바로가기</a></p>
 			        	<p><a href="/users/bookmarkDelete?bk_no=${bk.bk_no}">삭제</a></p>
 			        </td>
 			    </tr>
 			    <tr>
-			        <td>${bk.r_region}</td>
+			        <td height="20">${bk.r_region}</td>
 			    </tr>
 			    <tr>
-			        <td>${bk.r_point}</td>
+			        <td height="20">★ ${bk.r_point}</td>
 			    </tr>
+			    <tr><td> </td></tr>
 			</table>
+		<hr>
 		</c:forEach>
 	</c:when>
 	<c:otherwise>
 		<p>찜한 가게가 없습니다.</p>
 	</c:otherwise>
 	</c:choose>
+	<a href="/main">홈으로</a>
 </body>
 </html>

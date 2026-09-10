@@ -55,9 +55,9 @@ public class bookmarkController {
 	
 	// 북마크 삭제
 	@RequestMapping("/users/bookmarkDelete")
-	public String bookmarkDelete(@RequestParam("r_no") int r_no) {
+	public String bookmarkDelete(@RequestParam("bk_no") int bk_no) {
 		
-		bkdao.bookmarkDelete(r_no);
+		bkdao.bookmarkDelete(bk_no);
 		
 		return "redirect:/users/bookmarkList";
 	}

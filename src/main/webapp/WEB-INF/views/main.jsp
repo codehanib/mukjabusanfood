@@ -9,61 +9,141 @@
 <meta charset="UTF-8">
 <title>메인페이지</title>
 </head>
+<style>
+	.header {
+	    width: 100%;
+	    padding: 25px 0;
+	    background-color: #fff;
+	}
+	.header-inner {
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    gap: 20px;
+	}
+	/* 로고 */
+	.logo img {
+	    width: 150px;
+	    height: auto;
+	    display: block;
+	    margin-right: 10px;
+	}
+	/* 검색창 + 문구 영역 */
+	.search-area {
+	    display: flex;
+	    flex-direction: column;
+	}
+	/* 사이트 설명 */
+	.header-description {
+	    margin: 0 0 5px 0;
+	    color: #ff6644;
+	    font-size: 14px;
+	    line-height: 1.2;
+	    text-align: left;
+	}
+	/* 검색 영역 */
+	.search-form {
+	    display: flex;
+	    align-items: center;
+	}
+	.search-form input {
+	    width: 550px;
+	    height: 42px;
+	    padding: 0 15px;
+	    border: 2px solid #ff6644;
+	    border-right: none;
+	    border-radius: 8px 0 0 8px;
+	    box-sizing: border-box;
+	    font-size: 14px;
+	    outline: none;
+	}
+	.search-form input:focus {
+	    border-color: #ff6644;
+	}
+	.search-form button {
+	    height: 42px;
+	    padding: 0 20px;
+	    border: none;
+	    border-radius: 0 8px 8px 0;
+	    background-color: #ff6644;
+	    color: #fff;
+	    font-size: 14px;
+	    font-weight: bold;
+	    cursor: pointer;
+	}
+	.search-form button:hover {
+	    background-color: #ff3333;
+	}
+	
+	.top-menu {
+    position: absolute;
+    top: 10px;
+    right: 100px;
+	}
+</style>
 <body>
-	<h1>메인페이지</h1>
-	<a href="/main">
-		<img src="/images/logo.png" alt="mukja 로고">
-    </a>
-	<p> 부산 식당 예약 & 배달주문</p>
-	<form action="/restaurant/search" method="get">
-	    <input type="text" name="keyword" placeholder="식당, 메뉴, 지역 검색">
-	    <button type="submit">검색</button>
-	</form>
-	<br>
-	<sec:authorize access="isAnonymous()">
-		<a href="/login/login">
-	    	로그인
-		</a>
-	</sec:authorize>
-	<sec:authorize access="isAnonymous()">
-		<a href="/login/writeForm">
-	    	회원가입
-		</a>
-	</sec:authorize>
-	<br>
-	 <sec:authorize access="hasRole('USER')">
-		<a href="/users/userviewForm">
-	    	회원 자세히보기
-		</a>
-	</sec:authorize>
-	<sec:authorize access="hasAnyRole('USER','ADMIN','OWNER')">
-		<a href="/logout">
-	    	로그아웃
-		</a>
-	</sec:authorize>
-	<br>
-	
-	<sec:authorize access="hasRole('ADMIN')">
-		<a href="/admin/usersList">
-		    회원목록
-		</a>
-	</sec:authorize>
-	
-	<br>
-	
-	<sec:authorize access="hasRole('OWNER')">
-		<a href="/restaurant/restaurantWriteForm">
-		    식당 등록
-		</a>
-		<br>
-		<a href="/restaurant/updateForm?r_no=${user.r_no}">
-    		식당 수정
-		</a>
-		<br>
-		<a href="/reservation/ownerList">
-    		주문 목록
-		</a>
-	</sec:authorize>
+	<header class="site-header">
+			<div class="top-menu">
+				<sec:authorize access="isAnonymous()">
+					<a href="/login/login">
+				    	로그인
+					</a>
+					|
+					<a href="/login/writeForm">
+				    	회원가입
+					</a>
+				</sec:authorize>
+				 <sec:authorize access="hasRole('USER')">
+					<a href="/users/userviewForm">
+				    	회원 자세히보기
+					</a>
+				</sec:authorize>
+				<sec:authorize access="hasAnyRole('USER','ADMIN','OWNER')">
+					<a href="/logout">
+				    	로그아웃
+					</a>
+				</sec:authorize>
+				
+				<sec:authorize access="hasRole('ADMIN')">
+					<a href="/admin/usersList">
+					    회원목록
+					</a>
+				</sec:authorize>
+				<sec:authorize access="hasRole('OWNER')">
+					<a href="/restaurant/restaurantWriteForm">
+					    식당 등록
+					</a>
+					|
+					<a href="/restaurant/updateForm?r_no=${user.r_no}">
+			    		식당 수정
+					</a>
+					|
+					<a href="/reservation/ownerList">
+			    		주문 목록
+					</a>
+				</sec:authorize>
+				|
+				<a href="/noticeList">공지사항</a>
+			</div>
+	    <div class="header-inner">
+	        <!-- 로고 -->
+	        <a href="/main" class="logo">
+	            <img src="/images/logo.png" alt="mukja 로고">
+	        </a>
+	        <!-- 검색창 영역 -->
+	        <div class="search-area">
+	            <!-- 사이트 설명 -->
+	            <p class="header-description">부산 식당 예약 & 배달주문</p>
+	            <!-- 검색창 -->
+	            <form action="/restaurant/search" method="get" class="search-form">
+	                <input type="text"
+	                       name="keyword"
+	                       placeholder="식당, 메뉴, 지역 검색">
+	                <button type="submit">검색</button>
+	            </form>
+	        </div>
+	    </div>
+	</header>
 
 	<!-- 음식종류 -->
 	<form action="/restaurant/category" method="get">
@@ -125,8 +205,8 @@
 	            <br>
 	
 	            <!-- 예약하기 -->
-	            <a href="/">
-	                <button type="button">예약하기</button>
+	            <a href="/reservation/reservationInsert?r_no=${restaurant.r_no}">
+	               [예약하기]
 	            </a>
 	        </td>
 	

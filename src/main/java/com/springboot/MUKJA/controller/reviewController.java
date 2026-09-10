@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.MUKJA.dao.reviewDAO;
@@ -60,6 +61,7 @@ public class reviewController {
 	
 	// 리뷰 작성
 	@RequestMapping("/restaurant/reviewInsert")
+	@ResponseBody
 	public String reviewInsert(Authentication auth,reviewDTO rvdto,
 								@RequestParam("r_no") int r_no,
 								@RequestParam(value="reviewFiles",required=false)
@@ -94,7 +96,10 @@ public class reviewController {
 		rvdto.setReviewImages(rvimgList);
 		rvService.reviewInsert(rvdto);
 		
-		return "redirect:/restaurant/detail?r_no=" + r_no;
+		return "<script>" +
+		        "alert('리뷰를 등록했습니다.');" +
+		        "location.href='/restaurant/detail?r_no=" + r_no + "';" +
+		        "</script>";
 	}
 	
 	// 리뷰 수정폼으로 가기
@@ -110,6 +115,7 @@ public class reviewController {
 	
 	// 리뷰 수정
 	@RequestMapping("/restaurant/reviewUpdate")
+	@ResponseBody
 	public String reviewUpdate(Authentication auth,reviewDTO rvdto,
 								@RequestParam("r_no") int r_no,
 								@RequestParam(value="reviewFiles",required=false)
@@ -143,7 +149,10 @@ public class reviewController {
 		rvdto.setReviewImages(rvimgList);
 		rvService.reviewUpdate(rvdto);
 		
-		return "redirect:/restaurant/review?r_no="+r_no;
+		return "<script>" +
+		        "alert('리뷰를 수정했습니다.');" +
+		        "location.href='/restaurant/detail?r_no=" + r_no + "';" +
+		        "</script>";
 	}
 	
 	// 리뷰 삭제

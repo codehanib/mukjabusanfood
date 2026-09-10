@@ -35,5 +35,7 @@ public interface reviewDAO {
 	
 	// 리뷰 이미지 조회
 	public List<reviewimgDTO> reviewImgView(@Param("rv_no") int rv_no);
+	// 리뷰 평점 평균
+	public double reviewAvg(@Param("r_no") int r_no);
 	
 }
