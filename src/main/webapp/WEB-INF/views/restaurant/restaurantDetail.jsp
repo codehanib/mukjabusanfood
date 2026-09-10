@@ -55,6 +55,71 @@
     margin-top: 10px;
     line-height: 1.8;
 }
+.bottom-reservation {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: calc(100% - 40px);
+    max-width: 600px;
+    height: 70px;
+
+    padding: 10px 14px;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 18px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    box-sizing: border-box;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+}
+
+.bottom-reservation form {
+    margin: 0;
+}
+
+.bookmark-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+}
+
+.bookmark-btn i {
+    font-size: 22px;
+    color: #333;
+}
+
+.reservation-btn,
+.delivery-btn {
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    background: #ff3d0d;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.reservation-btn {
+    flex: 1;
+}
+
+.bottom-reservation form:last-child {
+    flex: 1;
+}
+
+.delivery-btn {
+    width: 100%;
+}
 
 </style>
 <body>
@@ -85,7 +150,21 @@
 	    </sec:authorize>
 	<h2>${restaurant.r_name}</h2>
 	
-	<div>★${restaurant.r_point} · 리뷰 ${reviewCount}개 > &nbsp; ${restaurant.r_region} · ${restaurant.mukja_c_name}</div>
+	<c:choose>
+	    <c:when test="${reviewCount > 0}">
+	        <div>
+	            ★<fmt:formatNumber value="${reviewAvg}" pattern="0.0"/> · 리뷰 ${reviewCount}개 >
+	            &nbsp; ${restaurant.r_region} · ${restaurant.mukja_c_name}
+	        </div>
+	    </c:when>
+	
+	    <c:otherwise>
+	        <div>
+	            리뷰 없음 > &nbsp; ${restaurant.r_region} · ${restaurant.mukja_c_name}
+	        </div>
+	    </c:otherwise>
+	</c:choose>
+
 		<br>
 	
 	<div>${restaurant.r_info}</div>
@@ -144,14 +223,7 @@
 								<option value="21:00">21:00</option>
 						</select>
 	
-		<c:choose>
-			<c:when test="${payment}">
-				<button type="submit">결제하기</button>
-			</c:when>
-			<c:otherwise>
-				<button type="submit">예약하기</button>
-			</c:otherwise>
-		</c:choose>
+		<button type="submit">예약하기</button>
 	
 	</form>
 
@@ -267,14 +339,7 @@
 	<!-- DB의 r_desc 원본 -->
 	<textarea id="rawRestaurantDesc" style="display:none;"><c:out value="${restaurant.r_desc}" /></textarea>
 	
-	<hr>
-	
-	<form action="/users/bookmarkInsert" method="get">
-		<input type="hidden" name="r_no" value="${restaurant.r_no}">
-		<button type="submit" style="border:none; background:none; cursor:pointer;">
-		    <i class="fa-regular fa-bookmark" style="color:black; font-size:24px;"></i>
-		</button>
-	</form>
+
 		<br>
 		
             
@@ -284,72 +349,37 @@
         <a href="/restaurant/category?mukja_c_no=${mukja_c_no}&page=${i}">
             ${i}
         </a>
-	
-	
-	
+	</c:forEach>
+	 
 	<!-- 하단 고정 예약 바 -->
 	<div class="bottom-reservation">
 	
 	    <!-- 북마크 -->
 	    <form action="/users/bookmarkInsert" method="get">
-			<input type="hidden" name="r_no" value="${restaurant.r_no}">
-			<button type="submit" style="border:none; background:none; cursor:pointer;">
-			    <i class="fa-regular fa-bookmark" style="color:black; font-size:24px;"></i>
-			</button>
-		</form>
+	        <input type="hidden" name="r_no" value="${restaurant.r_no}">
 	
+	        <button type="submit" class="bookmark-btn">
+	            <i class="fa-regular fa-bookmark"></i>
+	        </button>
+	    </form>
 	
 	    <!-- 예약하기 -->
-	    <form action="/reservation/reservationInsert" method="get">
-	
-		<input type="hidden" name="r_no"  value="${restaurant.r_no}">
+	    <button type="button" class="reservation-btn" onclick="location.href='/reservation/reservationInsert?r_no=${restaurant.r_no}'">
+		    예약하기
+		</button>
 		
-		<!-- 날짜 -->
-		<input type="date" name="res_day" required>
-		
-		<!-- 인원 -->
-	    <select name="res_count" required>
-	        <option value="">인원 선택</option>
-	        <option value="1">1명</option>
-	        <option value="2">2명</option>
-	        <option value="3">3명</option>
-	        <option value="4">4명</option>
-	    </select>
+	    <!-- 배달 주문 -->
+	    <form action="/" method="get">
+	        <input type="hidden" name="r_no" value="${restaurant.r_no}">
 	
-	    <!-- 시간 -->
-	    <select name="res_time" id="res_time">
-								<option value="">선택</option>
-								<option value="11:00">11:00</option>
-								<option value="11:30">11:30</option>
-								<option value="12:00">12:00</option>
-								<option value="12:30">12:30</option>
-								<option value="13:00">13:00</option>
-								<option value="13:30">13:30</option>
-								<option value="14:00">14:00</option>
-								<option value="17:00">17:00</option>
-								<option value="17:30">17:30</option>
-								<option value="18:00">18:00</option>
-								<option value="18:30">18:30</option>
-								<option value="19:00">19:00</option>
-								<option value="19:30">19:30</option>
-								<option value="20:00">20:00</option>
-								<option value="20:30">20:30</option>
-								<option value="21:00">21:00</option>
-						</select>
+	        <button type="submit" class="delivery-btn">
+	            배달주문
+	        </button>
+	    </form>
 	
-		<c:choose>
-			<c:when test="${payment}">
-				<button type="submit">결제하기</button>
-			</c:when>
-			<c:otherwise>
-				<button type="submit">예약하기</button>
-			</c:otherwise>
-		</c:choose>
-	
-	</form>
 	</div>
 	
-    </c:forEach>
+   
     </div>
     
     
@@ -367,7 +397,5 @@
 	</script>
 	<script src="/js/restaurantDetail.js"></script>
 
-</body>
-</html>
 </body>
 </html>

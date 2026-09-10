@@ -87,7 +87,7 @@ public class RestaurantESService {
 
             Map<String, Object> map = hit.getSourceAsMap();
 
-            System.out.println(map);
+            //System.out.println(map);
 
             restaurantDTO dto = new restaurantDTO();
 

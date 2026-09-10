@@ -5,89 +5,74 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
 
     const rawElement = document.getElementById("rawRestaurantDesc");
-
     const container = document.getElementById("restaurantDesc");
 
     if (rawElement && container) {
 
         const raw = rawElement.value;
 
-        // [제목] 기준으로 분리
-        const regex = /\[([^\]]+)\]\s*([\s\S]*?)(?=\[[^\]]+\]|$)/g;
+        // "제목: 내용" 형식으로 줄 단위 분리
+        const lines = raw.split(/\r?\n/);
 
-        let match;
+        lines.forEach(function(line) {
 
-        while ((match = regex.exec(raw)) !== null) {
+            line = line.trim();
 
-            const title = match[1].trim();
+            if (!line) {
+                return;
+            }
 
-            const content = match[2].trim();
+            const colonIndex = line.indexOf(":");
 
-            // 내용 없는 항목은 출력하지 않음
+            if (colonIndex === -1) {
+                return;
+            }
+
+            const title = line.substring(0, colonIndex).trim();
+            const content = line.substring(colonIndex + 1).trim();
+
             if (!content) {
-
-                continue;
-
+                return;
             }
 
             const item = document.createElement("div");
-
             item.className = "info-item";
 
             const titleElement = document.createElement("div");
-
             titleElement.className = "info-title";
-
             titleElement.textContent = title;
 
             const contentElement = document.createElement("div");
-
             contentElement.className = "info-content";
 
-            // 주차안내
-            if (title === "주차안내") {
-
-                contentElement.textContent =
-                    content.replace(/(?<!\d)([.!?)])\s+/g, "$1\n");
-
-            }
-
             // 홈페이지
-            else if (title === "홈페이지") {
+            if (title === "홈페이지") {
 
                 const link = document.createElement("a");
 
                 link.href = content;
-
                 link.textContent = content;
-
                 link.target = "_blank";
 
                 contentElement.appendChild(link);
 
-            }
-
-            // 나머지 상세정보
-            else {
+            } else {
 
                 contentElement.textContent = content;
 
             }
 
             item.appendChild(titleElement);
-
             item.appendChild(contentElement);
 
             container.appendChild(item);
-
-        }
-
+        });
     }
 
-	// ==========================================
-	// 영업시간
-	// ==========================================
 
+    // ==========================================
+    // 영업시간
+    // ==========================================
 	const source = document.getElementById("businessHoursSource");
 	const todayElement = document.getElementById("todayBusinessHours");
 	const allElement = document.getElementById("businessHoursAll");

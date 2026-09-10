@@ -23,6 +23,8 @@ public class restaurantDTO {
     private String mukja_c_name;
     
     private int reviewCount;
+    private double reviewAvg;
+    
     private String simple_time;
     private String display_time;
     private String rest_day;

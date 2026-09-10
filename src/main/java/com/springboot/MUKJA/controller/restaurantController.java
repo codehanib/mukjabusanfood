@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.springboot.MUKJA.dao.mukjaSearchDAO;
 import com.springboot.MUKJA.dao.restaurantDAO;
 import com.springboot.MUKJA.dao.reviewDAO;
 import com.springboot.MUKJA.dao.usersDAO;
+import com.springboot.MUKJA.dto.menuDTO;
+import com.springboot.MUKJA.dto.mukjaSearchDTO;
 import com.springboot.MUKJA.dto.restaurantDTO;
 import com.springboot.MUKJA.dto.usersDTO;
-import com.springboot.MUKJA.dto.menuDTO;
 import com.springboot.MUKJA.service.RestaurantESService;
 import com.springboot.MUKJA.service.RestaurantService;
 import com.springboot.MUKJA.service.reviewService;
@@ -45,6 +47,9 @@ public class restaurantController {
 	@Autowired
 	private reviewService rvService;
 	
+	@Autowired
+	private mukjaSearchDAO searchdao;
+	
 	@RequestMapping("/restaurant/es/index")
 	public String restaurantESIndex() throws Exception {
 
@@ -58,15 +63,23 @@ public class restaurantController {
 	
     // Elasticsearch 식당 검색
 	@RequestMapping("/restaurant/search")
-	public String restaurantSearch(
-	        @RequestParam("keyword") String keyword,
-	        Model model) throws Exception {
-
+	public String restaurantSearch(@RequestParam("keyword") String keyword,
+	        						Model model) throws Exception {
+		
+		// 검색로그 저장
+	    mukjaSearchDTO searchDTO = new mukjaSearchDTO();
+	    searchDTO.setMs_word(keyword);
+	    searchdao.searchLogInsert(searchDTO);
+	    
+	    // Elasticsearch 검색
 	    List<restaurantDTO> restaurantList = service.search(keyword);
 	    
 	    for (restaurantDTO restaurant : restaurantList) {
 	        int reviewCount = reviewdao.reviewCount(restaurant.getR_no());
+	        double reviewAvg = reviewdao.reviewAvg(restaurant.getR_no());
+
 	        restaurant.setReviewCount(reviewCount);
+	        restaurant.setReviewAvg(reviewAvg);
 	    }
 
 	    model.addAttribute("restaurantList", restaurantList);
@@ -167,12 +180,10 @@ public class restaurantController {
 	        );
 
 	        int reviewCount = reviewdao.reviewCount(r_no);
+	        double reviewAvg = reviewdao.reviewAvg(r_no);
 
 	        List<LocalDate> dateList = new ArrayList<>();
 	        LocalDate today = LocalDate.now();
-
-	        List<Integer> paymentRequired = Arrays.asList(1704, 1699, 1692);
-	        boolean payment = paymentRequired.contains(r_no);
 
 	        for (int i = 0; i < 7; i++) {
 	            dateList.add(today.plusDays(i));
@@ -180,9 +191,9 @@ public class restaurantController {
 
 	        model.addAttribute("restaurant", restaurant);
 	        model.addAttribute("reviewCount", reviewCount);
+	        model.addAttribute("reviewAvg", reviewAvg);
 	        model.addAttribute("dateList", dateList);
 	        model.addAttribute("rvPList", rvService.reviewPList(r_no));
-	        model.addAttribute("payment", payment);
 	        model.addAttribute("menuList", menuList);
 	        model.addAttribute("menuBoardImageList", menuBoardImageList);
 
