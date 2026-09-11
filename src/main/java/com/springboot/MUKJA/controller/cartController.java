@@ -115,6 +115,7 @@ public class cartController {
         // 한글 식당명 URL 인코딩 처리
         String encodedRName = java.net.URLEncoder.encode(r_name, java.nio.charset.StandardCharsets.UTF_8);
         
-        return "redirect:/cart?mc_no=" + dto.getMc_no() + "&r_no=" + r_no + "&r_name=" + encodedRName;
+     
+        return "redirect:/cart/delivery/menu?r_no=" + r_no + "&r_name=" + encodedRName;
     }
 }

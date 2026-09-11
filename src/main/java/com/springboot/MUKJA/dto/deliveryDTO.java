@@ -17,4 +17,7 @@ public class deliveryDTO {
 	private double d_lng;
 	private int r_no;
 	private int u_no;
+	private String r_name;
+	private String u_name;
+	private int d_total_price;
 }

@@ -33,7 +33,7 @@
 
     /* 상태 뱃지 */
     .status-badge { padding: 5px 10px; border-radius: 12px; font-size: 0.85em; font-weight: bold; display: inline-block; }
-    .status-PENDING { background-color: #e3f2fd; color: #1976d2; }   /* 주문확인 */
+    .status-PENDING { background-color: #e3f2fd; color: #1976d2; }   /* 주문접수/확인 */
     .status-ACCEPTED { background-color: #fff3e0; color: #e65100; }  /* 주문승인 */
     .status-COOKING { background-color: #fff8e1; color: #f57f17; }   /* 조리중 */
     .status-DELIVERING { background-color: #e8f5e9; color: #2e7d32; }/* 배달중 */
@@ -81,7 +81,7 @@
                 <label><strong>주문 상태:</strong></label>
                 <select name="d_stats">
                     <option value="">전체 상태</option>
-                    <option value="주문확인" ${param.d_stats == '주문확인' ? 'selected' : ''}>주문확인(대기)</option>
+                    <option value="주문접수" ${param.d_stats == '주문접수' ? 'selected' : ''}>주문접수(대기)</option>
                     <option value="주문승인" ${param.d_stats == '주문승인' ? 'selected' : ''}>주문승인</option>
                     <option value="조리중" ${param.d_stats == '조리중' ? 'selected' : ''}>조리중</option>
                     <option value="배달중" ${param.d_stats == '배달중' ? 'selected' : ''}>배달중</option>
@@ -139,7 +139,7 @@
                             </c:choose>
                         </td>
                         <td>
-                            <span class="status-badge status-${order.d_stats == '주문확인' ? 'PENDING' : (order.d_stats == '주문승인' ? 'ACCEPTED' : (order.d_stats == '조리중' ? 'COOKING' : (order.d_stats == '배달중' ? 'DELIVERING' : (order.d_stats == '배달완료' ? 'COMPLETED' : 'REJECTED'))))}">
+                            <span class="status-badge status-${order.d_stats == '주문접수' || order.d_stats == '주문확인' ? 'PENDING' : (order.d_stats == '주문승인' ? 'ACCEPTED' : (order.d_stats == '조리중' ? 'COOKING' : (order.d_stats == '배달중' ? 'DELIVERING' : (order.d_stats == '배달완료' ? 'COMPLETED' : 'REJECTED'))))}">
                                 ${order.d_stats}
                             </span>
                         </td>
