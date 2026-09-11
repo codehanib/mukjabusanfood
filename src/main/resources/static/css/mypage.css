@@ -174,3 +174,116 @@ body {
         grid-template-columns: 1fr;
     }
 }
+/* =========================================================
+   회원 상세정보
+========================================================= */
+.info-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 30px;
+    background: #fff;
+    border: 1px solid #e5e9ee;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.info-table tr:not(:last-child) th,
+.info-table tr:not(:last-child) td {
+    border-bottom: 1px solid #e5e9ee;
+}
+
+.info-table th {
+    width: 140px;
+    text-align: left;
+    padding: 18px 24px;
+    background-color: #fafbfc;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+
+.info-table td {
+    padding: 18px 24px;
+    font-size: 14px;
+    color: #222;
+}
+
+/* 버튼 영역 */
+.info-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.info-actions a {
+    padding: 10px 18px;
+    border: 1px solid #ff6644;
+    border-radius: 8px;
+    color: #ff6644;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.info-actions a:hover {
+    background-color: #ff6644;
+    color: #fff;
+}
+
+.info-actions a.primary {
+    background-color: #ff6644;
+    color: #fff;
+}
+
+.info-actions a.primary:hover {
+    background-color: #ff3333;
+}
+.pwcheck-msg {
+    text-align: center;
+    font-size: 18px;
+    color: #ff3333;
+    margin-top: 8px;
+}
+.reservation-table th,
+.reservation-table td {
+    text-align: center;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff6644;
+    color: #fff;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #ff3333;
+}
+
+.btn-outline {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid #ff6644;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #ff6644;
+    font-weight: bold;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.btn-outline:hover {
+    background-color: #ff6644;
+    color: #fff;
+}
+
+.reservation-table th,
+.reservation-table td {
+    text-align: center;
+}

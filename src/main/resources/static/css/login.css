@@ -1,0 +1,366 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   login.css - 로그인 / 회원가입 공통
+   ========================================================================== */
+
+.login-body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+.signup-body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    color: #222;
+    padding: 60px 0;
+}
+
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 카드 */
+.login-card {
+    width: 380px;
+    padding: 45px 40px 35px;
+    background-color: #fff;
+    border: 1px solid #e5e9ee;
+    border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+}
+
+.login-card.signup-card {
+    width: 560px;
+    padding: 45px 45px 35px;
+}
+
+/* 제목 (로그인) */
+.login-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-title h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: -0.5px;
+}
+
+.login-title .title-line {
+    width: 40px;
+    height: 3px;
+    background-color: #ff6644;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* 제목 (회원가입) */
+.signup-intro {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.signup-intro h2 {
+    margin: 0 0 8px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: -0.5px;
+}
+
+.signup-intro p {
+    margin: 0;
+    font-size: 13px;
+    color: #777;
+}
+
+/* 입력창 (로그인) */
+.input-box {
+    margin-bottom: 14px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 46px;
+    padding: 0 15px;
+    border: 1px solid #e5e9ee;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.input-box input:focus {
+    border-color: #ff6644;
+}
+
+/* 아이디 저장 / 비밀번호 찾기 */
+.login-sub {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 4px 0 20px;
+    font-size: 13px;
+    color: #777;
+}
+
+.login-sub .save-id {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.login-sub a {
+    color: #777;
+    text-decoration: none;
+}
+
+.login-sub a:hover {
+    color: #ff6644;
+}
+
+/* 로그인 버튼 */
+.btn-login {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff6644;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+.btn-login:hover {
+    background-color: #ff3333;
+}
+
+/* 회원가입 버튼(아웃라인, 로그인 카드 내) */
+.btn-join {
+    display: block;
+    width: 100%;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    box-sizing: border-box;
+    border: 1px solid #ff6644;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #ff6644;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-bottom: 20px;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.btn-join:hover {
+    background-color: #fff5f2;
+}
+
+/* 하단 안내문구 */
+.login-guide {
+    text-align: center;
+    font-size: 13px;
+    color: #777;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.login-guide a {
+    color: #ff6644;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-guide a:hover {
+    text-decoration: underline;
+}
+
+/* 카피라이트 */
+.copyright {
+    margin-top: 24px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* ==========================================================================
+   회원가입 입력 테이블
+   ========================================================================== */
+
+.signup-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+}
+
+.signup-table th {
+    width: 120px;
+    text-align: left;
+    vertical-align: middle;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    padding-right: 10px;
+}
+
+.signup-table td {
+    vertical-align: middle;
+}
+
+.signup-table td input[type="text"],
+.signup-table td input[type="password"] {
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #e5e9ee;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.signup-table td input[type="text"]:focus,
+.signup-table td input[type="password"]:focus {
+    border-color: #ff6644;
+}
+
+.signup-table td select {
+    height: 42px;
+    padding: 0 10px;
+    border: 1px solid #e5e9ee;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+/* 중복확인/우편번호 검색/인증번호 발송 등 보조 버튼 */
+.signup-table td input[type="button"] {
+    height: 42px;
+    padding: 0 14px;
+    margin-left: 6px;
+    border: 1px solid #ff6644;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #ff6644;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.signup-table td input[type="button"]:hover {
+    background-color: #ff6644;
+    color: #fff;
+}
+
+/* 하단 회원가입/취소 버튼 */
+.signup-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.signup-actions input[type="submit"] {
+    flex: 2;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff6644;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.signup-actions input[type="submit"]:hover {
+    background-color: #ff3333;
+}
+
+.signup-actions input[type="reset"] {
+    flex: 1;
+    height: 48px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #777;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.signup-actions input[type="reset"]:hover {
+    background-color: #f2f2f2;
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+    .login-card {
+        width: 90%;
+        padding: 35px 25px 25px;
+    }
+    .login-card.signup-card {
+        width: 92%;
+        padding: 30px 20px 25px;
+    }
+    .signup-table th {
+        width: 90px;
+        font-size: 12px;
+    }
+}
+.input-box {
+    display: flex;
+    gap: 8px;
+}
+
+.input-box input[type="text"] {
+    flex: 1;
+}
+
+.input-box .btn-join {
+    width: auto;
+    margin-bottom: 0;
+    border: 1px solid #ff6644;
+}
+.btn-join,
+.btn-login {
+    outline: none;
+    box-shadow: none;
+}
+.pwcheck-msg {
+    text-align: center;
+    font-size: 18px;
+    color: #ff3333;
+    margin-top: 8px;
+}
+.input-box.stack {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.input-box.stack input {
+    width: 100%;
+}

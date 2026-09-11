@@ -7,12 +7,15 @@
 <title>회원가입</title>
 <!-- 회원가입 스크립트 -->
 <script src="/js/writeForm.js"></script>
+<link rel="stylesheet" href="/css/login.css">
 </head>
-<body onload="checkSignupError()">
+<body class="signup-body" onload="checkSignupError()">
 
 	<main>
+	<div class="login-wrapper">
+	<div class="login-card signup-card">
 
-		<div>
+		<div class="signup-intro">
 			<h2>회원가입</h2>
 			<p>MUKJA에 오신 것을 환영합니다.</p>
 		</div>
@@ -20,7 +23,7 @@
 		<!-- 회원가입 폼 -->
 		<form action="/usersInsert" method="post" name="users"
 			onsubmit="return check1();">
-			<table width="500">
+			<table class="signup-table" width="500">
 				<tr>
 					<th><label for="u_id">아이디</label></th>
 					<td><input type="text" name="u_id" id="u_id"
@@ -87,11 +90,14 @@
 				</tr>
 			</table>
 
-			<div>
+			<div class="signup-actions">
 				<input type="submit" value="✓ 회원가입"> <input type="reset"
 					value="✕ 취소" onclick="history.back()">
 			</div>
 		</form>
+
+	</div>
+	</div>
 	</main>
 
 </body>

@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/css/mypage.css">
 </head>
 <body>
-
+<%@ include file="/WEB-INF/views/header.jsp" %>
 <div class="mypage-container">
 
     <div class="mypage-title">
@@ -65,14 +65,13 @@
         </a>
 
         <!-- 1:1문의 -->
-        <a href="/users/inquiryList" class="mypage-menu-item disabled">
+        <a href="/users/inquiryList" class="mypage-menu-item">
             <div class="mypage-menu-title">
                 inquiry
                 <span>1:1 문의</span>
             </div>
             <div class="mypage-menu-desc">
                 문의 내역을 확인하실 수 있습니다.<br>
-                (준비중)
             </div>
         </a>
 
