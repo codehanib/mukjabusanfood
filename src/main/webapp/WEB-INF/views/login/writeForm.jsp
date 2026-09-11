@@ -89,7 +89,7 @@
 
 			<div>
 				<input type="submit" value="✓ 회원가입"> <input type="reset"
-					value="✕ 취소">
+					value="✕ 취소" onclick="history.back()">
 			</div>
 		</form>
 	</main>
