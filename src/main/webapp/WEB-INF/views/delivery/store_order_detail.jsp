@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="referrer" content="no-referrer">
 <title>점주 - 배달 주문 상세 정보 [#${delivery.d_no}]</title>
 <style>
     body { font-family: '맑은 고딕', sans-serif; margin: 20px; background-color: #f8f9fa; color: #333; }
@@ -94,9 +95,9 @@
             </td>
         </tr>
     </table>
-
-    <!-- 3-1. 점주 주문 승인 및 거절 처리 폼 -->
-    <c:if test="${delivery.d_stats == '주문확인'}">
+	
+	<!-- 3-1. 점주 주문 승인 및 거절 처리 폼 (주문접수 / 주문확인 상태) -->
+    <c:if test="${delivery.d_stats == '주문접수' || delivery.d_stats == '주문확인'}">
         <div class="section-title">⚡ 주문 수락 및 거절 처리</div>
         <div style="background: #fff3e0; padding: 20px; border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
             <!-- 주문 승인 폼 -->
@@ -120,8 +121,8 @@
         </div>
     </c:if>
 
-    <!-- 3-2. 배달 진행 상태 변경 폼 -->
-    <c:if test="${delivery.d_stats != '주문확인' && delivery.d_stats != '배달완료' && delivery.d_stats != '주문거절'}">
+    <!-- 3-2. 배달 진행 상태 변경 폼 (주문승인 / 조리중 / 배달중 상태) -->
+    <c:if test="${delivery.d_stats == '주문승인' || delivery.d_stats == '조리중' || delivery.d_stats == '배달중'}">
         <div class="section-title">🚚 배달 진행 상태 변경</div>
         <div style="background: #e8f4f8; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
             <form action="${pageContext.request.contextPath}/store/order/updateStatus" method="post" style="display: flex; align-items: center; gap: 15px;">
@@ -142,6 +143,7 @@
             </form>
         </div>
     </c:if>
+   
 
     <!-- 4. 주문한 음식 메뉴 상세 목록 -->
     <div class="section-title">🍽️ 주문 메뉴 상품 내역</div>
@@ -165,11 +167,23 @@
                     <td>
                         <c:choose>
                             <c:when test="${not empty item.mn_img}">
-							    <img src="${pageContext.request.contextPath}/${item.mn_img}"
-							         class="menu-img"
-							         alt="${item.mn_name}"
-							         onerror="this.style.display='none';">
-							</c:when>
+                                <c:choose>
+                                    <%-- DB 값이 인터넷 URL(http/https)인 경우 --%>
+                                    <c:when test="${item.mn_img.startsWith('http')}">
+                                        <img src="${item.mn_img}"
+                                             class="menu-img"
+                                             alt="${item.mn_name}"
+                                             onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=No+Img';">
+                                    </c:when>
+                                    <%-- DB 값이 서버 내부 경로인 경우 --%>
+                                    <c:otherwise>
+                                        <img src="${pageContext.request.contextPath}/${item.mn_img}"
+                                             class="menu-img"
+                                             alt="${item.mn_name}"
+                                             onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=No+Img';">
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:when>
                             <c:otherwise>
                                 <div style="width:50px; height:50px; background:#eee; line-height:50px; margin:0 auto; font-size:0.8em; color:#888;">No Img</div>
                             </c:otherwise>

@@ -130,6 +130,16 @@
             </c:forEach>
         </tbody>
     </table>
+    
+    <!-- 4. 나의 주문 내역 목록 돌아가기 버튼 -->
+	<div style="text-align: center; margin-top: 30px; margin-bottom: 10px;">
+	    <a href="${pageContext.request.contextPath}/delivery/user/history?u_no=${delivery.u_no}" 
+	       style="display: inline-block; padding: 12px 28px; background-color: #333; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 1em; transition: background 0.2s;"
+	       onmouseover="this.style.backgroundColor='#555';"
+	       onmouseout="this.style.backgroundColor='#333';">
+	        📋 나의 배달 주문 내역으로 돌아가기
+	    </a>
+	</div>
 </div>
 
 <!-- 1. 실시간 타이머 스크립트 -->

@@ -108,8 +108,8 @@
             <thead>
                 <tr>
                     <th>주문번호</th>
-                    <th>식당 정보 (r_no / 식당명)</th>
-                    <th>주문 고객 (u_no)</th>
+                    <th>식당 정보</th>
+                    <th>주문 고객</th>
                     <th>배달 주소</th>
                     <th>요청 시각</th>
                     <th>현재 상태</th>
@@ -119,11 +119,11 @@
             <tbody>
                 <c:forEach var="delivery" items="${allDeliveryList}">
                     <tr>
-                        <td><strong>#${delivery.d_no}</strong></td>
+                        <td><strong>${delivery.d_no}</strong></td>
                         <td>
-                            <strong>[#${delivery.r_no}]</strong> 식당 #${delivery.r_no}
+                            <strong>[${delivery.r_name}]</strong>
                         </td>
-                        <td>회원번호 #${delivery.u_no}</td>
+                        <td>${delivery.u_name}</td>
                         <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                             ${delivery.d_addr}
                         </td>

@@ -4,7 +4,7 @@
  * @param {number|string} rawStoreLng - 식당 경도
  * @param {number|string} rawDestLat - 고객 배송지 위도
  * @param {number|string} rawDestLng - 고객 배송지 경도
- * @param {string} status - 배달 상태 ('주문확인', '주문승인', '조리중', '배달중', '배달완료' 등)
+ * @param {string} status - 배달 상태 ('주문접수', '주문확인', '주문승인', '조리중', '배달중', '배달완료' 등)
  * @param {string} [containerId='map'] - (선택) 지도를 표출할 div ID (기본값: 'map')
  */
 function initDeliveryMap(rawStoreLat, rawStoreLng, rawDestLat, rawDestLng, status, containerId) {
@@ -94,7 +94,7 @@ function initDeliveryMap(rawStoreLat, rawStoreLng, rawDestLat, rawDestLng, statu
             }).open(map, riderMarker);
 
         } else if (status === '배달중') {
-            // 배달중: CustomOverlay 사용 실시간 이동 애니메이션 시뮬레이션
+            // 배달중: CustomOverlay 사용 부드러운 실시간 이동 시뮬레이션
             var riderOverlay = new kakao.maps.CustomOverlay({
                 position: storePosition,
                 content: '<div style="padding:4px 8px; background:#FF3D00; color:white; border-radius:12px; font-size:11px; font-weight:bold; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.3);">🛵 배달중</div>',
@@ -102,14 +102,27 @@ function initDeliveryMap(rawStoreLat, rawStoreLng, rawDestLat, rawDestLng, statu
                 yAnchor: 1.5
             });
 
-            var progress = 0.1;
+            // 💡 애니메이션 설정 (자연스러운 이동 제어)
+            var progress = 0.05; // 시작 위치 (식당 인근)
+            var intervalMs = 100; // 0.1초(100ms)마다 위치 업데이트 (기존 200ms에서 단축하여 끊김 제거)
+            var step = 0.0015; // 약 60초에 걸쳐 도착지까지 슬로우 이동 (기존 0.008에서 5배 이상 감속)
+
             setInterval(function() {
-                progress += 0.008;
-                if (progress > 0.95) progress = 0.1; // 목적지 도착 직전 반복 이동
-                var currentLat = storeLat + (destLat - storeLat) * progress;
-                var currentLng = storeLng + (destLng - storeLng) * progress;
+                progress += step;
+                if (progress > 0.95) {
+                    progress = 0.05; // 목적지 근처 도착 시 식당 부근에서 재출발
+                }
+
+                // 💡 출발 시 가속, 도착 시 감속하는 이징 곡선 공식 적용 (실제 오토바이 운전처럼 부드러움)
+                var easedProgress = progress < 0.5 
+                    ? 2 * progress * progress 
+                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+                var currentLat = storeLat + (destLat - storeLat) * easedProgress;
+                var currentLng = storeLng + (destLng - storeLng) * easedProgress;
+
                 riderOverlay.setPosition(new kakao.maps.LatLng(currentLat, currentLng));
-            }, 200);
+            }, intervalMs);
 
         } else if (status === '배달완료') {
             // 배달완료: 도착 지점에 표시

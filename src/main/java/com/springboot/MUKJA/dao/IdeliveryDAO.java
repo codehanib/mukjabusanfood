@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.springboot.MUKJA.dto.deliveryDTO;
 
@@ -27,11 +28,20 @@ public interface IdeliveryDAO {
     // 6. 고객용: 내 배달 주문 내역 목록 조회
     List<deliveryDTO> selectOrdersByUser(int u_no);
     
- 	// 7. 점주 전체 주문 목록 조회
+ 	// 7. 관리자 전체 주문 목록 조회
     List<deliveryDTO> selectOrderList();
     
     // 8. 시간대별 배달 소요시간 통계
     List<Map<String, Object>> selectTimeStatistics();
+    
+    //9. 점주 식당별 주문목록 조회
+    List<deliveryDTO> selectOrderListByRno(
+    	@Param("r_no") int r_no,
+    	@Param("d_stats") String d_stats,
+    	@Param("startDate") String startDate,
+    	@Param("endDate") String endDate
+    	);
+    	
 }
 
 
