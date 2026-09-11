@@ -62,4 +62,26 @@ public class bookmarkController {
 		return "redirect:/users/bookmarkList";
 	}
 	
+	@RequestMapping("/users/bookmarkToggle")
+	public String bookmarkToggle(Authentication auth,
+	                             @RequestParam("r_no") int r_no) {
+
+	    String u_id = auth.getName();
+	    usersDTO users = udao.findById(u_id);
+
+	    bookmarkDTO bkdto = new bookmarkDTO();
+	    bkdto.setR_no(r_no);
+	    bkdto.setU_no(users.getU_no());
+
+	    int bookmarkCheck = bkdao.bookmarkCheck(bkdto);
+
+	    if (bookmarkCheck == 0) {
+	        bkdao.bookmarkInsert(bkdto);
+	    } else {
+	        bkdao.bookmarkDeleteByRestaurant(bkdto);
+	    }
+
+	    return "redirect:/restaurant/detail?r_no=" + r_no;
+	}
+	
 }

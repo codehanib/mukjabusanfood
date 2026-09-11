@@ -18,5 +18,6 @@ public interface bookmarkDAO {
 	public int bookmarkInsert(bookmarkDTO bkdto);
 	// 북마크 삭제
 	public int bookmarkDelete(@Param("bk_no") int bk_no);
-	
+	// ★ 추가
+	public int bookmarkDeleteByRestaurant(bookmarkDTO bkdto);
 }

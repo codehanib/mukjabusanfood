@@ -20,7 +20,7 @@
 	<!-- 식당 목록 -->
 	<c:forEach var="restaurant" items="${restaurantList}">
 	
-		<a href="/restaurant/detail?r_no=${restaurant.r_no}">
+		<a href="/restaurant/detail?r_no=${restaurant.r_no}&keyword=${keyword}">
             <h2>${restaurant.r_name}</h2>
         </a>
         
@@ -56,37 +56,11 @@
 		
 		
 		<div>영업시간 · ${restaurant.simple_time}</div>
-		<div>휴무일 · ${restaurant.rest_day}</div>
+		<div>휴무일 · ${restaurant.r_rest}</div>
+		 <a href="/reservation/reservationInsert?r_no=${restaurant.r_no}">
+	               [예약하기]
+	     </a>
 		
-		
-	<form action="/reservation/writeForm" method="get">
-	
-		<input type="hidden" name="r_no"  value="${restaurant.r_no}">
-		
-		<!-- 날짜 -->
-    	<input type="date" name="res_day" required>
-		
-		<!-- 인원 -->
-	    <select name="res_count" required>
-	        <option value="">인원 선택</option>
-	        <option value="1">1명</option>
-	        <option value="2">2명</option>
-	        <option value="3">3명</option>
-	        <option value="4">4명</option>
-	    </select>
-	
-	    <!-- 시간 -->
-	    <select name="res_time" required>
-	        <option value="">시간 선택</option>
-	        <option value="12:00">12:00</option>
-	        <option value="13:00">13:00</option>
-	        <option value="18:00">18:00</option>
-	        <option value="19:00">19:00</option>
-	    </select>
-	
-	    <button type="submit">예약하기</button>
-	
-	</form>
 	<hr>
 	
 	    
