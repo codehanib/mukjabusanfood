@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
@@ -179,41 +181,41 @@ public class RestaurantESService {
 
 
     // 식당명 자동완성 + 하이라이트
+ // 식당명 + 지역 + 주소 + 음식종류 + 메뉴명 자동완성
     public List<Map<String, String>> autocompleteHighlight(
             String keyword) throws Exception {
 
-        SearchRequest request =
-                new SearchRequest("restaurants");
+        SearchRequest request = new SearchRequest("restaurants");
 
-        SearchSourceBuilder source =
-                new SearchSourceBuilder();
+        SearchSourceBuilder source = new SearchSourceBuilder();
 
         source.size(10);
 
+        // 여러 필드에서 자동완성 검색
         source.query(
-            QueryBuilders.matchPhrasePrefixQuery(
+            QueryBuilders.multiMatchQuery(
+                keyword,
                 "r_name",
-                keyword
+                "r_region",
+                "mukja_c_name",
+                "mn_name"
             )
+            .type(org.elasticsearch.index.query.MultiMatchQueryBuilder.Type.PHRASE_PREFIX)
         );
 
         HighlightBuilder highlight =
                 new HighlightBuilder();
 
-        highlight.field(
-            new HighlightBuilder.Field("r_name")
-                .highlightQuery(
-                    QueryBuilders.matchPhrasePrefixQuery(
-                        "r_name",
-                        keyword
-                    )
-                )
-        );
+        highlight.field("r_name");
+        highlight.field("r_region");
+        highlight.field("mukja_c_name");
+        highlight.field("mn_name");
 
         highlight.preTags("<em>");
         highlight.postTags("</em>");
 
         source.highlighter(highlight);
+
         request.source(source);
 
         SearchResponse response =
@@ -222,36 +224,91 @@ public class RestaurantESService {
                     RequestOptions.DEFAULT
                 );
 
-        List<Map<String, String>> result =
-                new ArrayList<>();
+        List<Map<String, String>> result = new ArrayList<>();
+        Set<String> duplicateCheck = new HashSet<>();
 
         for (SearchHit hit : response.getHits().getHits()) {
 
-            String r_name =
-                hit.getSourceAsMap()
-                   .get("r_name")
-                   .toString();
+            Map<String, Object> sourceMap =
+                    hit.getSourceAsMap();
 
-            String highlighted = r_name;
+            String text = "";
+            String highlighted = "";
 
+            // 식당명
             if (hit.getHighlightFields().get("r_name") != null) {
 
+                text = sourceMap.get("r_name").toString();
+
                 highlighted =
-                    hit.getHighlightFields()
-                       .get("r_name")
-                       .fragments()[0]
-                       .string();
+                        hit.getHighlightFields()
+                           .get("r_name")
+                           .fragments()[0]
+                           .string();
             }
-            
 
-            Map<String, String> map =
-                    new HashMap<>();
+            // 지역
+            else if (hit.getHighlightFields().get("r_region") != null) {
 
-            map.put("r_name", r_name);
-            map.put("highlight", highlighted);
+                text = sourceMap.get("r_region").toString();
 
-            result.add(map);
-        }
+                highlighted =
+                        hit.getHighlightFields()
+                           .get("r_region")
+                           .fragments()[0]
+                           .string();
+            }
+
+            // 음식종류
+            else if (hit.getHighlightFields().get("mukja_c_name") != null) {
+
+                text = sourceMap.get("mukja_c_name").toString();
+
+                highlighted =
+                        hit.getHighlightFields()
+                           .get("mukja_c_name")
+                           .fragments()[0]
+                           .string();
+            }
+
+            // 메뉴명
+            else if (hit.getHighlightFields().get("mn_name") != null) {
+
+                Object mnName = sourceMap.get("mn_name");
+
+                if (mnName != null) {
+                    text = mnName.toString();
+                }
+
+                highlighted =
+                        hit.getHighlightFields()
+                           .get("mn_name")
+                           .fragments()[0]
+                           .string();
+            }
+
+            if (!highlighted.isEmpty()) {
+
+                // 같은 자동완성 문구 중복 제거
+                String plainText =
+                        highlighted
+                            .replace("<em>", "")
+                            .replace("</em>", "");
+
+                if (duplicateCheck.contains(plainText)) {
+                    continue;
+                }
+
+                duplicateCheck.add(plainText);
+
+                Map<String, String> map =
+                        new HashMap<>();
+
+                map.put("text", plainText);
+                map.put("highlight", highlighted);
+
+                result.add(map);
+            }        }
 
         return result;
     }

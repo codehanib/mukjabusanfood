@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,7 +16,19 @@
 			<table width="700">
 			    <tr>
 			        <td rowspan="4" width="200">
-			             <img src="${bk.r_img}" width="200" height="200" height="200">
+			             <c:choose>
+						    <c:when test="${not empty bk.r_img and fn:startsWith(bk.r_img, 'http')}">
+						        <img src="${bk.r_img}"
+						             width="200"
+						             height="200">
+						    </c:when>
+						
+						    <c:otherwise>
+						        <img src="/upload/${bk.r_img}"
+						             width="200"
+						             height="200">
+						    </c:otherwise>
+						</c:choose>
 			        </td>
 			        <td width="300" height="20">${bk.r_name}</td>
 			        <td rowspan="4">

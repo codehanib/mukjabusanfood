@@ -18,5 +18,17 @@
         )
 
     </insert>
+    
+    <select id="popularSearchList" resultType="com.springboot.MUKJA.dto.mukjaSearchDTO">
+
+	    SELECT ms_word,
+	           COUNT(*) AS ms_count
+	    FROM MUKJA_SEARCH
+	    WHERE ms_word IS NOT NULL
+	    GROUP BY ms_word
+	    ORDER BY ms_count DESC
+	    FETCH FIRST 5 ROWS ONLY
+	
+	</select>
 
 </mapper>

@@ -204,7 +204,7 @@
 	<hr>
 	
 	<!-- 메뉴 데이터가 하나라도 있을 때만 메뉴 영역 표시 -->
-<c:if test="${not empty menuList or not empty menuBoardImageList}">
+	<c:if test="${not empty menuList or not empty menuBoardImageList}">
 
     <!-- 메뉴 -->
     <h3>메뉴</h3>
@@ -213,9 +213,17 @@
     <c:if test="${not empty menuBoardImageList}">
         <div>메뉴판</div>
 	
-	        <c:forEach var="img" items="${menuBoardImageList}">
-	            <img src="${img.mbi_img}">
-	        </c:forEach>
+	       <c:forEach var="img" items="${menuBoardImageList}">
+			    <c:choose>
+			        <c:when test="${fn:startsWith(img.mbi_img, 'http')}">
+			            <img src="${img.mbi_img}">
+			        </c:when>
+			
+			        <c:otherwise>
+			            <img src="/upload/${img.mbi_img}">
+			        </c:otherwise>
+			    </c:choose>
+			</c:forEach>
 	
 	        <hr>
 	    </c:if>
@@ -235,11 +243,19 @@
 	                </td>
 	
 	                <td>
-	                    <c:if test="${not empty menu.mn_img}">
-	                        <img src="${menu.mn_img}"
-	                             alt="${menu.mn_name}"
-	                             width="100">
-	                    </c:if>
+	                   <c:if test="${not empty menu.mn_img}">
+						
+						    <c:choose>
+						        <c:when test="${fn:startsWith(menu.mn_img, 'http')}">
+						            <img src="${menu.mn_img}" alt="${menu.mn_name}" width="100">
+						        </c:when>
+						
+						        <c:otherwise>
+						            <img src="/upload/${menu.mn_img}" alt="${menu.mn_name}" width="100">
+						        </c:otherwise>
+						    </c:choose>
+						
+						</c:if>
 	                </td>
 	            </tr>
 	        </table>
@@ -345,6 +361,9 @@
         </a>
 	</c:forEach>
 	 
+	 
+	 
+	<sec:authorize access="hasRole('USER')">
 	<!-- 하단 고정 예약 바 -->
 	<div class="bottom-reservation">
 	
@@ -379,9 +398,7 @@
            </button>
        </form>
 	</div>
-	
-   
-    </div>
+	</sec:authorize>
     
     
 	<script type="text/javascript"

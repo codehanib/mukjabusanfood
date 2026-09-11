@@ -16,19 +16,19 @@
 	<table border="1">
 		<tr>
 			<td>식당 이름</td>
-			<td><input type="text" name="r_name"></td>
+			<td><input type="text" name="r_name" required></td>
 		</tr>
 		<tr>
 			<td>식당 주소</td>
 			<td>
-				<input type="text" id="r_addr" name="r_addr" readonly>
+				<input type="text" id="r_addr" name="r_addr" readonly required>
     			<input type="button" value="주소 검색" onclick="goPopup();">
     		</td>
 		</tr>
 		<tr>
 		    <td>식당 이미지</td>
 		    <td>
-		        <input type="file" name="r_upload" accept="image/*">
+		        <input type="file" name="r_upload" accept="image/*" required>
 		    </td>
 		</tr>
 		<tr>
@@ -36,32 +36,19 @@
 			<td><textarea name="r_info" rows="5" cols="60"></textarea></td>
 		</tr>
 		<tr>
-		    <td>상세 정보</td>
-		    <td>
-			 <textarea name="r_desc" rows="15" cols="60"
-placeholder="전화번호: 051-000-0000
-주차안내: 제휴주차장 1시간 무료주차 제공
-편의시설: 웰컴키즈존, 아기의자, 자동결제
-콜키지: 콜키지 가능(유료)
-단체 이용 안내: 10명 이하
-안내 및 유의사항: 예약시간 10분 이상 지각 시 예약이 취소될 수 있습니다.
-홈페이지: https://www.mukja.com"></textarea>
-		    </td>
-		</tr>
-		<tr>
 			<td>영업시간</td>
 			<td><textarea name="r_time" rows="7" cols="60"
-placeholder="월 휴무
+placeholder="월 휴무 
 화 15:00~21:00  브레이크 타임 17:00~17:30
 수 15:00~21:00  브레이크 타임 17:00~17:30
 목 16:00~21:00  브레이크 타임 17:00~17:30
 금 16:00~21:00  브레이크 타임 17:00~17:30
 토 16:00~21:00
-금 16:00~21:00"></textarea></td>
+일 16:00~21:00"></textarea></td>
 		</tr>
 		<tr>
 			<td>휴무일</td>
-			<td><input type="text" name="r_rest"></td>
+			<td><input type="text" name="r_rest" required></td>
 		</tr>
 		<tr>
 		    <td>음식종류</td>
@@ -77,7 +64,15 @@ placeholder="월 휴무
 		        </select>
 		    </td>
 		</tr>
-		
+		<tr>
+		    <td>메뉴판 이미지</td>
+		    <td>
+		        <input type="file"
+		               name="mbi_upload"
+		               accept="image/*"
+		               multiple>
+		    </td>
+		</tr>
 		<tr>
 		    <td>메뉴</td>
 		    <td>
@@ -107,14 +102,17 @@ placeholder="월 휴무
 		        <button type="button" onclick="addMenu()">메뉴 추가</button>
 		    </td>
 		</tr>
-		
 		<tr>
-		    <td>메뉴판 이미지</td>
+		    <td>상세 정보</td>
 		    <td>
-		        <input type="file"
-		               name="mbi_upload"
-		               accept="image/*"
-		               multiple>
+			 <textarea name="r_desc" rows="10" cols="60"
+placeholder="전화번호: 051-000-0000
+주차안내: 제휴주차장 1시간 무료주차 제공
+편의시설: 웰컴키즈존, 아기의자, 자동결제
+콜키지: 콜키지 가능(유료)
+단체 이용 안내: 10명 이하
+안내 및 유의사항: 예약시간 10분 이상 지각 시 예약이 취소될 수 있습니다.
+홈페이지: https://www.mukja.com"></textarea>
 		    </td>
 		</tr>
 		

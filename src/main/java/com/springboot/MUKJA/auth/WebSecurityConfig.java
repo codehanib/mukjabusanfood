@@ -41,7 +41,7 @@ public class WebSecurityConfig implements WebMvcConfigurer{
 					.requestMatchers("/guest/**").permitAll()
 					.requestMatchers("/users/**").hasAnyRole("USER","ADMIN")
 					.requestMatchers("/owner/**","/restaurant/updateForm","/restaurant/update").hasAnyRole("OWNER","ADMIN")
-					.requestMatchers("/restaurant/restaurantWriteForm","/restaurant/insert").hasRole("OWNER")
+					.requestMatchers("/restaurant/restaurantWriteForm","/restaurant/insert","/restaurant/update").hasRole("OWNER")
 
 					.requestMatchers("/admin/**","/restaurant/delete").hasAnyRole("ADMIN")
 					.anyRequest().authenticated()

@@ -65,8 +65,16 @@ public interface restaurantDAO {
 		//메뉴
 		public List<menuDTO> menuList(@Param("r_no")int r_no);
 		
+		// 메뉴 등록
 		int menuInsert(menuDTO dto);
-
+		
+		// 메뉴 수정
+		int menuUpdate(menuDTO dto);
+		
+		// 메뉴판 이미지 등록
 		int menuBoardImageInsert(restaurantDTO dto);
+		
+		// 메뉴판 이미지 삭제
+		int menuBoardImageDelete(@Param("mbi_no") int mbi_no);
 		
 }

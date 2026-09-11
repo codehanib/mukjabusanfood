@@ -12,7 +12,6 @@
     	JOIN mukja_category c
       		ON r.mukja_c_no = c.mukja_c_no
     	ORDER BY r.r_no DESC
-
 	</select>
     
     <!-- 메인 식당 목록 : 번호 순 + 페이징 -->
@@ -97,7 +96,6 @@
 		    SELECT restaurant_seq.NEXTVAL
 		   	FROM dual
 		</selectKey>
-		
 		INSERT INTO restaurant (r_no, r_name, r_addr, r_region, r_lat, r_lon,
 		    					r_point, r_info, r_desc, r_time, r_rest, r_img, mukja_c_no) 
 		   VALUES (#{r_no}, #{r_name}, #{r_addr}, #{r_region}, #{r_lat}, #{r_lon}, 
@@ -127,67 +125,67 @@
 	
 	<!-- 메뉴판 조회 -->
 	<select id="menuBoardImageList" resultType="com.springboot.MUKJA.dto.restaurantDTO">
-	
 	    SELECT mbi_no, mbi_img, r_no
 	    FROM menuboardimg
 	    WHERE r_no = #{r_no}
 	    ORDER BY mbi_no
-	
 	</select>
 	
 	<!-- 메뉴 등록 -->
 	<insert id="menuInsert" parameterType="com.springboot.MUKJA.dto.menuDTO">
 	
 	    <selectKey keyProperty="mn_no" resultType="int" order="BEFORE">
-	
 	        SELECT menu_seq.NEXTVAL
 	        FROM dual
-	
 	    </selectKey>
-	
-	    INSERT INTO menu (
-	        mn_no,
-	        mn_name,
-	        mn_content,
-	        mn_img,
-	        mn_price,
-	        r_no
-	    )
-	    VALUES (
-	        #{mn_no},
-	        #{mn_name},
-	        #{mn_content},
-	        #{mn_img},
-	        #{mn_price},
-	        #{r_no}
-	    )
-	
+		    INSERT INTO menu (
+		        mn_no,
+		        mn_name,
+		        mn_content,
+		        mn_img,
+		        mn_price,
+		        r_no
+		    )
+		    VALUES (
+		        #{mn_no},
+		        #{mn_name},
+		        #{mn_content},
+		        #{mn_img},
+		        #{mn_price},
+		        #{r_no}
+		    )
 	</insert>
-
+	
+	<!-- 메뉴 수정 -->
+	<update id="menuUpdate" parameterType="com.springboot.MUKJA.dto.menuDTO">
+	    UPDATE menu
+	       SET mn_name = #{mn_name},
+	           mn_content = #{mn_content},
+	           mn_img = #{mn_img},
+	           mn_price = #{mn_price}
+	     WHERE mn_no = #{mn_no}
+	</update>
+	
 	<!-- 메뉴판 이미지 등록 -->
-	<insert id="menuBoardImageInsert"
-	        parameterType="com.springboot.MUKJA.dto.restaurantDTO">
-	
-	    <selectKey keyProperty="mbi_no"
-	               resultType="int"
-	               order="BEFORE">
-	
+	<insert id="menuBoardImageInsert" parameterType="com.springboot.MUKJA.dto.restaurantDTO">
+	    <selectKey keyProperty="mbi_no" resultType="int" order="BEFORE">
 	        SELECT menuboardimg_seq.NEXTVAL
 	        FROM dual
-	
 	    </selectKey>
-	
-	    INSERT INTO menuboardimg (
-	        mbi_no,
-	        mbi_img,
-	        r_no
-	    )
-	    VALUES (
-	        #{mbi_no},
-	        #{mbi_img},
-	        #{r_no}
-	    )
-	
+		    INSERT INTO menuboardimg (
+		        mbi_no,
+		        mbi_img,
+		        r_no
+		    )
+		    VALUES (
+		        #{mbi_no},
+		        #{mbi_img},
+		        #{r_no}
+		    )
 	</insert>
 	
+	<delete id="menuBoardImageDelete">
+	    DELETE FROM menuboardimg
+	    WHERE mbi_no = #{mbi_no}
+	</delete>
 </mapper>
