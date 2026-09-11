@@ -67,7 +67,7 @@
 	 				</tr>
 	 				<tr>
 	 					<td width="70">★ ${rv.rv_point}</td>
-	 					<td><fmt:formatDate value="${rv.rv_reg_date}" pattern="yyyy/MM/dd"/></td>
+	 					<td><fmt:formatDate value="${rv.rv_reg_date}" pattern="yy/MM/dd"/></td>
 	 				</tr>
 	 				<tr>
 	 					<td colspan="2">

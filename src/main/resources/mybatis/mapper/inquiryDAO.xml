@@ -20,7 +20,7 @@
 	
 	<!-- 문의 내용 조회 -->
 	<select id="inquiryView" resultType="com.springboot.MUKJA.dto.inquiryDTO">
-		select i.mi_no,i.mi_title,i.mi_content,i.mi_answer,i.mi_reg_date,i.mi_stats,u.u_name
+		select i.mi_no,i.mi_title,i.mi_content,i.mi_answer,i.mi_reg_date,i.mi_stats,i.u_no,u.u_name
 	    from mukja_inquiry i LEFT JOIN users u
 	    ON i.u_no = u.u_no where i.mi_no=#{mi_no}
 	</select>
