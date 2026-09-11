@@ -1,0 +1,176 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+/* =========================================================
+   마이페이지 전체
+========================================================= */
+.mypage-container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto 80px;
+}
+
+/* =========================================================
+   제목
+========================================================= */
+.mypage-title {
+    position: relative;
+    width: 100%;
+    padding-bottom: 12px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #ddd;
+    color: #222;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.mypage-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 115px;
+    height: 2px;
+    background-color: #222222;
+}
+
+/* =========================================================
+   회원 정보 영역
+========================================================= */
+.member-info {
+    position: relative;
+    margin-bottom: 45px;
+    padding: 35px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f7fbff;
+    border: 1px solid #ff9882;
+    border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(8, 116, 223, 0.06);
+    overflow: hidden;
+}
+
+.member-info::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: #ff6644;
+}
+
+.member-info .mypage-logo {
+    width: 60%;
+    color: #ff6644;
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.member-info .mypage-logo span {
+    color: #222;
+    font-weight: normal;
+}
+
+.member-info .mypage-text {
+    margin-top: 14px;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* =========================================================
+   메뉴 카드
+========================================================= */
+.mypage-menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    border: none;
+}
+
+.mypage-menu-item {
+    min-height: 140px;
+    padding: 28px 30px;
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: #222;
+    background-color: #fff;
+    border: 1px solid #e5e9ee;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+}
+
+.mypage-menu-item::before {
+    content: "";
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: 3px;
+    height: 35px;
+    background-color: #ff6644;
+    border-radius: 0 3px 3px 0;
+}
+
+.mypage-menu-item:hover {
+    transform: translateY(-3px);
+    border-color: #ffccb8;
+    box-shadow: 0 8px 20px rgba(255, 102, 68, 0.10);
+}
+
+.mypage-menu-item.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: default;
+}
+
+.mypage-menu-title {
+    margin-bottom: 15px;
+    color: #222;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.mypage-menu-title span {
+    margin-left: 7px;
+    color: #777;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.mypage-menu-desc {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* =========================================================
+   모바일
+========================================================= */
+@media(max-width: 700px) {
+    .mypage-container {
+        width: 94%;
+    }
+    .member-info {
+        display: block;
+        padding: 30px;
+    }
+    .member-info .mypage-logo {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .mypage-menu {
+        grid-template-columns: 1fr;
+    }
+}

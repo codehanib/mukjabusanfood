@@ -58,6 +58,9 @@
             <a href="/reservation/guestForm">
 		    비회원 예약확인
 		</a>
+		<a href="/users/mypage">
+		   마이페이지
+		</a>
 	
         </form>
 

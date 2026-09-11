@@ -44,6 +44,11 @@ public class UsersController {
     public String index() {
         return "redirect:/main";
     }
+    
+    @GetMapping("/users/mypage")
+    public String mypage() {
+        return "users/mypage";
+    }
 
     @PostMapping("/usersInsert")
     public String usersInsert(HttpServletRequest request, usersDTO dto, HttpSession session) {
