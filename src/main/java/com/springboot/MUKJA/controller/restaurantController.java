@@ -1,10 +1,10 @@
 package com.springboot.MUKJA.controller;
 
-import java.io.File;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.MUKJA.dao.bookmarkDAO;
@@ -189,9 +190,7 @@ public class restaurantController {
 	        
 	        int bookmarkCheck = 0;
 
-	        if (auth != null &&
-	            auth.isAuthenticated() &&
-	            !"anonymousUser".equals(auth.getName())) {
+	        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
 
 	            usersDTO users = usersdao.findById(auth.getName());
 
@@ -208,7 +207,7 @@ public class restaurantController {
 	        LocalDate today = LocalDate.now();
 
 	        for (int i = 0; i < 7; i++) {
-	            dateList.add(today.plusDays(i));
+ dateList.add(today.plusDays(i));
 	        }
 
 	        model.addAttribute("restaurant", restaurant);
@@ -232,190 +231,57 @@ public class restaurantController {
 	     return "restaurant/restaurantWriteForm";
 	 }
 	 
-	 
-	// 식당 등록 처리
 	// 식당 등록 처리
 	 @RequestMapping("/restaurant/insert")
-	 public String restaurantInsert(
-	         restaurantDTO dto,
-
-	         @RequestParam(value = "r_upload", required = false)
-	         MultipartFile file,
-
-	         @RequestParam(value = "mn_name", required = false)
-	         List<String> mnNameList,
-
-	         @RequestParam(value = "mn_content", required = false)
-	         List<String> mnContentList,
-
-	         @RequestParam(value = "mn_price", required = false)
-	         List<Integer> mnPriceList,
-
-	         @RequestParam(value = "mn_upload", required = false)
-	         List<MultipartFile> mnUploadList,
-
-	         @RequestParam(value = "mbi_upload", required = false)
-	         List<MultipartFile> mbiUploadList,
-
+	 public String restaurantInsert( restaurantDTO dto,
+	         @RequestParam(value = "r_upload", required = false) MultipartFile file,
+	         @RequestParam(value = "mn_name", required = false) List<String> mnNameList,
+	         @RequestParam(value = "mn_content", required = false) List<String> mnContentList,
+	         @RequestParam(value = "mn_price", required = false) List<Integer> mnPriceList,
+	         @RequestParam(value = "mn_upload", required = false) List<MultipartFile> mnUploadList,
+	         @RequestParam(value = "mbi_upload", required = false) List<MultipartFile> mbiUploadList,
 	         Principal principal) throws Exception {
 
-	     // 식당 이미지 저장
-	     if (file != null && !file.isEmpty()) {
-
-	         String fileName = file.getOriginalFilename();
-
-	         File saveFile =
-	                 new File("C:/upload/" + fileName);
-
-	         file.transferTo(saveFile);
-
-	         dto.setR_img(fileName);
-	     }
-
-	     // 1. 식당 DB 저장
-	     restaurantdao.restaurantInsert(dto);
-
-	     // restaurantInsert 후 생성된 r_no 사용 가능
-	     int r_no = dto.getR_no();
-
-
-	     // 2. 메뉴 저장
-	     if (mnNameList != null) {
-
-	         for (int i = 0; i < mnNameList.size(); i++) {
-
-	             String mnName = mnNameList.get(i);
-
-	             // 메뉴명이 비어있으면 등록 안 함
-	             if (mnName == null || mnName.trim().isEmpty()) {
-	                 continue;
-	             }
-
-	             menuDTO menu = new menuDTO();
-
-	             menu.setR_no(r_no);
-	             menu.setMn_name(mnName);
-
-	             if (mnContentList != null
-	                     && i < mnContentList.size()) {
-
-	                 menu.setMn_content(
-	                         mnContentList.get(i)
-	                 );
-	             }
-
-	             if (mnPriceList != null
-	                     && i < mnPriceList.size()
-	                     && mnPriceList.get(i) != null) {
-
-	                 menu.setMn_price(
-	                         mnPriceList.get(i)
-	                 );
-	             }
-
-	             // 메뉴 이미지
-	             if (mnUploadList != null
-	                     && i < mnUploadList.size()) {
-
-	                 MultipartFile menuFile =
-	                         mnUploadList.get(i);
-
-	                 if (menuFile != null
-	                         && !menuFile.isEmpty()) {
-
-	                     String menuFileName =
-	                             menuFile.getOriginalFilename();
-
-	                     File saveFile =
-	                             new File(
-	                                 "C:/upload/" + menuFileName
-	                             );
-
-	                     menuFile.transferTo(saveFile);
-
-	                     menu.setMn_img(menuFileName);
-	                 }
-	             }
-
-	             restaurantdao.menuInsert(menu);
-	         }
-	     }
-
-
-	     // 3. 메뉴판 이미지 저장
-	     if (mbiUploadList != null) {
-
-	         for (MultipartFile mbiFile : mbiUploadList) {
-
-	             if (mbiFile == null
-	                     || mbiFile.isEmpty()) {
-	                 continue;
-	             }
-
-	             String fileName =
-	                     mbiFile.getOriginalFilename();
-
-	             File saveFile =
-	                     new File(
-	                         "C:/upload/" + fileName
-	                     );
-
-	             mbiFile.transferTo(saveFile);
-
-	             restaurantDTO menuBoard =
-	                     new restaurantDTO();
-
-	             menuBoard.setR_no(r_no);
-	             menuBoard.setMbi_img(fileName);
-
-	             restaurantdao.menuBoardImageInsert(
-	                     menuBoard
-	             );
-	         }
-	     }
-
-
-	     // 4. OWNER와 식당 연결
-	     usersDTO user =
-	             usersdao.findById(
-	                     principal.getName()
-	             );
-
-	     user.setR_no(r_no);
-
-	     usersdao.usersRestaurantUpdate(user);
-
-
-	     // 5. DB에서 다시 조회
-	     restaurantDTO savedRestaurant =
-	             restaurantdao.restaurantDetail(r_no);
-
-
-	     // 6. Elasticsearch 저장
-	     service.save(savedRestaurant);
-
+	     restaurantService.insertRestaurant(dto,file, mnNameList, mnContentList, mnPriceList,
+	             mnUploadList, mbiUploadList, principal.getName()
+	     );
 
 	     return "redirect:/main";
 	 }
 	 
 	// 식당 수정 폼
 	 @RequestMapping("/restaurant/updateForm")
-	 public String restaurantUpdateForm(@RequestParam("r_no") int r_no,Model model,Principal principal, Authentication authentication) {
+	 public String restaurantUpdateForm(
+	         @RequestParam("r_no") int r_no,
+	         Model model,
+	         Principal principal) {
 
 	     usersDTO user = usersdao.findById(principal.getName());
 
-	     boolean isAdmin = authentication.getAuthorities()
-	    		 .stream()
-	    		 .anyMatch(auth -> auth.getAuthority()
-	    		 .equals("ROLE_ADMIN"));
+	     // 본인 식당이 아니면 접근 불가
+	     if (user.getR_no() != r_no) {
+	         return "redirect:/main";
+	     }
 
-	     // 관리자가 아니면서 자기 식당도 아니면 접근 차단
-	     if (!isAdmin && user.getR_no() != r_no) {return "redirect:/main";}
+	     restaurantDTO restaurant =
+	             restaurantdao.restaurantDetail(r_no);
 
-	     restaurantDTO restaurant = restaurantdao.restaurantDetail(r_no);
+	     List<menuDTO> menuList =
+	             restaurantdao.menuList(r_no);
+
+	     List<restaurantDTO> menuBoardImageList =
+	             restaurantdao.menuBoardImageList(r_no);
 
 	     model.addAttribute("restaurant", restaurant);
-	     model.addAttribute("categoryList", restaurantdao.foodcategoryList());
+	     model.addAttribute(
+	             "categoryList",
+	             restaurantdao.foodcategoryList()
+	     );
+	     model.addAttribute("menuList", menuList);
+	     model.addAttribute(
+	             "menuBoardImageList",
+	             menuBoardImageList
+	     );
 
 	     return "restaurant/restaurantUpdateForm";
 	 }
@@ -423,49 +289,33 @@ public class restaurantController {
 	 
 	// 식당 수정 처리
 	 @RequestMapping("/restaurant/update")
-	 public String restaurantUpdate(
-	         restaurantDTO dto,
+	 public String restaurantUpdate(restaurantDTO dto,
 	         @RequestParam("old_r_img") String old_r_img,
 	         @RequestParam(value = "r_upload", required = false) MultipartFile file,
-	         Principal principal,
-	         Authentication authentication) throws Exception {
+	         @RequestParam(value = "mn_no", required = false) List<String> mnNoList,
+	         @RequestParam(value = "mn_name", required = false) List<String> mnNameList,
+	         @RequestParam(value = "mn_content", required = false) List<String> mnContentList,
+	         @RequestParam(value = "mn_price", required = false) List<String> mnPriceList,
+	         @RequestParam( value = "old_mn_img", required = false) List<String> oldMnImgList,
+	         @RequestParam( value = "mn_upload", required = false)List<MultipartFile> mnUploadList,
+	         @RequestParam( value = "mbi_upload", required = false) List<MultipartFile> mbiUploadList,
+	         @RequestParam( value = "delete_mbi_no", required = false) List<Integer> deleteMbiNoList,
+
+	         Principal principal) throws Exception {
 
 	     usersDTO user = usersdao.findById(principal.getName());
 
-	     boolean isAdmin = authentication.getAuthorities()
-	             .stream()
-	             .anyMatch(auth ->auth.getAuthority().equals("ROLE_ADMIN"));
-
-	     if (!isAdmin && user.getR_no() != dto.getR_no()) {
+	     // 본인 식당만 수정 가능
+	     if (user.getR_no() != dto.getR_no()) {
 	         return "redirect:/main";
 	     }
 
-	     // 새 사진을 등록한 경우
-	     if (file != null && !file.isEmpty()) {
-	         String fileName = file.getOriginalFilename();
+	     restaurantService.updateRestaurant(dto, old_r_img, file, mnNoList, mnNameList, mnContentList,
+	             mnPriceList, oldMnImgList, mnUploadList, deleteMbiNoList, mbiUploadList
+	     );
 
-	         File saveFile = new File("C:/upload/" + fileName);
-	         file.transferTo(saveFile);
-
-	         dto.setR_img(fileName);
-	     } else {
-	    	 
-	         // 사진을 안 넣은 경우 기존 사진 유지
-	         dto.setR_img(old_r_img);
-	     }
-
-	     restaurantdao.restaurantUpdate(dto);
-
-	  // 수정된 식당 다시 조회
-	  restaurantDTO updatedRestaurant =
-	          restaurantdao.restaurantDetail(dto.getR_no());
-
-	  // Elasticsearch도 갱신
-	  service.save(updatedRestaurant);
-
-	  return "redirect:/restaurant/detail?r_no=" + dto.getR_no();
+	     return "redirect:/restaurant/detail?r_no=" + dto.getR_no();
 	 }
-	 
 	 
 	 @RequestMapping("/restaurant/delete")
 	 public String restaurantDelete(
@@ -481,6 +331,26 @@ public class restaurantController {
 	     }
 
 	     return "redirect:/main";
+	 }
+	 
+	 
+	 
+	 @RequestMapping("/restaurant/ownerpage")
+	 public String ownerPage(Principal principal, Model model) {
+
+	     usersDTO user = usersdao.findById(principal.getName());
+	     model.addAttribute("user", user);
+
+	     return "restaurant/ownerpage";
+	 }
+	 
+	 @ResponseBody
+	 @RequestMapping("/autocomplete")
+	 public List<Map<String, String>> autocomplete(
+	         @RequestParam("keyword") String keyword)
+	         throws Exception {
+
+	     return service.autocompleteHighlight(keyword);
 	 }
 	 
 }

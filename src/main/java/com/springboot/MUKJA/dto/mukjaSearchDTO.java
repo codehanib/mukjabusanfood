@@ -9,4 +9,7 @@ public class mukjaSearchDTO {
     private int ms_no;
     private String ms_word;
     private Date ms_date;
+    
+    // 인기검색어 검색 횟수
+    private int ms_count;
 }

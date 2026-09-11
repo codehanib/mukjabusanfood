@@ -1,10 +1,30 @@
 package com.springboot.MUKJA.service;
 
+import java.io.File;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.springboot.MUKJA.dao.restaurantDAO;
+import com.springboot.MUKJA.dao.usersDAO;
+import com.springboot.MUKJA.dto.menuDTO;
+import com.springboot.MUKJA.dto.restaurantDTO;
+import com.springboot.MUKJA.dto.usersDTO;
 
 @Service
 public class RestaurantService {
+	
+	@Autowired
+	private restaurantDAO restaurantdao;
 
+	@Autowired
+	private RestaurantESService restaurantESService;
+	
+	@Autowired
+	private usersDAO usersdao;
+	
     public String formatRestaurantTime(String rTime) {
     	
         // 영업시간이 없는 경우
@@ -355,4 +375,510 @@ public class RestaurantService {
 
         return formatted.substring(start, end);
     }
+    
+ // =====================================================
+ // 식당 정보 수정
+ // =====================================================
+ public void updateRestaurant(
+         restaurantDTO dto,
+         String oldRImg,
+         MultipartFile restaurantFile,
+         List<String> mnNoList,
+         List<String> mnNameList,
+         List<String> mnContentList,
+         List<String> mnPriceList,
+         List<String> oldMnImgList,
+         List<MultipartFile> mnUploadList,
+         List<Integer> deleteMbiNoList,
+         List<MultipartFile> mbiUploadList
+ ) throws Exception {
+
+     // 1. 식당 대표 이미지
+     updateRestaurantImage(
+             dto,
+             oldRImg,
+             restaurantFile
+     );
+
+     // 2. 식당 기본정보 수정
+     restaurantdao.restaurantUpdate(dto);
+
+     // 3. 메뉴 수정 / 추가
+     updateMenus(
+             dto.getR_no(),
+             mnNoList,
+             mnNameList,
+             mnContentList,
+             mnPriceList,
+             oldMnImgList,
+             mnUploadList
+     );
+
+     // 4. 기존 메뉴판 이미지 삭제
+     deleteMenuBoardImages(
+             deleteMbiNoList
+     );
+
+     // 5. 새 메뉴판 이미지 추가
+     addMenuBoardImages(
+             dto.getR_no(),
+             mbiUploadList
+     );
+
+     // 6. Elasticsearch 갱신
+     restaurantDTO updatedRestaurant =
+             restaurantdao.restaurantDetail(
+                     dto.getR_no()
+             );
+
+     restaurantESService.save(
+             updatedRestaurant
+     );
+ }
+
+
+ // =====================================================
+ // 식당 대표 이미지 수정
+ // =====================================================
+ private void updateRestaurantImage(
+         restaurantDTO dto,
+         String oldRImg,
+         MultipartFile file
+ ) throws Exception {
+
+     // 새 이미지 선택
+     if (file != null && !file.isEmpty()) {
+
+         String fileName =
+                 file.getOriginalFilename();
+
+         File saveFile =
+                 new File(
+                         "C:/upload/" +
+                         fileName
+                 );
+
+         file.transferTo(saveFile);
+
+         dto.setR_img(fileName);
+
+     } else {
+
+         // 새 이미지를 선택하지 않으면 기존 이미지 유지
+         dto.setR_img(oldRImg);
+     }
+ }
+
+
+ // =====================================================
+ // 메뉴 수정 / 추가
+ // =====================================================
+ private void updateMenus(
+         int rNo,
+         List<String> mnNoList,
+         List<String> mnNameList,
+         List<String> mnContentList,
+         List<String> mnPriceList,
+         List<String> oldMnImgList,
+         List<MultipartFile> mnUploadList
+ ) throws Exception {
+
+     if (mnNameList == null) {
+         return;
+     }
+
+     for (int i = 0; i < mnNameList.size(); i++) {
+
+         String mnName =
+                 mnNameList.get(i);
+
+         // 메뉴명이 없으면 저장하지 않음
+         if (mnName == null ||
+             mnName.trim().isEmpty()) {
+
+             continue;
+         }
+
+         menuDTO menu =
+                 new menuDTO();
+
+         menu.setR_no(rNo);
+         menu.setMn_name(mnName);
+
+
+         // -------------------------
+         // 메뉴 설명
+         // -------------------------
+         if (mnContentList != null &&
+             i < mnContentList.size()) {
+
+             menu.setMn_content(
+                     mnContentList.get(i)
+             );
+         }
+
+
+         // -------------------------
+         // 메뉴 가격
+         // -------------------------
+         if (mnPriceList != null &&
+             i < mnPriceList.size()) {
+
+             String price =
+                     mnPriceList.get(i);
+
+             if (price != null &&
+                 !price.trim().isEmpty()) {
+
+                 menu.setMn_price(
+                         Integer.parseInt(price)
+                 );
+             }
+         }
+
+
+         // -------------------------
+         // 기존 메뉴 이미지
+         // -------------------------
+         String menuImg = null;
+
+         if (oldMnImgList != null &&
+             i < oldMnImgList.size()) {
+
+             menuImg =
+                     oldMnImgList.get(i);
+         }
+
+
+         // -------------------------
+         // 새 메뉴 이미지
+         // -------------------------
+         if (mnUploadList != null &&
+             i < mnUploadList.size()) {
+
+             MultipartFile menuFile =
+                     mnUploadList.get(i);
+
+             if (menuFile != null &&
+                 !menuFile.isEmpty()) {
+
+                 String fileName =
+                         menuFile.getOriginalFilename();
+
+                 File saveFile =
+                         new File(
+                                 "C:/upload/" +
+                                 fileName
+                         );
+
+                 menuFile.transferTo(saveFile);
+
+                 // 새 이미지로 변경
+                 menuImg = fileName;
+             }
+         }
+
+         menu.setMn_img(menuImg);
+
+
+         // -------------------------
+         // 기존 메뉴 / 새 메뉴 구분
+         // -------------------------
+         String mnNo = null;
+
+         if (mnNoList != null &&
+             i < mnNoList.size()) {
+
+             mnNo =
+                     mnNoList.get(i);
+         }
+
+
+         if (mnNo != null &&
+             !mnNo.trim().isEmpty()) {
+
+             // 기존 메뉴 수정
+             menu.setMn_no(
+                     Integer.parseInt(mnNo)
+             );
+
+             restaurantdao.menuUpdate(menu);
+
+         } else {
+
+             // 새 메뉴 등록
+             restaurantdao.menuInsert(menu);
+         }
+     }
+ }
+
+
+ // =====================================================
+ // 메뉴판 이미지 추가
+ // =====================================================
+ private void addMenuBoardImages(
+         int rNo,
+         List<MultipartFile> mbiUploadList
+ ) throws Exception {
+
+     if (mbiUploadList == null) {
+         return;
+     }
+
+     for (MultipartFile file :
+             mbiUploadList) {
+
+         if (file == null ||
+             file.isEmpty()) {
+
+             continue;
+         }
+
+         String fileName =
+                 file.getOriginalFilename();
+
+         File saveFile =
+                 new File(
+                         "C:/upload/" +
+                         fileName
+                 );
+
+         file.transferTo(saveFile);
+
+
+         restaurantDTO mbiDto =
+                 new restaurantDTO();
+
+         mbiDto.setR_no(rNo);
+         mbiDto.setMbi_img(fileName);
+
+         restaurantdao
+                 .menuBoardImageInsert(
+                         mbiDto
+                 );
+     }
+ }
+ 
+//=====================================================
+//식당 등록
+//=====================================================
+public void insertRestaurant(
+      restaurantDTO dto,
+      MultipartFile restaurantFile,
+      List<String> mnNameList,
+      List<String> mnContentList,
+      List<Integer> mnPriceList,
+      List<MultipartFile> mnUploadList,
+      List<MultipartFile> mbiUploadList,
+      String userId
+) throws Exception {
+
+  // 1. 식당 대표 이미지 저장
+  saveRestaurantImage(dto, restaurantFile);
+
+  // 2. 식당 DB 저장
+  restaurantdao.restaurantInsert(dto);
+
+  int rNo = dto.getR_no();
+
+  // 3. 메뉴 저장
+  insertMenus(
+          rNo,
+          mnNameList,
+          mnContentList,
+          mnPriceList,
+          mnUploadList
+  );
+
+  // 4. 메뉴판 이미지 저장
+  insertMenuBoardImages(
+          rNo,
+          mbiUploadList
+  );
+
+  // 5. OWNER와 식당 연결
+  usersDTO user =
+          usersdao.findById(userId);
+
+  user.setR_no(rNo);
+
+  usersdao.usersRestaurantUpdate(user);
+
+  // 6. DB에서 다시 조회
+  restaurantDTO savedRestaurant =
+          restaurantdao.restaurantDetail(rNo);
+
+  // 7. Elasticsearch 저장
+  restaurantESService.save(savedRestaurant);
+	}
+    
+//=====================================================
+//식당 대표 이미지 저장
+//=====================================================
+private void saveRestaurantImage(
+     restaurantDTO dto,
+     MultipartFile file
+) throws Exception {
+
+ if (file == null || file.isEmpty()) {
+     return;
+ }
+
+ String fileName =
+         file.getOriginalFilename();
+
+ File saveFile =
+         new File(
+                 "C:/upload/" +
+                 fileName
+         );
+
+ file.transferTo(saveFile);
+
+ dto.setR_img(fileName);
+}
+//=====================================================
+//메뉴 등록
+//=====================================================
+private void insertMenus(
+     int rNo,
+     List<String> mnNameList,
+     List<String> mnContentList,
+     List<Integer> mnPriceList,
+     List<MultipartFile> mnUploadList
+) throws Exception {
+
+ if (mnNameList == null) {
+     return;
+ }
+
+ for (int i = 0; i < mnNameList.size(); i++) {
+
+     String mnName =
+             mnNameList.get(i);
+
+     // 메뉴명이 비어 있으면 등록하지 않음
+     if (mnName == null ||
+         mnName.trim().isEmpty()) {
+
+         continue;
+     }
+
+     menuDTO menu =
+             new menuDTO();
+
+     menu.setR_no(rNo);
+     menu.setMn_name(mnName);
+
+
+     // 메뉴 설명
+     if (mnContentList != null &&
+         i < mnContentList.size()) {
+
+         menu.setMn_content(
+                 mnContentList.get(i)
+         );
+     }
+
+
+     // 메뉴 가격
+     if (mnPriceList != null &&
+         i < mnPriceList.size() &&
+         mnPriceList.get(i) != null) {
+
+         menu.setMn_price(
+                 mnPriceList.get(i)
+         );
+     }
+
+
+     // 메뉴 이미지
+     if (mnUploadList != null &&
+         i < mnUploadList.size()) {
+
+         MultipartFile menuFile =
+                 mnUploadList.get(i);
+
+         if (menuFile != null &&
+             !menuFile.isEmpty()) {
+
+             String fileName =
+                     menuFile.getOriginalFilename();
+
+             File saveFile =
+                     new File(
+                             "C:/upload/" +
+                             fileName
+                     );
+
+             menuFile.transferTo(saveFile);
+
+             menu.setMn_img(fileName);
+         }
+     }
+
+     restaurantdao.menuInsert(menu);
+ }
+}
+//=====================================================
+//메뉴판 이미지 등록
+//=====================================================
+private void insertMenuBoardImages(
+     int rNo,
+     List<MultipartFile> mbiUploadList
+) throws Exception {
+
+ if (mbiUploadList == null) {
+     return;
+ }
+
+ for (MultipartFile file :
+         mbiUploadList) {
+
+     if (file == null ||
+         file.isEmpty()) {
+
+         continue;
+     }
+
+     String fileName =
+             file.getOriginalFilename();
+
+     File saveFile =
+             new File(
+                     "C:/upload/" +
+                     fileName
+             );
+
+     file.transferTo(saveFile);
+
+     restaurantDTO menuBoard =
+             new restaurantDTO();
+
+     menuBoard.setR_no(rNo);
+     menuBoard.setMbi_img(fileName);
+
+     restaurantdao
+             .menuBoardImageInsert(
+                     menuBoard
+             );
+ }
+}
+private void deleteMenuBoardImages(
+        List<Integer> deleteMbiNoList
+) {
+
+    if (deleteMbiNoList == null) {
+        return;
+    }
+
+    for (Integer mbiNo : deleteMbiNoList) {
+
+        if (mbiNo == null) {
+            continue;
+        }
+
+        restaurantdao.menuBoardImageDelete(mbiNo);
+    }
+}
 }

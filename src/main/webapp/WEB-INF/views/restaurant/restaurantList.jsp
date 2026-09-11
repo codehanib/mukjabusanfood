@@ -15,7 +15,9 @@
 	<button type="button" onclick="location.href='/main'">home</button>
 	<br><br>
 	
-
+	<c:if test="${empty restaurantList}">
+		<p>검색 결과가 없습니다.</p>
+	</c:if>
     
 	<!-- 식당 목록 -->
 	<c:forEach var="restaurant" items="${restaurantList}">
