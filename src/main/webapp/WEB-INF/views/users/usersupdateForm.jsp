@@ -8,42 +8,42 @@
 <head>
 <meta charset="UTF-8">
 <title>회원정보수정</title>
-
+<link rel="stylesheet" href="/css/login.css">
 </head>
 <script src="/js/writeForm.js"></script>
-<body>
+<body class="signup-body">
 
+<main>
 
-<main class="update-main">
+    <div class="login-wrapper">
+    <div class="login-card signup-card">
 
-    <div class="update-box">
-
-        <div class="update-title">
-            <h3>회원정보수정</h3>
+        <div class="login-title">
+            <h2>회원정보수정</h2>
+            <div class="title-line"></div>
         </div>
 
         <form action="/users/usersUpdate"
               method="post"
-              name="users"
-              class="update-form">
+              name="users">
 
             <input type="hidden"
                    name="u_id"
                    value="${updateForm.u_id}">
 
-            <table class="update-table">
+            <table class="signup-table">
 
                 <tr>
-                    <td>아이디</td>
+                    <th>아이디</th>
                     <td>${updateForm.u_id}</td>
                 </tr>
                 <tr>
-                    <td>이름</td>
+                    <th>이름</th>
                     <td>${updateForm.u_name}</td>
                 </tr>
 
                 <tr>
-                    <td>이메일</td>
+                    <th>이메일</th>
                     <td>
                         <input type="text"
                                name="u_email"
@@ -84,7 +84,7 @@
                 </tr>
 
                 <tr>
-                    <td>우편번호</td>
+                    <th>우편번호</th>
                     <td>
                         <input type="text"
                                name="u_zipno"
@@ -94,7 +94,7 @@
                 </tr>
 
                 <tr>
-                    <td>주소</td>
+                    <th>주소</th>
                     <td>
                         <input type="text"
                                name="u_addr"
@@ -108,7 +108,7 @@
                 </tr>
 
                 <tr>
-                    <td>상세주소</td>
+                    <th>상세주소</th>
                     <td>
                         <input type="text"
                                name="u_addr2"
@@ -118,7 +118,7 @@
                 </tr>
 
                 <tr>
-                    <td>전화번호</td>
+                    <th>전화번호</th>
                     <td>
                         <input type="text"
                                name="u_tel"
@@ -142,21 +142,18 @@
 
             </table>
 
-            <div class="update-buttons">
-                <input type="reset"
-                       value="수정취소">
-			
-                <input type="submit" value="수정하기" onclick="return check()" class="update-blue">
+            <div class="signup-actions">
+                <input type="submit" value="수정하기" onclick="return check()">
+                <input type="reset" value="수정취소" onclick="location.href='/users/userviewForm'">
             </div>
 
         </form>
 
+
+    </div>
     </div>
 
 </main>
 
-<a href="/main">
-            메인
-        </a>
 </body>
 </html>

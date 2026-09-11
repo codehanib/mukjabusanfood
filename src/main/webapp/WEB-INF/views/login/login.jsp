@@ -6,20 +6,15 @@
 <meta charset="UTF-8">
 <title>LOGIN</title>
 <script src="/js/writeForm.js"></script>
+<link rel="stylesheet" href="/css/login.css">
 </head>
 <body class="login-body" onload="checkLoginError(); loginSuccess();">
-
     <div class="login-wrapper">
-
         <form action="/j_spring_security_check" method="post" name="loginForm" class="login-card" onsubmit="return saveIdCookie();">
-
-
-
             <div class="login-title">
                 <h2>LOGIN</h2>
                 <div class="title-line"></div>
             </div>
-
             <!-- 아이디 -->
             <div class="input-box id-box">
                 <input type="text" name="u_id" id="u_id" placeholder="아이디">
@@ -44,24 +39,14 @@
             <input type="submit" value="로그인" class="btn-login">
 
             <a href="/login/writeForm" class="btn-join">회원가입</a>
-            <a href="/main" class="btn-join">비회원 메인</a>
-			<a href="/reservation/guestForm">임시로비회원 예약목록확인</a>
-			
+
             <!-- 하단 안내 -->
             <p class="login-guide">
                 회원이 아니신가요?
                 <a href="/login/writeForm">회원가입</a>
                 후 다양한 서비스를 이용해 보세요.
             </p>
-            <hr>
-            내 실험장
-            <a href="/reservation/guestForm">
-		    비회원 예약확인
-		</a>
-		<a href="/users/mypage">
-		   마이페이지
-		</a>
-	
+
         </form>
 
         <p class="copyright">© 2026 MUKJA. All rights reserved.</p>

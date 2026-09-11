@@ -6,26 +6,25 @@
 <html>
 <head>
 <meta charset="UTF-8">
-
 <title>비밀번호 확인</title>
-
+<link rel="stylesheet" href="/css/login.css">
 </head>
 
+<body class="login-body">
 
-<body>
+<div class="login-wrapper">
 
-<div class="page-wrapper">
+    <div class="login-card">
 
-    <div class="container">
+        <div class="login-title">
+            <h2>비밀번호 확인</h2>
+            <div class="title-line"></div>
+        </div>
 
-        <h3>비밀번호 확인</h3>
-
-
-        <div class="info">
+        <div class="login-guide">
             회원정보 수정과 회원 탈퇴를 위해<br>
             비밀번호를 입력하세요.
         </div>
-
 
         <form name="passwordCheckForm"
               method="post"
@@ -34,19 +33,19 @@
             <input type="hidden"
                    name="mode"
                    value="${mode}">
-            <input type="password"
-                   name="u_passwd"
-                   placeholder="PASSWORD">
 
+            <div class="input-box">
+                <input type="password"
+                       name="u_passwd"
+                       placeholder="PASSWORD">
+            </div>
 
-            <input type="submit"
-                   value="확인">
+            <input type="submit" value="확인" class="btn-login">
 
         </form>
 
-
         <c:if test="${not empty msg}">
-            <p>${msg}</p>
+            <p class="pwcheck-msg">${msg}</p>
         </c:if>
 
     </div>
