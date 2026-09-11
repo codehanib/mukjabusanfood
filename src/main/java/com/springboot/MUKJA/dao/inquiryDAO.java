@@ -10,23 +10,23 @@ import com.springboot.MUKJA.dto.inquiryDTO;
 @Mapper	
 public interface inquiryDAO {
 	
-	// 관리자의 문의 전체 조회
-	public List<inquiryDTO> inquiryAdminList();
-	// 관리자의 문의 상세 조회
-	public inquiryDTO inquiryAdminView(int mi_no);
-	
-	// 회원의 1:1 문의 조회
-	public List<inquiryDTO> inquiryList(int u_no);
-	// 회원의 1:1 문의 상세조회
-	public inquiryDTO inquiryView(@Param("mi_no") int mi_no,
-								  @Param("u_no") int u_no);
-	// 1:1 문의 작성
+	// 문의 전체 목록 조회
+	public List<inquiryDTO> inquiryList(@Param("offset") int offset);
+	// 문의 개수 (for 페이징)
+	public int inquiryCount();
+
+	// 문의 상세 조회
+	public inquiryDTO inquiryView(@Param("mi_no")int mi_no);
+
+	// 문의 작성
 	public int inquiryInsert(inquiryDTO midto);
-	// 1:1 문의 수정
+
+	// 문의 수정
 	public int inquiryUpdate(inquiryDTO midto);
-	// 1:1 문의 답변(관리자)
+
+	// 문의 답변
 	public int inquiryAnswer(inquiryDTO midto);
-	// 1:1 문의 삭제
-	public int inquiryDelete(@Param("mi_no") int mi_no,
-			  				 @Param("u_no") int u_no);
+
+	// 문의 삭제
+	public int inquiryDelete(int mi_no);
 }

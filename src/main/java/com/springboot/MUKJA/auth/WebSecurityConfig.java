@@ -33,9 +33,8 @@ public class WebSecurityConfig implements WebMvcConfigurer{
 					.requestMatchers("/","/writeForm","/loginForm","/usersInsert", "/checkId","/jusoPopup","/usersInsert","/loginsuccess",
 						    "/email/sendCode","/email/verifyCode","/password/**","/header","/footer","/main","/customerService2","/error",
 						    "/restaurant/detail","/restaurant/category","/restaurant/search","/reservation/**","/delivery/admin_delivery_manage").permitAll()
-					.requestMatchers("/notice/list", "/notice/view").permitAll()
+					.requestMatchers("/noticeList", "/noticeView").permitAll()
 					.requestMatchers("/login/**","/loginError").permitAll()
-					.requestMatchers("/notice/write*", "/notice/update*", "/notice/delete*").hasRole("ADMIN")
 										
 					// [수정] .webp 등 다양한 이미지 확장자 및 루트 정적 파일/업로드 경로 추가
 					.requestMatchers("/css/**", "/js/**", "/images/**", "/*.webp", "/*.jpg", "/*.png", "/upload/**").permitAll() 

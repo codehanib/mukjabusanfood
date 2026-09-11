@@ -20,6 +20,7 @@
 	    align-items: center;
 	    justify-content: center;
 	    gap: 20px;
+	    margin-top: 100px;
 	}
 	/* 로고 */
 	.logo img {
@@ -78,7 +79,7 @@
 	.top-menu {
     position: absolute;
     top: 10px;
-    right: 100px;
+    right: 150px;
 	}
 </style>
 <body>
