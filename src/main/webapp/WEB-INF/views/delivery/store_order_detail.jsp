@@ -165,8 +165,11 @@
                     <td>
                         <c:choose>
                             <c:when test="${not empty item.mn_img}">
-                                <img src="${pageContext.request.contextPath}/upload/${item.mn_img}" class="menu-img" alt="메뉴">
-                            </c:when>
+							    <img src="${pageContext.request.contextPath}/${item.mn_img}"
+							         class="menu-img"
+							         alt="${item.mn_name}"
+							         onerror="this.style.display='none';">
+							</c:when>
                             <c:otherwise>
                                 <div style="width:50px; height:50px; background:#eee; line-height:50px; margin:0 auto; font-size:0.8em; color:#888;">No Img</div>
                             </c:otherwise>

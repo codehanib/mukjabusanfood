@@ -35,5 +35,22 @@
         DELETE FROM cart_menu 
         WHERE mc_no = #{mc_no}
     </delete>
+    
+    <!--  새로 추가할 장바구니 메뉴 담기 쿼리 -->
+    <insert id="insertCartMenu" parameterType="com.springboot.MUKJA.dto.cartMenuDTO">
+        INSERT INTO cart_menu (
+            mcm_no,
+            mc_no,
+            mn_no,
+            mcm_count,
+            mcm_price
+        ) VALUES (
+            cart_menu_seq.NEXTVAL,
+            #{mc_no},
+            #{mn_no},
+            #{mcm_count},
+            #{mcm_price}
+        )
+    </insert>
 
 </mapper>

@@ -37,17 +37,21 @@
     <div class="header-box">
         <div>
             <h2 style="margin: 0;">🛒 장바구니</h2>
-            <!-- 식당명 클릭 시 해당 식당 상세/메뉴 페이지로 이동 -->
-            <a href="${pageContext.request.contextPath}/restaurant/detail?r_no=${r_no}" class="store-link">
-                🏪 ${not empty r_name ? r_name : '가게 바로가기'} ➔
-            </a>
+				
+			
+			<a href="${pageContext.request.contextPath}/cart/delivery/menu?r_no=${r_no}" class="store-link">
+    			🏪 ${not empty r_name ? r_name : '가게 바로가기'} ➔
+			</a>
         </div>
         <c:if test="${not empty cartList}">
-            <form action="${pageContext.request.contextPath}/cart/clear" method="POST">
-                <input type="hidden" name="mc_no" value="${mc_no}">
-                <button type="submit" class="btn-sm btn-clear">전체 비우기</button>
-            </form>
-        </c:if>
+		    <form action="${pageContext.request.contextPath}/cart/clear" method="POST">
+		        <input type="hidden" name="mc_no" value="${mc_no}">
+		        <!-- 💡 r_no, r_name 유지 -->
+		        <input type="hidden" name="r_no" value="${r_no}">
+		        <input type="hidden" name="r_name" value="${r_name}">
+		        <button type="submit" class="btn-sm btn-clear">전체 비우기</button>
+		    </form>
+		</c:if>
     </div>
 
     <table class="cart-table">
@@ -66,21 +70,29 @@
                         ${not empty item.mn_name ? item.mn_name : '메뉴번호 '.concat(item.mn_no)}
                     </td>
                     <td><fmt:formatNumber value="${item.mcm_price}" pattern="#,###"/>원</td>
-                    <td>
-                        <form action="${pageContext.request.contextPath}/cart/update" method="POST" style="display: inline-flex; gap: 4px;">
-                            <input type="hidden" name="mcm_no" value="${item.mcm_no}">
-                            <input type="hidden" name="mc_no" value="${item.mc_no}">
-                            <input type="number" name="mcm_count" value="${item.mcm_count}" min="1" class="qty-input">
-                            <button type="submit" class="btn-sm btn-update">수정</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form action="${pageContext.request.contextPath}/cart/delete" method="POST">
-                            <input type="hidden" name="mcm_no" value="${item.mcm_no}">
-                            <input type="hidden" name="mc_no" value="${item.mc_no}">
-                            <button type="submit" class="btn-sm btn-delete">삭제</button>
-                        </form>
-                    </td>
+	                       <td>
+					            <!-- 2) 수량 수정 폼 -->
+					            <form action="${pageContext.request.contextPath}/cart/update" method="POST" style="display: inline-flex; gap: 4px;">
+					                <input type="hidden" name="mcm_no" value="${item.mcm_no}">
+					                <input type="hidden" name="mc_no" value="${item.mc_no}">
+					                <!-- 💡 r_no, r_name 유지 -->
+					                <input type="hidden" name="r_no" value="${r_no}">
+					                <input type="hidden" name="r_name" value="${r_name}">
+					                <input type="number" name="mcm_count" value="${item.mcm_count}" min="1" class="qty-input">
+					                <button type="submit" class="btn-sm btn-update">수정</button>
+					            </form>
+					        </td>
+                    	<td>
+				            <!-- 3) 개별 삭제 폼 -->
+				            <form action="${pageContext.request.contextPath}/cart/delete" method="POST">
+				                <input type="hidden" name="mcm_no" value="${item.mcm_no}">
+				                <input type="hidden" name="mc_no" value="${item.mc_no}">
+				                <!-- 💡 r_no, r_name 유지 -->
+				                <input type="hidden" name="r_no" value="${r_no}">
+				                <input type="hidden" name="r_name" value="${r_name}">
+				                <button type="submit" class="btn-sm btn-delete">삭제</button>
+				            </form>
+			        	</td>
                 </tr>
             </c:forEach>
             <c:if test="${empty cartList}">
