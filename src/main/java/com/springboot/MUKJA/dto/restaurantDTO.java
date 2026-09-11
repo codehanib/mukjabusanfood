@@ -30,6 +30,7 @@ public class restaurantDTO {
     private String rest_day;
     private String today_time;
     
+    private int mn_no;
     private String mn_name;
     private String mn_content;
     private int mn_price;

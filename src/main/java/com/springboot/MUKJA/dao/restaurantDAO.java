@@ -65,4 +65,8 @@ public interface restaurantDAO {
 		//메뉴
 		public List<menuDTO> menuList(@Param("r_no")int r_no);
 		
+		int menuInsert(menuDTO dto);
+
+		int menuBoardImageInsert(restaurantDTO dto);
+		
 }

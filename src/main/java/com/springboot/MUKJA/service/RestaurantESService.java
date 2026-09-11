@@ -108,7 +108,11 @@ public class RestaurantESService {
             if (map.get("r_addr") != null) {
                 dto.setR_addr(map.get("r_addr").toString());
             }
-
+            
+            if (map.get("r_rest") != null) {
+                dto.setR_rest(map.get("r_rest").toString());
+            }
+            
             if (map.get("r_img") != null) {
                 dto.setR_img(map.get("r_img").toString());
             }

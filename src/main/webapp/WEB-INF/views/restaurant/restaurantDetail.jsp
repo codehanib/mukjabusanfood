@@ -91,10 +91,21 @@
     background: white;
     cursor: pointer;
 }
-
 .bookmark-btn i {
     font-size: 22px;
     color: #333;
+}
+
+/* 기본 북마크 */
+.bookmark-btn .fa-regular {
+    font-size: 22px;
+    color: #333;
+}
+
+/* 선택된 북마크 */
+.bookmark-btn .fa-solid {
+    font-size: 22px;
+    color: #ff5a5f; /* 예약하기 버튼 색상과 동일하게 */
 }
 
 .reservation-btn,
@@ -119,6 +130,14 @@
 
 .delivery-btn {
     width: 100%;
+}
+.last-order {
+    display: inline-block;
+    margin-left: 30px;
+}
+.sub-time {
+    display: inline-block;
+    margin-left: 30px;
 }
 
 </style>
@@ -172,7 +191,7 @@
 	<div>${restaurant.r_addr}</div>	
 		<br>
 	<div id="businessHoursSource" style="display:none;">
-		    ${restaurant.display_time}
+	    <c:out value="${restaurant.r_time}" />
 	</div>
 		
 	<div class="business-hours-summary" onclick="toggleBusinessHours()">
@@ -184,79 +203,51 @@
 	
 	<hr>
 	
-	<!-- 예약 -->
-	<h3 id="reservation">예약</h3>
-	<form action="/reservation/reservationInsert" method="get">
-	
-		<input type="hidden" name="r_no"  value="${restaurant.r_no}">
-		
-		<!-- 날짜 -->
-		<input type="date" name="res_day" required>
-		
-		<!-- 인원 -->
-	    <select name="res_count" required>
-	        <option value="">인원 선택</option>
-	        <option value="1">1명</option>
-	        <option value="2">2명</option>
-	        <option value="3">3명</option>
-	        <option value="4">4명</option>
-	    </select>
-	
-	    <!-- 시간 -->
-	    <select name="res_time" id="res_time">
-								<option value="">선택</option>
-								<option value="11:00">11:00</option>
-								<option value="11:30">11:30</option>
-								<option value="12:00">12:00</option>
-								<option value="12:30">12:30</option>
-								<option value="13:00">13:00</option>
-								<option value="13:30">13:30</option>
-								<option value="14:00">14:00</option>
-								<option value="17:00">17:00</option>
-								<option value="17:30">17:30</option>
-								<option value="18:00">18:00</option>
-								<option value="18:30">18:30</option>
-								<option value="19:00">19:00</option>
-								<option value="19:30">19:30</option>
-								<option value="20:00">20:00</option>
-								<option value="20:30">20:30</option>
-								<option value="21:00">21:00</option>
-						</select>
-	
-		<button type="submit">예약하기</button>
-	
-	</form>
+	<!-- 메뉴 데이터가 하나라도 있을 때만 메뉴 영역 표시 -->
+<c:if test="${not empty menuList or not empty menuBoardImageList}">
 
-	<hr>
-	
-	<!-- 메뉴 -->
+    <!-- 메뉴 -->
     <h3>메뉴</h3>
-    <div>메뉴판</div>
-    <c:forEach var="img" items="${menuBoardImageList}">
-	    <img src="${img.mbi_img}">
-	</c:forEach>
+
+    <!-- 메뉴판 이미지가 있을 때만 '메뉴판' 표시 -->
+    <c:if test="${not empty menuBoardImageList}">
+        <div>메뉴판</div>
 	
-	<hr>
-	   
-    <c:forEach var="menu" items="${menuList}">
-		<table border="1">
-			<tr>
-	           <td>${menu.mn_name}<br>
+	        <c:forEach var="img" items="${menuBoardImageList}">
+	            <img src="${img.mbi_img}">
+	        </c:forEach>
+	
+	        <hr>
+	    </c:if>
+	
+	    <!-- 메뉴 목록 -->
+	    <c:forEach var="menu" items="${menuList}">
+	        <table border="1">
+	            <tr>
+	                <td>
+	                    ${menu.mn_name}<br>
+	
 	                    <c:if test="${not empty menu.mn_content}">
 	                        ${menu.mn_content}<br>
 	                    </c:if>
 	
 	                    ${menu.mn_price}원
 	                </td>
+	
 	                <td>
 	                    <c:if test="${not empty menu.mn_img}">
-	                        <img src="${menu.mn_img}" alt="${menu.mn_name}" width="100">
+	                        <img src="${menu.mn_img}"
+	                             alt="${menu.mn_name}"
+	                             width="100">
 	                    </c:if>
 	                </td>
 	            </tr>
-		</table>
-	</c:forEach>
-	<hr>
+	        </table>
+	    </c:forEach>
+	
+	    <hr>
+	
+	</c:if>
     
 	<!-- 추천 리뷰 -->
     <h3>추천 리뷰</h3>
@@ -330,16 +321,19 @@
 	<div id="map" style="width:500px; height:350px;"></div>
 	
 	<hr>
+	
 	<!-- 상세정보 -->
-    <h3>상세정보</h3>
-	<div class="restaurant-info">
-	    <div id="restaurantDesc"></div>
+	<div id="detailInfoSection" style="display:none;">
+	
+	    <h3>상세정보</h3>
+	
+	    <div class="restaurant-info">
+	        <div id="restaurantDesc"></div>
+	    </div>
+	
 	</div>
 	
-	<!-- DB의 r_desc 원본 -->
 	<textarea id="rawRestaurantDesc" style="display:none;"><c:out value="${restaurant.r_desc}" /></textarea>
-	
-
 		<br>
 		
             
@@ -355,28 +349,35 @@
 	<div class="bottom-reservation">
 	
 	    <!-- 북마크 -->
-	    <form action="/users/bookmarkInsert" method="get">
-	        <input type="hidden" name="r_no" value="${restaurant.r_no}">
-	
-	        <button type="submit" class="bookmark-btn">
-	            <i class="fa-regular fa-bookmark"></i>
-	        </button>
-	    </form>
+		<form action="/users/bookmarkToggle" method="get">
+		    <input type="hidden" name="r_no" value="${restaurant.r_no}">
+
+			<button type="submit" class="bookmark-btn">
+			    <c:choose>
+			        <c:when test="${bookmarkCheck == 1}">
+			            <i class="fa-solid fa-bookmark"></i>
+			        </c:when>
+			
+			        <c:otherwise>
+			            <i class="fa-regular fa-bookmark"></i>
+			        </c:otherwise>
+			    </c:choose>
+			</button>
+		</form>
 	
 	    <!-- 예약하기 -->
 	    <button type="button" class="reservation-btn" onclick="location.href='/reservation/reservationInsert?r_no=${restaurant.r_no}'">
 		    예약하기
 		</button>
 		
-	    <!-- 배달 주문 -->
-	    <form action="/" method="get">
-	        <input type="hidden" name="r_no" value="${restaurant.r_no}">
-	
-	        <button type="submit" class="delivery-btn">
-	            배달주문
-	        </button>
-	    </form>
-	
+		<!-- 배달 주문 -->
+       <form action="${pageContext.request.contextPath}/cart/delivery/menu" method="get">
+           <input type="hidden" name="r_no" value="${restaurant.r_no}">
+   
+           <button type="submit" class="delivery-btn">
+               배달주문
+           </button>
+       </form>
 	</div>
 	
    

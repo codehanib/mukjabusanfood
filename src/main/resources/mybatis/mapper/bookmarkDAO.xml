@@ -7,7 +7,7 @@
 	<select id="bookmarkList" resultType="com.springboot.MUKJA.dto.bookmarkDTO">
 	    select b.bk_no, b.r_no, b.u_no, r.r_img, r.r_name, r.r_region, r.r_point
 	     from bookmark b JOIN restaurant r
-	     on b.r_no = r.r_no where b.u_no = #{u_no}
+	     on b.r_no = r.r_no where b.u_no = #{u_no} order by b.bk_no asc
 	</select>
 	<!-- 북마크 여부 확인 1 or 0 반환 -->
 	<select id="bookmarkCheck" resultType="int">
@@ -22,5 +22,12 @@
 	<delete id="bookmarkDelete">
 		delete from bookmark where bk_no=#{bk_no}
 	</delete>
-	
+	<delete id="bookmarkDeleteByRestaurant"
+        parameterType="com.springboot.MUKJA.dto.bookmarkDTO">
+
+    DELETE FROM bookmark
+    WHERE u_no = #{u_no}
+      AND r_no = #{r_no}
+
+</delete>
 </mapper>

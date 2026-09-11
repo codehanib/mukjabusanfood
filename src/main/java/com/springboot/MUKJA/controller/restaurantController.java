@@ -4,7 +4,6 @@ import java.io.File;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.springboot.MUKJA.dao.bookmarkDAO;
 import com.springboot.MUKJA.dao.mukjaSearchDAO;
 import com.springboot.MUKJA.dao.restaurantDAO;
 import com.springboot.MUKJA.dao.reviewDAO;
 import com.springboot.MUKJA.dao.usersDAO;
+import com.springboot.MUKJA.dto.bookmarkDTO;
 import com.springboot.MUKJA.dto.menuDTO;
 import com.springboot.MUKJA.dto.mukjaSearchDTO;
 import com.springboot.MUKJA.dto.restaurantDTO;
@@ -49,6 +50,9 @@ public class restaurantController {
 	
 	@Autowired
 	private mukjaSearchDAO searchdao;
+	
+	@Autowired
+	private bookmarkDAO bkdao;
 	
 	@RequestMapping("/restaurant/es/index")
 	public String restaurantESIndex() throws Exception {
@@ -160,7 +164,8 @@ public class restaurantController {
 	    
 	    // 식당 하나 선택했을때 상세
 	    @RequestMapping("/restaurant/detail")
-	    public String restaurantDetail(@RequestParam("r_no") int r_no, Model model) {
+	    public String restaurantDetail(@RequestParam("r_no") int r_no, Model model,
+	    		@RequestParam(value="keyword", required=false) String keyword,Authentication auth) {
 
 	        restaurantDTO restaurant = restaurantdao.restaurantDetail(r_no);
 	        
@@ -181,7 +186,24 @@ public class restaurantController {
 
 	        int reviewCount = reviewdao.reviewCount(r_no);
 	        double reviewAvg = reviewdao.reviewAvg(r_no);
+	        
+	        int bookmarkCheck = 0;
 
+	        if (auth != null &&
+	            auth.isAuthenticated() &&
+	            !"anonymousUser".equals(auth.getName())) {
+
+	            usersDTO users = usersdao.findById(auth.getName());
+
+	            bookmarkDTO bkdto = new bookmarkDTO();
+	            bkdto.setR_no(r_no);
+	            bkdto.setU_no(users.getU_no());
+
+	            bookmarkCheck = bkdao.bookmarkCheck(bkdto);
+	        }
+
+	        model.addAttribute("bookmarkCheck", bookmarkCheck);
+	        
 	        List<LocalDate> dateList = new ArrayList<>();
 	        LocalDate today = LocalDate.now();
 
@@ -190,6 +212,7 @@ public class restaurantController {
 	        }
 
 	        model.addAttribute("restaurant", restaurant);
+	        model.addAttribute("keyword", keyword);
 	        model.addAttribute("reviewCount", reviewCount);
 	        model.addAttribute("reviewAvg", reviewAvg);
 	        model.addAttribute("dateList", dateList);
@@ -211,43 +234,169 @@ public class restaurantController {
 	 
 	 
 	// 식당 등록 처리
+	// 식당 등록 처리
 	 @RequestMapping("/restaurant/insert")
 	 public String restaurantInsert(
 	         restaurantDTO dto,
-	         @RequestParam(value = "r_upload", required = false) MultipartFile file,
+
+	         @RequestParam(value = "r_upload", required = false)
+	         MultipartFile file,
+
+	         @RequestParam(value = "mn_name", required = false)
+	         List<String> mnNameList,
+
+	         @RequestParam(value = "mn_content", required = false)
+	         List<String> mnContentList,
+
+	         @RequestParam(value = "mn_price", required = false)
+	         List<Integer> mnPriceList,
+
+	         @RequestParam(value = "mn_upload", required = false)
+	         List<MultipartFile> mnUploadList,
+
+	         @RequestParam(value = "mbi_upload", required = false)
+	         List<MultipartFile> mbiUploadList,
+
 	         Principal principal) throws Exception {
 
+	     // 식당 이미지 저장
 	     if (file != null && !file.isEmpty()) {
 
 	         String fileName = file.getOriginalFilename();
 
-	         File saveFile = new File("C:/upload/" + fileName);
+	         File saveFile =
+	                 new File("C:/upload/" + fileName);
 
 	         file.transferTo(saveFile);
 
 	         dto.setR_img(fileName);
 	     }
 
-	     // DB 저장
+	     // 1. 식당 DB 저장
 	     restaurantdao.restaurantInsert(dto);
 
-	     // OWNER와 식당 연결
-	     usersDTO user = usersdao.findById(principal.getName());
+	     // restaurantInsert 후 생성된 r_no 사용 가능
+	     int r_no = dto.getR_no();
 
-	     user.setR_no(dto.getR_no());
+
+	     // 2. 메뉴 저장
+	     if (mnNameList != null) {
+
+	         for (int i = 0; i < mnNameList.size(); i++) {
+
+	             String mnName = mnNameList.get(i);
+
+	             // 메뉴명이 비어있으면 등록 안 함
+	             if (mnName == null || mnName.trim().isEmpty()) {
+	                 continue;
+	             }
+
+	             menuDTO menu = new menuDTO();
+
+	             menu.setR_no(r_no);
+	             menu.setMn_name(mnName);
+
+	             if (mnContentList != null
+	                     && i < mnContentList.size()) {
+
+	                 menu.setMn_content(
+	                         mnContentList.get(i)
+	                 );
+	             }
+
+	             if (mnPriceList != null
+	                     && i < mnPriceList.size()
+	                     && mnPriceList.get(i) != null) {
+
+	                 menu.setMn_price(
+	                         mnPriceList.get(i)
+	                 );
+	             }
+
+	             // 메뉴 이미지
+	             if (mnUploadList != null
+	                     && i < mnUploadList.size()) {
+
+	                 MultipartFile menuFile =
+	                         mnUploadList.get(i);
+
+	                 if (menuFile != null
+	                         && !menuFile.isEmpty()) {
+
+	                     String menuFileName =
+	                             menuFile.getOriginalFilename();
+
+	                     File saveFile =
+	                             new File(
+	                                 "C:/upload/" + menuFileName
+	                             );
+
+	                     menuFile.transferTo(saveFile);
+
+	                     menu.setMn_img(menuFileName);
+	                 }
+	             }
+
+	             restaurantdao.menuInsert(menu);
+	         }
+	     }
+
+
+	     // 3. 메뉴판 이미지 저장
+	     if (mbiUploadList != null) {
+
+	         for (MultipartFile mbiFile : mbiUploadList) {
+
+	             if (mbiFile == null
+	                     || mbiFile.isEmpty()) {
+	                 continue;
+	             }
+
+	             String fileName =
+	                     mbiFile.getOriginalFilename();
+
+	             File saveFile =
+	                     new File(
+	                         "C:/upload/" + fileName
+	                     );
+
+	             mbiFile.transferTo(saveFile);
+
+	             restaurantDTO menuBoard =
+	                     new restaurantDTO();
+
+	             menuBoard.setR_no(r_no);
+	             menuBoard.setMbi_img(fileName);
+
+	             restaurantdao.menuBoardImageInsert(
+	                     menuBoard
+	             );
+	         }
+	     }
+
+
+	     // 4. OWNER와 식당 연결
+	     usersDTO user =
+	             usersdao.findById(
+	                     principal.getName()
+	             );
+
+	     user.setR_no(r_no);
 
 	     usersdao.usersRestaurantUpdate(user);
 
-	     // DB에서 다시 조회
-	     restaurantDTO savedRestaurant =
-	             restaurantdao.restaurantDetail(dto.getR_no());
 
-	     // Elasticsearch 저장
+	     // 5. DB에서 다시 조회
+	     restaurantDTO savedRestaurant =
+	             restaurantdao.restaurantDetail(r_no);
+
+
+	     // 6. Elasticsearch 저장
 	     service.save(savedRestaurant);
+
 
 	     return "redirect:/main";
 	 }
-	
 	 
 	// 식당 수정 폼
 	 @RequestMapping("/restaurant/updateForm")
@@ -319,14 +468,19 @@ public class restaurantController {
 	 
 	 
 	 @RequestMapping("/restaurant/delete")
-	 public String restaurantDelete(@RequestParam("r_no") int r_no,
-			 						@RequestParam("keyword") String keyword) throws Exception  {
+	 public String restaurantDelete(
+	         @RequestParam("r_no") int r_no,
+	         @RequestParam(value="keyword", required=false) String keyword)
+	         throws Exception {
 
 	     restaurantdao.restaurantDelete(r_no);
 	     service.delete(r_no);
-	     
-	     return "redirect:/restaurant/search?keyword=" + keyword;
+
+	     if (keyword != null && !keyword.trim().isEmpty()) {
+	         return "redirect:/restaurant/search?keyword=" + keyword;
+	     }
+
+	     return "redirect:/main";
 	 }
-	 
 	 
 }
