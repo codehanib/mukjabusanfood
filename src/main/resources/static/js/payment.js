@@ -19,7 +19,6 @@ function requestPay(event) {
     var totalPrice = ORDER_DATA.totalPrice;
     var rName = ORDER_DATA.rName;
     
-    // 배달 검증: 메뉴 없이 배달팁(3000원 이하)만 존재하는 경우 차단
     if (totalPrice <= 3000) {
         alert("장바구니에 결제할 메뉴를 담아주세요!");
         return false;
@@ -35,32 +34,32 @@ function requestPay(event) {
 }
 
 /**
- * 2. 식당 예약(예약금) 전용 결제 함수
+ * 2. 식당 예약(예약금) 전용 결제 함수 (JSP에서 호출하는 함수명으로 맞춤)
  */
-function requestReservationPay(event, reservationData) {
+function handleReservationPayment(event) {
     if (event) event.preventDefault();
     
-    // 예약금 검증 (예: 최소 예약금 10,000원 이상 설정 등)
-    if (!reservationData.amount || reservationData.amount <= 0) {
-        alert("유효한 예약금 금액이 아닙니다.");
+    var resName = document.getElementById("res_name") ? document.getElementById("res_name").value : "";
+    if (!resName) {
+        alert("예약자 이름을 입력해주세요.");
         return false;
     }
     
     executePortOnePayment({
         merchantUid: "res_no_" + new Date().getTime(),
-        name: reservationData.rName + " 식당 예약금",
-        amount: reservationData.amount,
-        buyerAddr: reservationData.userAddr || "방문 예약",
+        name: "식당 방문 예약금",
+        amount: 1000, // 1,000원 예약금
+        buyerAddr: "방문 예약",
         formId: "reservationForm" // 식당 예약 전용 폼 ID
     });
 }
 
 /**
- * 공통 포트원 결제 실행 함수 (카카오페이 / 이니시스)
+ * 공통 포트원 결제 실행 함수
  */
 function executePortOnePayment(payInfo) {
     IMP.request_pay({
-        pg: "kakaopay.TC0ONETIME", // 카카오페이 테스트 PG
+        pg: "kakaopay.TC0ONETIME", 
         pay_method: "card",
         merchant_uid: payInfo.merchantUid,
         name: payInfo.name,

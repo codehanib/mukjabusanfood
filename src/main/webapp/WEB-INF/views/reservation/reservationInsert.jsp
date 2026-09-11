@@ -32,7 +32,7 @@
 				<h2>예약하기</h2>
 				<p>방문 예약 정보를 입력해주세요.</p>
 			</div>
-			<form action="/reservation/reservationInsert" method="post"
+			<form id="reservationForm" action="/reservation/reservationInsert" method="post"
 				name="reservation" onsubmit="return check1();">
 
 				<input type="hidden" name="r_no" value="${r_no}">
