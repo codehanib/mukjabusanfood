@@ -28,10 +28,12 @@ public class inquiryController {
 		int offset = (page-1) * 10;
 		List<inquiryDTO> inquirylist = idao.inquiryList(offset);
 		int count = idao.inquiryCount();
+		int totalPage = (count + 9) / 10;
 		
 		model.addAttribute("ilist",inquirylist);
 		model.addAttribute("count",count);
 		model.addAttribute("page",page);
+		model.addAttribute("totalPage",totalPage);
 		return "users/inquiryList";
 	}
 	

@@ -14,6 +14,10 @@ public interface noticeDAO {
 	public List<noticeDTO> noticeList();
 	// 공지 내용 조회 (권한 모두 가능)
 	public noticeDTO noticeView(@Param("nt_no") int nt_no);
+	// 공지 이전글 조회
+	public noticeDTO noticePrev(@Param("nt_no") int nt_no);
+	// 공지 다음글 조회
+	public noticeDTO noticeNext(@Param("nt_no") int nt_no);
 	// 공지 작성 (관리자만 가능)
 	public int noticeInsert(noticeDTO ntdto);
 	// 공지 수정 (관리자만 가능)

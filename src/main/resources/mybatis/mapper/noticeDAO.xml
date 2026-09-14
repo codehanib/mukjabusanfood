@@ -15,6 +15,22 @@
 		 from mukja_notice
 		 where nt_no=#{nt_no}
 	</select>
+	<!-- 공지글 이전페이지 조회 -->
+	<select id="noticePrev" resultType="com.springboot.MUKJA.dto.noticeDTO">
+		select *
+		 from mukja_notice
+		 where nt_no &lt; #{nt_no}
+		 order by nt_no desc
+		 fetch first 1 row only	
+	</select>
+	<!-- 공지글 다음페이지 조회 -->
+	<select id="noticeNext" resultType="com.springboot.MUKJA.dto.noticeDTO">
+		select *
+	     from mukja_notice
+	     where nt_no &gt; #{nt_no}
+	     order by nt_no asc
+	     fetch first 1 row only
+	</select>
 	
 	<!-- 공지 작성(관리자) -->
 	<insert id="noticeInsert">

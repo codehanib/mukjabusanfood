@@ -40,7 +40,13 @@ public class noticeController {
 	public String noticeView(Model model,@RequestParam("nt_no") int nt_no) {
 		
 		noticeDTO ntview = ntdao.noticeView(nt_no);
+		// 이전글 다음글 조회
+	    noticeDTO prev = ntdao.noticePrev(nt_no);
+	    noticeDTO next = ntdao.noticeNext(nt_no);
+		
 		model.addAttribute("ntview", ntview);
+		model.addAttribute("prev", prev);
+		model.addAttribute("next", next);
 		
 		return "noticeView";
 	}
