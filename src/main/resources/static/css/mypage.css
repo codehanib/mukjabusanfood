@@ -287,3 +287,12 @@ body {
 .reservation-table td {
     text-align: center;
 }
+.mypage-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mypage-title .title-action {
+    font-size: 13px;
+}
