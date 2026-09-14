@@ -45,10 +45,7 @@ public class UsersController {
 	@Autowired
 	private mukjaSearchDAO mukjaSearchdao;
 
-	@GetMapping("/")
-	public String index() {
-		return "redirect:/main";
-	}
+
 
 	@GetMapping("/users/mypage")
 	public String mypage() {
@@ -93,58 +90,13 @@ public class UsersController {
 
 		usersDAO.usersInsert(dto);
 		emailVerificationService.clearToken(emailVerifyToken);
-		return "redirect:/login/login?login=true";
+		return "redirect:/main";
 	}
 
 	@RequestMapping("/jusoPopup")
 	public String jusoPopup() {
 		return "login/jusoPopup";
 	}
-
-	@RequestMapping("/main")
-    public String main(
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            Model model,
-            Principal principal) {
-
-        int pageSize = 20;
-        int start = (page - 1) * pageSize;
-
-        // 현재 페이지 식당 목록
-        List<restaurantDTO> restaurantList = restaurantdao.mainrestaurantList(start, pageSize);
-
-        int count = restaurantdao.restaurantCount();
-        int totalPage = (int) Math.ceil((double) count / pageSize);
-
-        // 페이지 번호 5개씩
-        int pageBlock = 5;
-
-        int startPage = ((page - 1) / pageBlock) * pageBlock + 1;
-
-        int endPage = startPage + pageBlock - 1;
-
-        if (endPage > totalPage) {endPage = totalPage;}
-
-        model.addAttribute("restaurantList", restaurantList);
-        model.addAttribute("categoryList", restaurantdao.foodcategoryList());
-        model.addAttribute("regionList", restaurantdao.regionList());
-
-        model.addAttribute("page", page);
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-
-        // 인기검색어 TOP 5
-        List<mukjaSearchDTO> popularSearchList = mukjaSearchdao.popularSearchList();
-        model.addAttribute("popularSearchList",popularSearchList);
-
-        if (principal != null) {
-            usersDTO user = usersDAO.findById(principal.getName());
-            model.addAttribute("user", user);
-        }
-
-        return "main";
-    }
 
 	@GetMapping("/checkId")
 	@ResponseBody

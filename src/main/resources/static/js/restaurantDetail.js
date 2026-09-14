@@ -355,3 +355,37 @@ function toggleBusinessHours() {
         arrow.textContent = "⌃";
     }
 }
+
+function openImage(src) {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("imageModalImg");
+
+    modalImg.src = src;
+    modal.style.display = "flex";
+}
+
+function closeImage() {
+    document.getElementById("imageModal").style.display = "none";
+}
+
+function toggleBookmark(r_no, button) {
+
+    fetch("/users/bookmarkToggle?r_no=" + r_no, {
+        method: "POST"
+    })
+    .then(response => response.text())
+    .then(result => {
+
+        const icon = button.querySelector("i");
+
+        if (result.trim() === "insert") {
+            icon.classList.remove("fa-regular");
+            icon.classList.add("fa-solid");
+        }
+
+        if (result.trim() === "delete") {
+            icon.classList.remove("fa-solid");
+            icon.classList.add("fa-regular");
+        }
+    });
+}

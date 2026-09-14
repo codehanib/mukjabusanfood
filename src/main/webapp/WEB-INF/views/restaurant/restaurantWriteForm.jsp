@@ -1,12 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>식당 등록</title>
+<link rel="stylesheet" href="/css/header.css">
+<link rel="stylesheet" href="/css/restaurantWrite.css">
 </head>
 <body>
+<%@ include file="/WEB-INF/views/header.jsp" %>
 	<h2>식당 등록</h2>
 	<form action="/restaurant/insert" method="post" name="restaurantWriteForm" enctype="multipart/form-data">
 		<!-- 화면에는 안 보이지만 등록할 때 같이 전송 -->
@@ -93,8 +96,7 @@ placeholder="월 휴무
 		
 		                메뉴이미지
 		                <input type="file" name="mn_upload" accept="image/*">
-		
-		                <br><br>
+
 		            </div>
 		
 		        </div>
@@ -117,95 +119,152 @@ placeholder="전화번호: 051-000-0000
 		</tr>
 		
         <tr>
-            <td colspan="2"><button type="submit">식당 등록</button></td>
+            <td colspan="2"><button type="submit" id="submitBtn">식당 등록</button></td>
         </tr>
         
     </table>
 	</form>
 	
-	<script type="text/javascript"
-	    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false">
-	</script>
-	
-	<script type="text/javascript">
-	
-		function goPopup() {
-		    window.open(
-		        "/jusoPopup",
-		        "pop",
-		        "width=570,height=420,scrollbars=yes,resizable=yes"
-		    );
-		}
-		
-		function jusoCallBack(roadAddrPart1, addrDetail, zipNo) {
-		    const fullAddr = roadAddrPart1 + " " + addrDetail;
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false"></script>
 
-		    // DB에 저장할 전체 주소
-		    document.getElementById("r_addr").value = fullAddr;
+<script type="text/javascript">
 
-		    // 지역 자동 입력
-		    const parts = roadAddrPart1.split(" ");
+    function goPopup() {
+        window.open(
+            "/jusoPopup",
+            "pop",
+            "width=570,height=420,scrollbars=yes,resizable=yes"
+        );
+    }
 
-		    if (parts.length >= 2) {
-		        document.getElementById("r_region").value = parts[1];
-		    }
+    function jusoCallBack(roadAddrPart1, addrDetail, zipNo) {
 
-		    // 위도/경도는 도로명주소만 사용
-		    searchLatLon(roadAddrPart1);
-		}
-	
-	
-		// 주소 → 위도, 경도 변환
-		function searchLatLon(address) {
-		    kakao.maps.load(function() {
-		        const geocoder = new kakao.maps.services.Geocoder();
-		        geocoder.addressSearch(address, function(result, status) {
-		
-		            if (status === kakao.maps.services.Status.OK) {
-		
-		                document.getElementById("r_lat").value = result[0].y;
-		                document.getElementById("r_lon").value = result[0].x;
-		
-		                console.log("위도:", result[0].y);
-		                console.log("경도:", result[0].x);
-		
-		            } else {
-		                console.log("좌표 검색 실패:", address, status);
-		                alert("주소의 위도/경도를 찾지 못했습니다.");
-		            }
-		        });
-		    });
-		}
-		
-		function addMenu() {
+        const fullAddr = roadAddrPart1 + " " + addrDetail;
 
-		    const menuArea = document.getElementById("menuArea");
+        // DB에 저장할 전체 주소
+        document.getElementById("r_addr").value = fullAddr;
 
-		    const div = document.createElement("div");
-		    div.className = "menu-item";
+        // 지역 자동 입력
+        const parts = roadAddrPart1.split(" ");
 
-		    div.innerHTML = `
-		        메뉴명
-		        <input type="text" name="mn_name">
-		        <br>
+        if (parts.length >= 2) {
+            document.getElementById("r_region").value = parts[1];
+        }
 
-		        메뉴설명
-		        <textarea name="mn_content"></textarea>
-		        <br>
+        // 주소를 새로 선택하면 기존 좌표 초기화
+        document.getElementById("r_lat").value = "";
+        document.getElementById("r_lon").value = "";
 
-		        가격
-		        <input type="number" name="mn_price">
-		        <br>
+        // 위도/경도 조회
+        searchLatLon(roadAddrPart1);
+    }
 
-		        메뉴이미지
-		        <input type="file" name="mn_upload" accept="image/*">
 
-		        <br><br>
-		    `;
+    // 주소 → 위도, 경도 변환
+    function searchLatLon(address) {
 
-		    menuArea.appendChild(div);
-		}
-	</script>
+        kakao.maps.load(function() {
+
+            const geocoder =
+                new kakao.maps.services.Geocoder();
+
+            geocoder.addressSearch(
+                address,
+                function(result, status) {
+
+                    if (
+                        status ===
+                        kakao.maps.services.Status.OK
+                    ) {
+
+                        document.getElementById("r_lat").value =
+                            result[0].y;
+
+                        document.getElementById("r_lon").value =
+                            result[0].x;
+
+                        console.log("위도:", result[0].y);
+                        console.log("경도:", result[0].x);
+
+                    } else {
+
+                        document.getElementById("r_lat").value = "";
+                        document.getElementById("r_lon").value = "";
+
+                        console.log(
+                            "좌표 검색 실패:",
+                            address,
+                            status
+                        );
+
+                        alert(
+                            "주소의 위도/경도를 찾지 못했습니다."
+                        );
+                    }
+                }
+            );
+        });
+    }
+
+
+    // 등록 직전 좌표 확인
+    document.restaurantWriteForm.addEventListener(
+        "submit",
+        function(e) {
+
+            const lat =
+                document.getElementById("r_lat").value;
+
+            const lon =
+                document.getElementById("r_lon").value;
+
+            if (!lat || !lon) {
+
+                e.preventDefault();
+
+                alert(
+                    "주소 검색 후 좌표가 확인될 때까지 잠시 기다려주세요."
+                );
+
+                return false;
+            }
+        }
+    );
+
+
+    function addMenu() {
+
+        const menuArea =
+            document.getElementById("menuArea");
+
+        const div =
+            document.createElement("div");
+
+        div.className = "menu-item";
+
+        div.innerHTML = `
+            메뉴명
+            <input type="text" name="mn_name">
+            <br>
+
+            메뉴설명
+            <textarea name="mn_content"></textarea>
+            <br>
+
+            가격
+            <input type="number" name="mn_price">
+            <br>
+
+            메뉴이미지
+            <input type="file" name="mn_upload" accept="image/*">
+
+            <br><br>
+        `;
+
+        menuArea.appendChild(div);
+    }
+
+</script>
 	
 
 </body>

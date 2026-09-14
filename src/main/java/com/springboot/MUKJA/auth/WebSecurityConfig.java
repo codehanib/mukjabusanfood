@@ -32,7 +32,7 @@ public class WebSecurityConfig implements WebMvcConfigurer{
 					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 					.requestMatchers("/","/writeForm","/loginForm","/usersInsert", "/checkId","/jusoPopup","/usersInsert","/loginsuccess",
 						    "/email/sendCode","/email/verifyCode","/password/**","/header","/footer","/main","/customerService2","/error",
-						    "/restaurant/detail","/restaurant/category","/restaurant/search","/reservation/**","/delivery/admin_delivery_manage").permitAll()
+						    "/autocomplete","/restaurant/detail","/restaurant/category","/restaurant/search","/reservation/**","/delivery/admin_delivery_manage").permitAll()
 					.requestMatchers("/noticeList", "/noticeView").permitAll()
 					.requestMatchers("/login/**","/loginError").permitAll()
 										
@@ -40,9 +40,8 @@ public class WebSecurityConfig implements WebMvcConfigurer{
 					.requestMatchers("/css/**", "/js/**", "/images/**", "/*.webp", "/*.jpg", "/*.png", "/upload/**").permitAll() 
 					.requestMatchers("/guest/**").permitAll()
 					.requestMatchers("/users/**").hasAnyRole("USER","ADMIN")
-					.requestMatchers("/owner/**","/restaurant/updateForm","/restaurant/update").hasAnyRole("OWNER","ADMIN")
-					.requestMatchers("/restaurant/restaurantWriteForm","/restaurant/insert","/restaurant/update").hasRole("OWNER")
-
+					.requestMatchers("/owner/**").hasAnyRole("OWNER","ADMIN")
+					.requestMatchers("/restaurant/restaurantWriteForm","/restaurant/insert","/restaurant/updateForm","/restaurant/update").hasRole("OWNER")
 					.requestMatchers("/admin/**","/restaurant/delete").hasAnyRole("ADMIN")
 					.anyRequest().authenticated()
 			);

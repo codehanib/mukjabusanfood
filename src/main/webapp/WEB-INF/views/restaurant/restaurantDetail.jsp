@@ -9,140 +9,13 @@
 <meta charset="UTF-8">
 <title>식당 상세</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="/css/restaurantDetail.css">
 </head>
-<style>
-.restaurant-info {
-    margin-top: 30px;
-}
 
-.info-item {
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
-}
-
-.info-title {
-    font-size: 17px;
-    font-weight: 500;
-    margin-bottom: 10px;
-}
-
-.info-content {
-    font-size: 15px;
-    line-height: 1.7;
-    white-space: normal;
-}
-.info-content a {
-    color: #333;
-    text-decoration: underline;
-}
-.business-time {
-    line-height: 1.8;
-    font-size: 15px;
-}
-.business-hours-summary {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-#hoursArrow {
-    margin-left: 8px;
-}
-
-.business-hours-all {
-    display: none;
-    margin-top: 10px;
-    line-height: 1.8;
-}
-.bottom-reservation {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: calc(100% - 40px);
-    max-width: 600px;
-    height: 70px;
-
-    padding: 10px 14px;
-    background: white;
-    border: 1px solid #e5e5e5;
-    border-radius: 18px;
-
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    box-sizing: border-box;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
-    z-index: 1000;
-}
-
-.bottom-reservation form {
-    margin: 0;
-}
-
-.bookmark-btn {
-    width: 50px;
-    height: 50px;
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
-    background: white;
-    cursor: pointer;
-}
-.bookmark-btn i {
-    font-size: 22px;
-    color: #333;
-}
-
-/* 기본 북마크 */
-.bookmark-btn .fa-regular {
-    font-size: 22px;
-    color: #333;
-}
-
-/* 선택된 북마크 */
-.bookmark-btn .fa-solid {
-    font-size: 22px;
-    color: #ff5a5f; /* 예약하기 버튼 색상과 동일하게 */
-}
-
-.reservation-btn,
-.delivery-btn {
-    height: 50px;
-    border: none;
-    border-radius: 12px;
-    background: #ff3d0d;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.reservation-btn {
-    flex: 1;
-}
-
-.bottom-reservation form:last-child {
-    flex: 1;
-}
-
-.delivery-btn {
-    width: 100%;
-}
-.last-order {
-    display: inline-block;
-    margin-left: 30px;
-}
-.sub-time {
-    display: inline-block;
-    margin-left: 30px;
-}
-
-</style>
 <body>
-	<button type="button" onclick="history.back()">←</button>
+	<button type="button" onclick="history.back()">
+	    <i class="fa-solid fa-chevron-left"></i>
+	</button>
 	<button type="button" onclick="location.href='/main'">home</button>
 	<br><br>
 	
@@ -150,15 +23,11 @@
 	<c:choose>
 
 	    <c:when test="${fn:startsWith(restaurant.r_img, 'http')}">
-	        <img src="${restaurant.r_img}"
-	             alt="${restaurant.r_name}"
-	             width="300">
+	        <img src="${restaurant.r_img}" alt="${restaurant.r_name}" class="restaurant-main-img">
 	    </c:when>
 	
 	    <c:otherwise>
-	        <img src="/upload/${restaurant.r_img}"
-	             alt="${restaurant.r_name}"
-	             width="300">
+	        <img src="/upload/${restaurant.r_img}" alt="${restaurant.r_name}" class="restaurant-main-img">
 	    </c:otherwise>
 
 	</c:choose>
@@ -171,10 +40,15 @@
 	
 	<c:choose>
 	    <c:when test="${reviewCount > 0}">
-	        <div>
-	            ★<fmt:formatNumber value="${reviewAvg}" pattern="0.0"/> · 리뷰 ${reviewCount}개 >
-	            &nbsp; ${restaurant.r_region} · ${restaurant.mukja_c_name}
-	        </div>
+	        <div class="restaurant-summary">
+			    <span class="summary-star">★</span>
+			    <span class="summary-rating">
+			        <fmt:formatNumber value="${reviewAvg}" pattern="0.0"/>
+			    </span>
+			
+			    · 리뷰 ${reviewCount}개 >
+			    &nbsp; ${restaurant.r_region} · ${restaurant.mukja_c_name}
+			</div>
 	    </c:when>
 	
 	    <c:otherwise>
@@ -186,7 +60,7 @@
 
 		<br>
 	
-	<div>${restaurant.r_info}</div>
+	<div class="restaurant-description">${restaurant.r_info}</div>
 		<br><hr>
 	<div>${restaurant.r_addr}</div>	
 		<br>
@@ -216,11 +90,11 @@
 	       <c:forEach var="img" items="${menuBoardImageList}">
 			    <c:choose>
 			        <c:when test="${fn:startsWith(img.mbi_img, 'http')}">
-			            <img src="${img.mbi_img}">
+			            <img src="${img.mbi_img}" class="menu-board-img" onclick="openImage(this.src)">
 			        </c:when>
 			
 			        <c:otherwise>
-			            <img src="/upload/${img.mbi_img}">
+			            <img src="/upload/${img.mbi_img}" class="menu-board-img" onclick="openImage(this.src)">
 			        </c:otherwise>
 			    </c:choose>
 			</c:forEach>
@@ -229,17 +103,27 @@
 	    </c:if>
 	
 	    <!-- 메뉴 목록 -->
-	    <c:forEach var="menu" items="${menuList}">
+	    <c:forEach var="menu" items="${menuList}" varStatus="status">
 	        <table border="1">
 	            <tr>
 	                <td>
-	                    ${menu.mn_name}<br>
-	
-	                    <c:if test="${not empty menu.mn_content}">
-	                        ${menu.mn_content}<br>
-	                    </c:if>
-	
-	                    ${menu.mn_price}원
+	                    <div class="menu-name">
+						    <c:if test="${status.index < 2}">
+						        <span class="representative-badge">대표</span>
+						    </c:if>
+						
+						    ${menu.mn_name}
+						</div>
+						
+						<c:if test="${not empty menu.mn_content}">
+						    <div class="menu-content">
+						        ${menu.mn_content}
+						    </div>
+						</c:if>
+						
+						<div class="menu-price">
+						    <fmt:formatNumber value="${menu.mn_price}" pattern="#,###"/>원
+						</div>
 	                </td>
 	
 	                <td>
@@ -247,11 +131,11 @@
 						
 						    <c:choose>
 						        <c:when test="${fn:startsWith(menu.mn_img, 'http')}">
-						            <img src="${menu.mn_img}" alt="${menu.mn_name}" width="100">
+						            <img src="${menu.mn_img}" alt="${menu.mn_name}" class="menu-img" onclick="openImage(this.src)">
 						        </c:when>
 						
 						        <c:otherwise>
-						            <img src="/upload/${menu.mn_img}" alt="${menu.mn_name}" width="100">
+						            <img src="/upload/${menu.mn_img}" alt="${menu.mn_name}" class="menu-img" onclick="openImage(this.src)">
 						        </c:otherwise>
 						    </c:choose>
 						
@@ -266,75 +150,103 @@
 	</c:if>
     
 	<!-- 추천 리뷰 -->
-    <h3>추천 리뷰</h3>
-
-    <c:choose>
-       <c:when test="${not empty rvPList}">
-          <c:forEach var="rv" items="${rvPList}">
-             <table border="1">
-                <tr>
-                   <td colspan="2">${rv.u_name}</td>
-                	<c:if test="${loginUserNo == rv.u_no}">
-	 					<a href="/restaurant/reviewUpdate?r_no=${rv.r_no}">수정</a>
-	 					 <a href="/restaurant/reviewDelete?r_no${rv.r_no}">삭제</a>
-	 				</c:if>
-	 				</td>
-                </tr>
-                <tr>
-                   <td>★ ${rv.rv_point}</td>
-                   <td><fmt:formatDate value="${rv.rv_reg_date}" pattern="yyyy/MM/dd"/></td>
-                </tr>
-                <tr>
-                   <td colspan="2">
-                      <c:forEach var="rg" items="${rv.reviewImages}">
-                      <c:choose>
-                      
-                      	<c:when test="${rg.rvimg_img == null || rg.rvimg_img == ''}">
-                                <!-- 이미지 없음 -->
-                        </c:when>
-                         
-                        <c:when test="${fn:startsWith(rg.rvimg_img, 'http://')
-                                            or fn:startsWith(rg.rvimg_img, 'https://')}">
-                            <img src="${rg.rvimg_img}" width="100" height="100">
-                        </c:when>
-                        <c:otherwise>
-                           <img src="/upload/${rg.rvimg_img}" width="100" height="100">
-                        </c:otherwise>
-                     </c:choose>
-                     </c:forEach>
-                   </td>
-                <tr>
-                   <td colspan="2">${rv.rv_content}</td>
-                </tr>
-                
-             </table>
-          </c:forEach>
-       </c:when>
-       <c:otherwise>
-          <p>리뷰가 없습니다.</p>
-       </c:otherwise>
-    </c:choose>
-    <br>
-
-    
-	<form action="/restaurant/review" method="get">
-		<input type="hidden" name="r_no" value="${restaurant.r_no}">
-		<button type="submit">리뷰 전체보기</button>
-	</form>
-	<sec:authorize access="hasRole('USER')">
-		<form action="/users/reviewWrite" method="post" enctype="multipart/form-data">
-		    <input type="hidden" name="r_no" value="${restaurant.r_no}">
-		    <button type="submit">리뷰 쓰기</button>
-		</form>
-	</sec:authorize>
-
+	<div class="review-section-header">
+	    <h3>추천 리뷰</h3>
+	    <div class="review-header-buttons">
+	
+	        <!-- 리뷰 전체보기 -->
+	        <form action="/restaurant/review" method="get">
+	            <input type="hidden" name="r_no" value="${restaurant.r_no}">
+	            <button type="submit" class="review-all-btn">
+	                리뷰 전체보기 <span>›</span>
+	            </button>
+	        </form>
+	        
+	        <!-- 리뷰 쓰기 : USER만 -->
+	        <sec:authorize access="hasRole('USER')">
+	            <form action="/users/reviewWrite" method="post" enctype="multipart/form-data">
+	
+	                <input type="hidden" name="r_no" value="${restaurant.r_no}">
+	
+	                <button type="submit" class="review-write-btn">리뷰 쓰기</button>
+	
+	            </form>
+	        </sec:authorize>
+	    </div>
+	</div>
+	
+	    <c:choose>
+	        <c:when test="${not empty rvPList}">
+	            <div class="review-list">
+	                <c:forEach var="rv" items="${rvPList}">
+	                    <div class="review-card">
+	                        <!-- 상단 -->
+	                        <div class="review-card-top">
+	                            <div class="review-rating">
+	                                <span class="review-star">★</span>
+	                                <span>${rv.rv_point}</span>
+	                            </div>
+	                            <div class="review-date">
+	                                <fmt:formatDate value="${rv.rv_reg_date}" pattern="yyyy/MM/dd"/>
+	                            </div>
+	                        </div>
+	
+	                        <!-- 작성자 -->
+	                        <div class="review-user">
+	
+	                            <span>${rv.u_name}</span>
+	
+	                            <c:if test="${loginUserNo == rv.u_no}">
+	                                <span class="review-manage">
+	                                    <a href="/restaurant/reviewUpdate?r_no=${rv.r_no}">수정</a>
+	                                    <a href="/restaurant/reviewDelete?r_no${rv.r_no}">삭제</a>
+	                                </span>
+	                            </c:if>
+	                        </div>
+	
+	                        <!-- 리뷰 이미지 -->
+	                        <c:if test="${not empty rv.reviewImages}">
+	                            <div class="review-images">
+	                                <c:forEach var="rg" items="${rv.reviewImages}">
+	
+	                                    <c:choose>
+	
+	                                        <c:when test="${rg.rvimg_img == null || rg.rvimg_img == ''}">
+	                                        </c:when>
+	
+	                                        <c:when test="${fn:startsWith(rg.rvimg_img, 'http://')
+	                                            or fn:startsWith(rg.rvimg_img, 'https://')}">
+	
+	                                            <img src="${rg.rvimg_img}" class="review-img">
+	
+	                                        </c:when>
+	
+	                                        <c:otherwise>
+	                                            <img src="/upload/${rg.rvimg_img}" class="review-img">
+	                                        </c:otherwise>
+	                                    </c:choose>
+	                                </c:forEach>
+	                            </div>
+	                        </c:if>
+	
+	                        <!-- 리뷰 내용 -->
+	                        <div class="review-content">${rv.rv_content}</div>
+	                     </div>
+	                </c:forEach>
+	            </div>
+	        </c:when>
+	        <c:otherwise>
+	            <div class="review-empty">리뷰가 없습니다.</div>
+	        </c:otherwise>
+	    </c:choose>
+	</div>
 	<hr>
 
 	<!-- 위치 -->
 	<h3>위치</h3>
 	
 	<div>${restaurant.r_addr}</div>
-	<div id="map" style="width:500px; height:350px;"></div>
+	<div id="map" class="restaurant-main-img"></div>
 	
 	<hr>
 	
@@ -361,48 +273,84 @@
         </a>
 	</c:forEach>
 	 
-	 
-	 
-	<sec:authorize access="hasRole('USER')">
 	<!-- 하단 고정 예약 바 -->
 	<div class="bottom-reservation">
 	
-	    <!-- 북마크 -->
-		<form action="/users/bookmarkToggle" method="get">
-		    <input type="hidden" name="r_no" value="${restaurant.r_no}">
-
-			<button type="submit" class="bookmark-btn">
+	    <!-- 회원 -->
+	    <sec:authorize access="isAuthenticated()">
+	
+	        <!-- 북마크 -->
+	        <button type="button" class="bookmark-btn" onclick="toggleBookmark(${restaurant.r_no}, this)">
 			    <c:choose>
-			        <c:when test="${bookmarkCheck == 1}">
+			        <c:when test="${bookmarkCheck > 0}">
 			            <i class="fa-solid fa-bookmark"></i>
 			        </c:when>
-			
 			        <c:otherwise>
 			            <i class="fa-regular fa-bookmark"></i>
 			        </c:otherwise>
 			    </c:choose>
 			</button>
-		</form>
 	
-	    <!-- 예약하기 -->
-	    <button type="button" class="reservation-btn" onclick="location.href='/reservation/reservationInsert?r_no=${restaurant.r_no}'">
-		    예약하기
-		</button>
+	        <!-- 예약하기 -->
+	        <button type="button"
+	                class="reservation-btn"
+	                onclick="location.href='/reservation/reservationInsert?r_no=${restaurant.r_no}'">
+	            예약하기
+	        </button>
+	
+	        <!-- 배달 주문 -->
+	        <form action="${pageContext.request.contextPath}/cart/delivery/menu" method="get">
+	            <input type="hidden" name="r_no" value="${restaurant.r_no}">
+	            <button type="submit" class="delivery-btn">배달주문</button>
+	        </form>
+	
+	    </sec:authorize>
+	
+	    <!-- 비회원 -->
+		<sec:authorize access="isAnonymous()">
 		
-		<!-- 배달 주문 -->
-       <form action="${pageContext.request.contextPath}/cart/delivery/menu" method="get">
-           <input type="hidden" name="r_no" value="${restaurant.r_no}">
-   
-           <button type="submit" class="delivery-btn">
-               배달주문
-           </button>
-       </form>
+		    <!-- 북마크 -->
+		    <form action="/users/bookmarkToggle" method="get">
+		        <input type="hidden" name="r_no" value="${restaurant.r_no}">
+		
+		        <button type="submit" class="bookmark-btn">
+		            <i class="fa-regular fa-bookmark"></i>
+		        </button>
+		    </form>
+		
+		    <!-- 예약 -->
+		    <button type="button"
+		            class="reservation-btn"
+		            onclick="location.href='/reservation/reservationInsert?r_no=${restaurant.r_no}'">
+		        예약하기
+		    </button>
+		
+		    <!-- 배달 주문 -->
+		    <form action="${pageContext.request.contextPath}/cart/delivery/menu"
+		          method="get">
+		
+		        <input type="hidden"
+		               name="r_no"
+		               value="${restaurant.r_no}">
+		
+		        <button type="submit"
+		                class="delivery-btn">
+		            배달주문
+		        </button>
+		    </form>
+		</sec:authorize>
 	</div>
-	</sec:authorize>
     
+    <!-- 이미지 크게 보기 -->
+	<div id="imageModal" class="image-modal" onclick="closeImage()">
+	    <span class="image-modal-close">&times;</span>
+	
+	    <img id="imageModalImg"
+	         class="image-modal-content"
+	         onclick="event.stopPropagation()">
+	</div>
     
-	<script type="text/javascript"
-	    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false">
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false">
 	</script>
 	
 	<script src="${pageContext.request.contextPath}/js/delivery_map.js"></script>
@@ -413,6 +361,7 @@
 	    "${restaurant.r_lon}"
 	);
 	</script>
+	
 	<script src="/js/restaurantDetail.js"></script>
 
 </body>

@@ -1,0 +1,296 @@
+
+/* ================================
+   식당 등록 페이지
+================================ */
+
+body {
+    margin: 0;
+    background-color: #fffaf8;
+    color: #333;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 페이지 제목 */
+body > h2 {
+    width: 900px;
+    margin: 45px auto 25px;
+    padding-bottom: 15px;
+    padding-left: 8px;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    border-bottom: 3px solid #ff6644;
+    color: #666;
+}
+
+/* 등록 폼 */
+form[name="restaurantWriteForm"] {
+    width: 900px;
+    margin: 0 auto 20px;
+    padding: 35px 40px;
+    background-color: #fff;
+    border-radius: 14px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* 기존 table border="1" 디자인 덮어쓰기 */
+form[name="restaurantWriteForm"] table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+}
+
+form[name="restaurantWriteForm"] tr {
+    border-bottom: 1px solid #eeeeee;
+}
+
+form[name="restaurantWriteForm"] td {
+    padding: 12px 15px;
+    border: none;
+    vertical-align: middle;
+}
+
+/* 왼쪽 항목명 */
+form[name="restaurantWriteForm"] td:first-child {
+    width: 130px;
+    padding: 12px 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #444;
+    background-color: #fff7f3;
+    text-align: center;
+}
+
+/* 오른쪽 입력 영역 */
+form[name="restaurantWriteForm"] td:nth-child(2) {
+    padding-left: 25px;
+}
+
+/* 일반 입력창 */
+form[name="restaurantWriteForm"] input[type="text"],
+form[name="restaurantWriteForm"] input[type="number"],
+form[name="restaurantWriteForm"] select {
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    box-sizing: border-box;
+    font-size: 14px;
+    outline: none;
+    background-color: #fff;
+}
+
+/* 일반 텍스트 입력 */
+form[name="restaurantWriteForm"] input[type="text"] {
+    width: 420px;
+}
+
+/* 주소 입력 */
+#r_addr {
+    width: 420px;
+    height: 42px;
+    background-color: #fff;
+    vertical-align: middle;
+}
+
+/* 가격 입력 */
+form[name="restaurantWriteForm"] input[type="number"] {
+    width: 180px;
+}
+
+/* 음식 종류 */
+form[name="restaurantWriteForm"] select {
+    width: 250px;
+    cursor: pointer;
+}
+
+/* 입력창 선택 시 */
+form[name="restaurantWriteForm"] input[type="text"]:focus,
+form[name="restaurantWriteForm"] input[type="number"]:focus,
+form[name="restaurantWriteForm"] select:focus,
+form[name="restaurantWriteForm"] textarea:focus {
+    border-color: #ff6644;
+    box-shadow: 0 0 0 2px rgba(255, 102, 68, 0.1);
+}
+
+/* textarea */
+form[name="restaurantWriteForm"] textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    outline: none;
+}
+
+/* placeholder */
+form[name="restaurantWriteForm"] input::placeholder,
+form[name="restaurantWriteForm"] textarea::placeholder {
+    color: #aaa;
+}
+
+/* 파일 선택 */
+form[name="restaurantWriteForm"] input[type="file"] {
+    max-width: 100%;
+    padding: 9px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    background-color: #fafafa;
+    box-sizing: border-box;
+}
+
+/* 파일 선택 버튼 */
+form[name="restaurantWriteForm"] input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background-color: #fff0eb;
+    color: #ff6644;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* 주소 검색 버튼 */
+form[name="restaurantWriteForm"] input[type="button"] {
+    height: 38px;
+    margin-left: 7px;
+    padding: 0 15px;
+    border: 1px solid #ff6644;
+    border-radius: 7px;
+    background-color: #fff;
+    color: #ff6644;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+form[name="restaurantWriteForm"] input[type="button"]:hover {
+    background-color: #ff6644;
+    color: #fff;
+}
+
+/* ================================
+   메뉴 입력 영역
+================================ */
+#menuArea {
+    width: 100%;
+}
+
+.menu-item {
+    margin-bottom: 8px;
+    padding: 12px 18px;
+    background-color: #fff8f5;
+    border: 1px solid #ffe0d8;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+.menu-item input,
+.menu-item textarea {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+/* 메뉴 설명 */
+.menu-item textarea {
+    width: calc(100% - 85px) !important;
+    height: 64px;
+    min-height: 64px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    vertical-align: middle;
+}
+
+/* 메뉴명 */
+.menu-item input[type="text"] {
+    width: 380px !important;
+    height: 38px;
+    margin-left: 10px;
+}
+
+/* 가격 */
+.menu-item input[type="number"] {
+    width: 160px !important;
+    height: 38px;
+    margin-left: 24px;
+    margin-bottom: 5px;
+}
+
+/* 메뉴 이미지 */
+.menu-item input[type="file"] {
+    margin-left: 8px;
+    padding: 5px;
+}
+
+.menu-item hr {
+    display: none;
+}
+
+/* 메뉴 추가 버튼 */
+button[type="button"] {
+    padding: 5px 20px;
+    border: 1px solid #ff6644;
+    border-radius: 7px;
+    background-color: #fff;
+    color: #ff6644;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    height: 38px;
+}
+
+button[type="button"]:hover {
+    background-color: #ff6644;
+    color: #fff;
+}
+
+/* ================================
+   식당 등록 버튼
+================================ */
+
+#submitBtn {
+    width: 220px;
+    height: 45px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff6644;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#submitBtn:hover {
+    background-color: #e9583a;
+    transform: translateY(-1px);
+}
+
+/* 마지막 등록 버튼 영역 */
+form[name="restaurantWriteForm"] tr:last-child {
+    border-bottom: none;
+}
+
+form[name="restaurantWriteForm"] tr:last-child td {
+    padding-top: 20px;
+    text-align: right;
+    background-color: #fff;
+}
+
+
+body,
+body *,
+input,
+textarea,
+select,
+button {
+    font-family: "Malgun Gothic", "맑은 고딕", sans-serif !important;
+}
