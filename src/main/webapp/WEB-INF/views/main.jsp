@@ -1,6 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -160,8 +163,10 @@
         .grid-container { grid-template-columns: repeat(2, 1fr); }
     }
 </style>
-</head>
 <%@ include file="/WEB-INF/views/header.jsp" %>
+</head>
+
+
 <body>
 
 <div class="page-wrapper">
