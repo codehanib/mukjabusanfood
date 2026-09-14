@@ -55,6 +55,9 @@ public class restaurantController {
 	@Autowired
 	private bookmarkDAO bkdao;
 	
+	@Autowired
+	private mukjaSearchDAO mukjaSearchdao;
+	
 	@RequestMapping("/restaurant/es/index")
 	public String restaurantESIndex() throws Exception {
 
@@ -71,6 +74,10 @@ public class restaurantController {
 	public String restaurantSearch(@RequestParam("keyword") String keyword,
 	        						Model model) throws Exception {
 		
+	    if (keyword == null || keyword.trim().isEmpty()) {
+	        return "redirect:/main";
+	    }
+	    
 		// 검색로그 저장
 	    mukjaSearchDTO searchDTO = new mukjaSearchDTO();
 	    searchDTO.setMs_word(keyword);
@@ -165,14 +172,21 @@ public class restaurantController {
 	    
 	    // 식당 하나 선택했을때 상세
 	    @RequestMapping("/restaurant/detail")
-	    public String restaurantDetail(@RequestParam("r_no") int r_no, Model model,
-	    		@RequestParam(value="keyword", required=false) String keyword,Authentication auth) {
+	    public String restaurantDetail(
+	            @RequestParam("r_no") int r_no,
+	            Model model,
+	            @RequestParam(value="keyword", required=false) String keyword,
+	            Authentication auth) {
 
 	        restaurantDTO restaurant = restaurantdao.restaurantDetail(r_no);
-	        
+
+	        if (restaurant == null) {
+	            return "redirect:/main";
+	        }
+
 	        List<menuDTO> menuList = restaurantdao.menuList(r_no);
 	        List<restaurantDTO> menuBoardImageList = restaurantdao.menuBoardImageList(r_no);
-	        
+
 	        restaurant.setDisplay_time(
 	            restaurantService.formatRestaurantDetailTime(
 	                restaurant.getR_time()
@@ -187,10 +201,12 @@ public class restaurantController {
 
 	        int reviewCount = reviewdao.reviewCount(r_no);
 	        double reviewAvg = reviewdao.reviewAvg(r_no);
-	        
+
 	        int bookmarkCheck = 0;
 
-	        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+	        if (auth != null &&
+	            auth.isAuthenticated() &&
+	            !"anonymousUser".equals(auth.getName())) {
 
 	            usersDTO users = usersdao.findById(auth.getName());
 
@@ -202,14 +218,13 @@ public class restaurantController {
 	        }
 
 	        model.addAttribute("bookmarkCheck", bookmarkCheck);
-	        
+
 	        List<LocalDate> dateList = new ArrayList<>();
 	        LocalDate today = LocalDate.now();
 
 	        for (int i = 0; i < 7; i++) {
- dateList.add(today.plusDays(i));
+	            dateList.add(today.plusDays(i));
 	        }
-
 	        model.addAttribute("restaurant", restaurant);
 	        model.addAttribute("keyword", keyword);
 	        model.addAttribute("reviewCount", reviewCount);
@@ -330,9 +345,8 @@ public class restaurantController {
 	         return "redirect:/restaurant/search?keyword=" + keyword;
 	     }
 
-	     return "redirect:/main";
+	     return "redirect:/rnumberdelete";
 	 }
-	 
 	 
 	 
 	 @RequestMapping("/restaurant/ownerpage")
@@ -340,6 +354,11 @@ public class restaurantController {
 
 	     usersDTO user = usersdao.findById(principal.getName());
 	     model.addAttribute("user", user);
+	     
+	     List<mukjaSearchDTO> popularSearchList =
+	    	        mukjaSearchdao.popularSearchList();
+
+	    	model.addAttribute("popularSearchList", popularSearchList);
 
 	     return "restaurant/ownerpage";
 	 }

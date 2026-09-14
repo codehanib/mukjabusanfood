@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="/css/header.css">
 
@@ -39,14 +39,11 @@
 					    회원관리
 					</a>
 				</sec:authorize>
-				<sec:authorize access="hasRole('OWNER')">
-					
-					<a href="/restaurant/ownerpage?r_no=${restaurant.r_no}">
-					    오너페이지
-					    
-					</a>
-					
-				</sec:authorize>
+<sec:authorize access="hasRole('OWNER')">
+    <a href="/restaurant/ownerpage">
+        오너페이지
+    </a>
+</sec:authorize>
 				|
 				<a href="/noticeList">공지사항</a>
             
@@ -127,6 +124,6 @@
 	    </div>
 	    
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/main.js"></script>
+	<script src="${pageContext.request.contextPath}/js/header.js"></script>
 	
 	</header>

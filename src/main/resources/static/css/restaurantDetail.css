@@ -1,0 +1,1082 @@
+.restaurant-info {
+    margin-top: 30px;
+}
+
+.info-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.info-title {
+    margin-bottom: 8px;
+    color: #444;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.info-content {
+    font-size: 17px;
+    line-height: 1.7;
+    white-space: normal;
+}
+.info-content a {
+    color: #333;
+    text-decoration: underline;
+}
+.business-time {
+    line-height: 1.8;
+    font-size: 15px;
+}
+.business-hours-summary {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+#hoursArrow {
+    margin-left: 8px;
+}
+
+.business-hours-all {
+    display: none;
+    margin-top: 10px;
+    line-height: 1.8;
+}
+.bottom-reservation {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: calc(100% - 40px);
+    max-width: 600px;
+    height: 70px;
+
+    padding: 10px 14px;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 18px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    box-sizing: border-box;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+}
+
+.bottom-reservation form {
+    margin: 0;
+}
+
+.bookmark-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+}
+.bookmark-btn i {
+    font-size: 22px;
+    color: #333;
+}
+
+/* 기본 북마크 */
+.bookmark-btn .fa-regular {
+    font-size: 22px;
+    color: #333;
+}
+
+/* 선택된 북마크 */
+.bookmark-btn .fa-solid {
+    font-size: 22px;
+    color: #ff5a5f; /* 예약하기 버튼 색상과 동일하게 */
+}
+
+.reservation-btn,
+.delivery-btn {
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.reservation-btn {
+    flex: 1;
+}
+
+.bottom-reservation form:last-child {
+    flex: 1;
+}
+
+.delivery-btn {
+    width: 100%;
+}
+.last-order {
+    display: inline-block;
+    margin-left: 30px;
+}
+.sub-time {
+    display: inline-block;
+    margin-left: 30px;
+}
+
+
+
+
+
+/* =========================================
+   식당 상세 페이지 전체 디자인
+========================================= */
+
+body {
+    margin: 0 auto;
+    padding: 30px 25px 130px;
+    max-width: 900px;
+    box-sizing: border-box;
+    background-color: #fffaf8;
+    color: #333;
+    font-family: "Malgun Gothic", "맑은 고딕", sans-serif;
+}
+
+
+/* =========================================
+   상단 뒤로가기 / HOME 버튼
+========================================= */
+/* 상단 뒤로가기 / 홈 버튼 */
+body > button {
+    height: 40px;
+    min-width: 44px;
+    padding: 0 15px;
+    margin-right: 7px;
+
+    border: 1px solid #eaded9;
+    border-radius: 10px;
+
+    background-color: #fff;
+    color: #555;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+body > button:hover {
+    background-color: #fff3ee;
+    border-color: #ffb5a3;
+    color: #ff6644;
+
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07);
+}
+
+body > button:active {
+    transform: translateY(0);
+}
+
+/* =========================================
+   대표 식당 이미지
+========================================= */
+
+/* 페이지에서 첫 번째 img = 식당 대표 이미지 */
+body > img:first-of-type {
+    display: block;
+
+    width: 100%;
+    max-width: 850px;
+    height: 400px;
+
+    margin: 20px auto 25px;
+
+    object-fit: cover;
+
+    border-radius: 18px;
+
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================
+   식당 이름
+========================================= */
+
+body > h2 {
+    margin: 10px 0 12px;
+
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -1px;
+
+    color: #333;
+}
+
+
+/* =========================================
+   관리자 식당 삭제
+========================================= */
+
+body > a[href*="/restaurant/delete"] {
+    display: inline-block;
+
+    margin: 5px 0 10px;
+
+    color: #999;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+body > a[href*="/restaurant/delete"]:hover {
+    color: #ff6644;
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   구분선
+========================================= */
+
+body > hr {
+    margin: 25px 0;
+
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
+
+/* =========================================
+   섹션 제목
+========================================= */
+
+body > h3 {
+    margin: 30px 0 18px;
+
+    font-size: 21px;
+    font-weight: 700;
+
+    color: #333;
+}
+
+
+/* =========================================
+   영업시간
+========================================= */
+
+.business-hours-summary {
+    min-height: 42px;
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+
+    transition: 0.2s;
+}
+
+.business-hours-summary:hover {
+    background-color: #fff7f3;
+}
+
+#todayBusinessHours {
+    font-weight: 600;
+}
+
+#hoursArrow {
+    color: #ff6644;
+    font-size: 18px;
+}
+
+.business-hours-all {
+    padding: 12px 15px;
+
+    background-color: #fff8f5;
+
+    border: 1px solid #ffe0d8;
+    border-radius: 10px;
+
+    color: #555;
+}
+
+
+/* =========================================
+   메뉴판 이미지
+========================================= */
+
+/* 대표 이미지 이후의 직접 img = 메뉴판 이미지 */
+body > img:not(:first-of-type) {
+    width: 190px;
+    height: 190px;
+
+    margin: 10px 8px 10px 0;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+    border: 1px solid #eee;
+
+    vertical-align: top;
+}
+
+
+/* =========================================
+   메뉴 / 리뷰 테이블 공통
+========================================= */
+
+body > table {
+    width: 100%;
+
+    margin-bottom: 12px;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    overflow: hidden;
+
+    background-color: #fff;
+
+    border: 1px solid #eee !important;
+    border-radius: 12px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+body > table td {
+    padding: 15px;
+
+    border: none !important;
+
+    font-size: 14px;
+    line-height: 1.6;
+
+    vertical-align: middle;
+}
+
+
+/* 테이블 행 구분 */
+body > table tr + tr td {
+    border-top: 1px solid #f1f1f1 !important;
+}
+
+
+/* 메뉴 / 리뷰 내부 이미지 */
+body > table img {
+    border-radius: 9px;
+    object-fit: cover;
+}
+
+
+/* =========================================
+   추천 리뷰
+========================================= */
+
+body > table td:first-child {
+    color: #444;
+}
+
+/* 별점 */
+body > table td {
+    word-break: break-word;
+}
+
+
+/* =========================================
+   리뷰 전체보기 / 리뷰쓰기 버튼
+========================================= */
+
+body > form {
+    display: inline-block;
+    margin: 4px 6px 8px 0;
+}
+
+body > form > button[type="submit"] {
+    height: 40px;
+
+    padding: 0 18px;
+
+    border: 1px solid #ff6644;
+    border-radius: 8px;
+
+    background-color: #fff;
+    color: #ff6644;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+body > form > button[type="submit"]:hover {
+    background-color: #ff6644;
+    color: #fff;
+}
+
+
+/* =========================================
+   위치
+========================================= */
+#map {
+    width: 100% !important;
+    height: 280px !important;
+
+    margin-top: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+/* =========================================
+   상세정보
+========================================= */
+
+#detailInfoSection {
+    margin-top: 25px;
+}
+
+.restaurant-info {
+    margin-top: 15px;
+}
+
+.info-item {
+    padding: 15px 5px;
+
+    border-bottom: 1px solid #eee;
+
+    margin-bottom: 0;
+}
+
+.info-title {
+    margin-bottom: 8px;
+
+    color: #444;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.info-content {
+    color: #666;
+
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+
+/* =========================================
+   하단 예약 바
+========================================= */
+
+.bottom-reservation {
+    background-color: rgba(255, 255, 255, 0.97);
+
+    border: 1px solid #eee;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.14);
+}
+
+
+/* 북마크 */
+.bookmark-btn {
+    transition: 0.2s;
+}
+
+.bookmark-btn:hover {
+    border-color: #ff6644;
+    background-color: #fff7f3;
+}
+
+
+/* 예약 / 배달 */
+.reservation-btn,
+.delivery-btn {
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* 선택된 북마크 */
+.bookmark-btn .fa-solid {
+    color: #ff6644;
+}
+
+
+/* =========================================
+   모바일
+========================================= */
+
+@media (max-width: 700px) {
+
+    body {
+        padding: 20px 15px 120px;
+    }
+
+    body > img:first-of-type {
+	    display: block;
+	
+	    width: 100%;
+	    max-width: 700px;
+	    height: 330px;
+	
+	    margin: 20px auto 25px;
+	
+	    object-fit: cover;
+	    border-radius: 18px;
+	
+	    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+	}
+
+    body > h2 {
+        font-size: 26px;
+    }
+
+    body > img:not(:first-of-type) {
+        width: 145px;
+        height: 145px;
+    }
+
+    #map {
+	    width: 700px !important;
+	    max-width: 100%;
+	    height: 300px !important;
+	
+	    margin-top: 12px;
+	
+	    border-radius: 14px;
+	    overflow: hidden;
+	    border: 1px solid #eee;
+	}
+}
+
+
+/* 상세정보 글자 크기 */
+#restaurantDesc .info-item,
+#restaurantDesc .info-content {
+    font-size: 16px !important;
+}
+
+#restaurantDesc .info-title{
+	font-size: 17px !important;
+}
+
+#detailInfoSection > h3 {
+    font-size: 21px !important;
+    font-weight: 700;
+    margin: 30px 0 18px;
+}
+
+
+/* 식당 삭제 버튼 */
+body > a[href*="/restaurant/delete"] {
+    display: inline-block;
+
+    padding: 7px 13px;
+    margin: 5px 0 12px;
+
+    border: 1px solid #ff6644;
+    border-radius: 7px;
+
+    background-color: #fff;
+    color: #ff6644;
+
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+body > a[href*="/restaurant/delete"]:hover {
+    background-color: #ff6644;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+/* 식당 설명 */
+body > h2 + div + br + div,
+body > h2 + div + br + div + br + div {
+    font-size: 16px;
+}
+
+.restaurant-description {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.7;
+    color: #444;
+}
+
+/* 홈 버튼만 너비 늘리기 */
+body > button:nth-of-type(2) {
+    width: 80px;
+    font-size: 17.5px;
+}
+
+.business-hours-all {
+    padding: 12px 15px;
+
+    background-color: #fff;
+    border: 1px solid #ffe0d8;
+    border-radius: 10px;
+
+    color: #555;
+}
+
+
+/* ================================
+   메뉴판 이미지
+================================ */
+
+.menu-board-img {
+    width: 160px !important;
+    height: 160px !important;
+
+    object-fit: cover;
+
+    border-radius: 10px;
+    border: 1px solid #eee;
+
+    margin: 10px 8px 10px 0;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.menu-board-img:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+
+
+/* ================================
+   메뉴 이미지
+================================ */
+
+.menu-img {
+    display: block;
+
+    width: 120px !important;
+    height: 120px !important;
+
+    object-fit: cover;
+
+    margin-left: auto;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+    transition: 0.2s;
+    object-fit: cover;
+}
+
+.menu-img:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+
+
+/* 메뉴 이미지가 들어있는 오른쪽 칸 */
+body > table td:last-child {
+    text-align: right;
+}
+
+
+/* ================================
+   이미지 크게 보기
+================================ */
+
+.image-modal {
+    display: none;
+
+    position: fixed;
+    z-index: 3000;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.75);
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* 확대된 이미지 */
+.image-modal-content {
+    max-width: 85vw;
+    max-height: 85vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    border-radius: 12px;
+}
+
+
+/* X 버튼 */
+.image-modal-close {
+    position: absolute;
+
+    top: 25px;
+    right: 35px;
+
+    color: #fff;
+
+    font-size: 38px;
+    font-weight: 300;
+
+    cursor: pointer;
+}
+
+.menu-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.menu-content {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.menu-price {
+    font-size: 15px;
+    font-weight: 550;
+    color: #333;
+}
+
+.menu-table td {
+    padding: 10px 15px !important;
+}
+.menu-img {
+    width: 100px !important;
+    height: 100px !important;
+}
+
+.representative-badge {
+    display: inline-block;
+
+    padding: 3px 6px;
+    margin-right: 7px;
+
+    background-color: #ff6644;
+    color: #fff;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+
+    vertical-align: 2px;
+}
+
+
+/* =================================
+   추천 리뷰
+================================= */
+
+.review-section {
+    margin-top: 30px;
+}
+
+
+/* 제목 + 리뷰 전체보기 */
+.review-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 16px;
+}
+
+.review-section-header h3 {
+    margin: 0;
+
+    font-size: 21px;
+    font-weight: 700;
+    color: #333;
+}
+
+.review-section-header form {
+    margin: 0;
+}
+
+
+/* 리뷰 전체보기 */
+.review-all-btn {
+    height: 38px;
+
+    padding: 0 14px;
+
+    border: 1px solid #ff6644;
+    border-radius: 9px;
+
+    background-color: #fff;
+    color: #ff6644;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.review-all-btn span {
+    margin-left: 4px;
+    font-size: 20px;
+    vertical-align: -1px;
+}
+
+.review-all-btn:hover {
+    background-color: #ff6644;
+    color: #fff;
+}
+
+
+/* 리뷰 목록 */
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+
+/* 리뷰 카드 */
+.review-card {
+    padding: 17px 18px;
+
+    background-color: #fff;
+
+    border: 1px solid #eee;
+    border-radius: 13px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    box-sizing: border-box;
+}
+
+
+/* 카드 상단 */
+.review-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-bottom: 11px;
+
+    border-bottom: 1px solid #f0f0f0;
+}
+
+
+/* 별점 */
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    color: #333;
+}
+
+.review-star {
+    color: #ffc107;
+
+    font-size: 20px;
+
+    line-height: 1;
+}
+
+
+/* 날짜 */
+.review-date {
+    font-size: 13px;
+    color: #777;
+}
+
+
+/* 작성자 */
+.review-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 11px;
+
+    font-size: 13px;
+    color: #777;
+}
+
+
+/* 수정 / 삭제 */
+.review-manage {
+    display: flex;
+    gap: 8px;
+}
+
+.review-manage a {
+    color: #999;
+    text-decoration: none;
+
+    font-size: 12px;
+}
+
+.review-manage a:hover {
+    color: #ff6644;
+}
+
+
+/* 리뷰 내용 */
+.review-content {
+    margin-top: 12px;
+
+    padding: 10px 12px;
+
+    background-color: #fff8f5;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    line-height: 1.7;
+
+    color: #444;
+}
+
+
+/* 리뷰 이미지 */
+.review-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+
+    margin-top: 12px;
+}
+
+.review-img {
+    width: 90px !important;
+    height: 90px !important;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+
+/* 리뷰 없음 */
+.review-empty {
+    padding: 30px 0;
+
+    text-align: center;
+
+    color: #999;
+    font-size: 14px;
+}
+
+.summary-star {
+    color: #ffc107;
+    font-size: 21px;
+    font-weight: bold;
+    margin-right: 4px;
+    vertical-align: -2px;
+}
+
+.summary-rating {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+.review-header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.review-header-buttons form {
+    margin: 0;
+}
+/* 리뷰 전체보기 - 보조 버튼 */
+.review-all-btn {
+    height: 38px;
+    padding: 0 14px;
+
+    background: #fff;
+    color: #ff6644;
+
+    border: 1px solid #ff6644;
+    border-radius: 9px;
+
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 리뷰 쓰기 - 주요 버튼 */
+.review-write-btn {
+    height: 38px;
+    padding: 0 15px;
+
+    background: #ff6644;
+    color: #fff;
+
+    border: 1px solid #ff6644;
+    border-radius: 9px;
+
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.review-write-btn:hover {
+    background-color: #f25535;
+}
+
+/* 예약하기 */
+.reservation-btn {
+    background-color: #ff6644 !important;
+    transition: 0.2s;
+}
+
+.reservation-btn:hover {
+    background-color: #e9583a !important;
+    transform: translateY(-1px);
+}
+
+/* 배달주문 */
+.delivery-btn {
+    background-color: #fff !important;
+    color: #ff6644 !important;
+    border: 1px solid #ff6644 !important;
+    transition: 0.2s;
+}
+
+.delivery-btn:hover {
+    background-color: #fff0eb !important;
+    color: #ff5733 !important;
+    border-color: #ff5733 !important;
+    transform: translateY(-1px);
+}

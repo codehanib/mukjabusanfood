@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springboot.MUKJA.dao.bookmarkDAO;
 import com.springboot.MUKJA.dao.usersDAO;
@@ -63,6 +64,7 @@ public class bookmarkController {
 	}
 	
 	@RequestMapping("/users/bookmarkToggle")
+	@ResponseBody
 	public String bookmarkToggle(Authentication auth,
 	                             @RequestParam("r_no") int r_no) {
 
@@ -77,11 +79,11 @@ public class bookmarkController {
 
 	    if (bookmarkCheck == 0) {
 	        bkdao.bookmarkInsert(bkdto);
+	        return "insert";
 	    } else {
 	        bkdao.bookmarkDeleteByRestaurant(bkdto);
+	        return "delete";
 	    }
-
-	    return "redirect:/restaurant/detail?r_no=" + r_no;
 	}
 	
 }

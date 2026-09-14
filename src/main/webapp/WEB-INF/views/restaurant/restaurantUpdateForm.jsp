@@ -7,10 +7,12 @@
 <head>
 <meta charset="UTF-8">
 <title>식당 정보 수정</title>
+<link rel="stylesheet" href="/css/header.css">
+<link rel="stylesheet" href="/css/restaurantUpdate.css">
 </head>
 
 <body>
-
+<%@ include file="/WEB-INF/views/header.jsp" %>
 <h2>식당 정보 수정</h2>
 
 <form action="/restaurant/update" method="post" name="restaurantUpdateForm" enctype="multipart/form-data">
@@ -166,8 +168,6 @@
 				
 				</c:forEach>
 
-                    <br><br>
-
                 </c:if>
 
                 <!-- 새 메뉴판 이미지 -->
@@ -192,41 +192,39 @@
                     <c:forEach var="menu" items="${menuList}">
 
                         <div class="menu-item">
+
+						    <input type="hidden" name="mn_no" value="${menu.mn_no}">
 						
-                            <input type="hidden" name="mn_no" value="${menu.mn_no}">
-                            메뉴명<br>
-                            <input type="text" name="mn_name" value="${menu.mn_name}">
-                            <br>
-                            메뉴 설명<br>
-							<textarea name="mn_content">${menu.mn_content}</textarea>
-							<br>
-                            가격<br>
-                            <input type="number" name="mn_price" value="${menu.mn_price}">
-                            <br>
-
-                            현재 이미지<br>
-
-                            <c:if test="${not empty menu.mn_img}">
-							    <c:choose>
-							        <c:when test="${fn:startsWith(menu.mn_img, 'http')}">
-							            <img src="${menu.mn_img}" width="100">
-							        </c:when>
-							        <c:otherwise>
-							            <img src="/upload/${menu.mn_img}" width="100">
-							        </c:otherwise>
-							    </c:choose>
-							
-							    <br>
-							</c:if>
-
-							<input type="hidden" name="old_mn_img" value="${menu.mn_img}">
-
-                            새 메뉴 이미지<br>
-                            <input type="file" name="mn_upload"  accept="image/*">
-
-                            <hr>
-
-                        </div>
+						    메뉴명
+						    <input type="text" name="mn_name" value="${menu.mn_name}">
+						    <br>
+						
+						    메뉴 설명
+						    <textarea name="mn_content">${menu.mn_content}</textarea>
+						    <br>
+						
+						    가격
+						    <input type="number" name="mn_price" value="${menu.mn_price}">
+						    <br>
+						
+						    현재 이미지
+						    <c:if test="${not empty menu.mn_img}">
+						        <c:choose>
+						            <c:when test="${fn:startsWith(menu.mn_img, 'http')}">
+						                <img src="${menu.mn_img}">
+						            </c:when>
+						            <c:otherwise>
+						                <img src="/upload/${menu.mn_img}">
+						            </c:otherwise>
+						        </c:choose>
+						    </c:if>
+						
+						    <input type="hidden" name="old_mn_img" value="${menu.mn_img}">
+						    <br>
+						    
+						    새 메뉴 이미지
+						    <input type="file" name="mn_upload" accept="image/*">
+						</div>
 
                     </c:forEach>
 
@@ -280,13 +278,7 @@
 
         <!-- 수정 -->
         <tr>
-            <td colspan="2">
-
-                <button type="submit">
-                    식당 정보 수정
-                </button>
-
-            </td>
+            <td colspan="2"><button type="submit" id="submitBtn">식당 정보 수정</button></td>
         </tr>
 
     </table>
@@ -294,14 +286,11 @@
 </form>
 
 
-<script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KEY&libraries=services&autoload=false">
-</script>
-
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KEY&libraries=services&autoload=false"></script>
 
 <script type="text/javascript">
-function goPopup() {
 
+function goPopup() {
     window.open(
         "/jusoPopup",
         "pop",
@@ -320,6 +309,10 @@ function jusoCallBack(roadAddrPart1, addrDetail, zipNo) {
     if (parts.length >= 2) {
         document.getElementById("r_region").value = parts[1];
     }
+
+    // 주소 변경 시 기존 좌표 초기화
+    document.getElementById("r_lat").value = "";
+    document.getElementById("r_lon").value = "";
 
     searchLatLon(roadAddrPart1);
 }
@@ -348,19 +341,53 @@ function searchLatLon(address) {
                     document.getElementById("r_lon").value =
                         result[0].x;
 
+                    console.log("위도:", result[0].y);
+                    console.log("경도:", result[0].x);
+
                 } else {
+
+                    document.getElementById("r_lat").value = "";
+                    document.getElementById("r_lon").value = "";
+
+                    console.log("좌표 검색 실패:", address, status);
 
                     alert(
                         "주소의 위도/경도를 찾지 못했습니다."
                     );
-
                 }
 
             }
         );
 
     });
+
 }
+
+
+/* 수정 직전 좌표 확인 */
+document.restaurantUpdateForm.addEventListener(
+    "submit",
+    function(e) {
+
+        const lat =
+            document.getElementById("r_lat").value;
+
+        const lon =
+            document.getElementById("r_lon").value;
+
+        if (!lat || !lon) {
+
+            e.preventDefault();
+
+            alert(
+                "주소 검색 후 좌표가 확인될 때까지 잠시 기다려주세요."
+            );
+
+            return false;
+        }
+    }
+);
+
 
 /* 메뉴 추가 */
 function addMenu() {
@@ -374,7 +401,6 @@ function addMenu() {
     div.className = "menu-item";
 
     div.innerHTML = `
-
         <input type="hidden"
                name="mn_no"
                value="">
@@ -384,31 +410,23 @@ function addMenu() {
                value="">
 
         메뉴명<br>
-
         <input type="text"
                name="mn_name">
-
         <br>
 
         메뉴 설명<br>
-
         <textarea name="mn_content"></textarea>
-
         <br>
 
         가격<br>
-
         <input type="number"
                name="mn_price">
-
         <br>
 
         메뉴 이미지<br>
-
         <input type="file"
                name="mn_upload"
                accept="image/*">
-
         <hr>
     `;
 
@@ -416,6 +434,5 @@ function addMenu() {
 }
 
 </script>
-
 </body>
 </html>
