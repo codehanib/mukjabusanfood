@@ -12,8 +12,14 @@
 <div class="mypage-container">
 
     <div class="mypage-title">
-        식당페이지
-    </div>
+    <span>식당페이지</span>
+    <c:if test="${not empty user && user.r_no == 0}">
+        <a href="/restaurant/restaurantWriteForm" class="btn-outline title-action">
+            식당 등록
+        </a>
+    </c:if>
+</div>
+    
 
     <div class="member-info">
         <div class="mypage-logo">
@@ -25,20 +31,11 @@
             </div>
         </div>
     </div>
+    
 
     <div class="mypage-menu">
 
-        <!-- 식당 등록 -->
-        <a href="/restaurant/restaurantWriteForm" class="mypage-menu-item">
-            <div class="mypage-menu-title">
-                restaurant
-                <span>식당 등록</span>
-            </div>
-            <div class="mypage-menu-desc">
-                새로운 식당 정보를<br>
-                등록하실 수 있습니다.
-            </div>
-        </a>
+        
 
         <!-- 식당 정보 수정 -->
         <a href="/restaurant/updateForm?r_no=${user.r_no}" class="mypage-menu-item">
@@ -73,6 +70,17 @@
             <div class="mypage-menu-desc">
                 배달 주문 내역을<br>
                 확인하고 관리하실 수 있습니다.
+            </div>
+        </a>
+        
+        <!-- 1:1문의 -->
+        <a href="/users/inquiryList" class="mypage-menu-item">
+            <div class="mypage-menu-title">
+                inquiry
+                <span>1:1 문의</span>
+            </div>
+            <div class="mypage-menu-desc">
+                문의 내역을 확인하실 수 있습니다.<br>
             </div>
         </a>
 
