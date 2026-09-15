@@ -26,7 +26,7 @@
 		  .btn-detail:hover { background: #555; }
 		    
 		  .empty-msg { text-align: center; padding: 50px 0; color: #888; font-size: 1.05em; }
-		
+		  table th:last-child,table td:last-child {white-space: nowrap; width: 90px; text-align: center;}
 	</style>
 </head>
 <body>

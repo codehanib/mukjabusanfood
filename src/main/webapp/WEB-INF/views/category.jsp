@@ -147,8 +147,7 @@
                                 <span>• ${r.r_region != null ? r.r_region : '부산'}</span>
                             </div>
                             <div class="card-footer">
-                                <span>🕒 ${not empty r.r_time ? r.r_time : '영업시간 참조'}</span>
-                                <span class="btn-detail">상세보기</span>
+                                <span>🕒 ${not empty r.r_info ? r.r_info : '가게 소개'}</span>
                             </div>
                         </div>
                     </a>

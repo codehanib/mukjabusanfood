@@ -173,16 +173,19 @@ public class DeliveryController {
         int rejectedOrderCount = 0;
 
         for (deliveryDTO order : orderHistoryList) {
-            if ("주문거절".equals(order.getD_stats())) {
+            if ("주문거절".equals(order.getD_stats()) || "주문취소".equals(order.getD_stats())) {
                 rejectedOrderCount++;
             } else {
-            	  // 매출금액 합산
-            	totalRevenue += order.getD_total_price();
-            	
+            	 // 진행 중인 배달 건수 
             	if ("주문접수".equals(order.getD_stats()) || "주문승인".equals(order.getD_stats())
                     || "조리중".equals(order.getD_stats()) || "배달중".equals(order.getD_stats())) {
                 activeOrderCount++;
                }
+            	
+            	// 누적 매출액(승인~배달중)
+            	if(!"주문접수".equals(order.getD_stats())) {
+            		totalRevenue += order.getD_total_price();
+            	}
             }
         }
 
