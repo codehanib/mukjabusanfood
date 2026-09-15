@@ -151,11 +151,12 @@
 	}	
 	/* 목록 */
 	.btn-list {
-	    background: #FF4B32;
-	    color: #fff;
+	    border: 1px solid #FF4B32;
+        color: #FF4B32;
 	}	
 	.btn-list:hover {
-	    background: #E83F28;
+	    background: #FF4B32;
+        color: #fff;
 	    transform: translateY(-2px);
 	}
 	/* 수정 */
@@ -240,5 +241,6 @@
         </sec:authorize>
     </div>
 </div>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>
