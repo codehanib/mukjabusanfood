@@ -10,13 +10,12 @@
 <title>문의 상세보기</title>
 <style>
 	* { box-sizing: border-box; }
-	body {
-	    margin: 0;
-	    padding: 60px 20px;
-	    background: #ffffff;
+    body {
+        margin: 0;
+	    padding: 0;
+	    background: #f8f9fa;
 	    color: #333;
-	    font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
-	}
+    }
 
 	/* 전체 영역 */
 	.inquiry-container {
@@ -35,7 +34,11 @@
 	    font-size: 30px;
 	    font-weight: 800;
 	}
-
+	.page-title p {
+        margin-top: 8px;
+        color: #999;
+        font-size: 14px;
+    }
 	.inquiry-view {
 	    width: 100%;
 	    border-collapse: collapse;
@@ -104,7 +107,7 @@
 	.answer-status {
     padding: 5px 10px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
 	}
 	
@@ -157,7 +160,7 @@
 	}
 	/* 수정 */
 	.btn-edit {
-	    background: #FFF0EC;
+	    background: #FFDDD4;
 	    color: #FF4B32;
 	}	
 	.btn-edit:hover {
@@ -165,8 +168,8 @@
 	}
 	/* 삭제 */
 	.btn-delete {
-	    background: #f5f5f5;
-	    color: #777;
+	    background: #ddd;
+	    color: #333;
 	}
 	.btn-delete:hover {
 	    background: #e8e8e8;
@@ -182,11 +185,13 @@
 	    transform: translateY(-2px);
 	}
 </style>
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
 <div class="inquiry-container">
     <div class="page-title">
-        <h1>문의 내용</h1>
+        <h1>1:1 문의</h1>
+        <p>궁금한 점이 있다면 문의해주세요</p>
     </div>
 	<table class="inquiry-view">
 		<tr>
@@ -221,7 +226,7 @@
             <a href="/users/inquiryUpdateForm?mi_no=${iview.mi_no}"
                class="btn-edit">수정</a>
             <a href="/users/inquiryDelete?mi_no=${iview.mi_no}"
-               class="btn-delete">삭제</a>
+               class="btn-delete" onclick="return confirm('문의를 삭제하시겠습니까?');">삭제</a>
         </sec:authorize>
         <sec:authorize access="hasRole('ADMIN')">
             <a href="/admin/inquiryAnswerForm"

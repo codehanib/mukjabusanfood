@@ -14,11 +14,9 @@
     }
     body {
         margin: 0;
-        padding: 60px 20px;
-
-        background: #ffffff;
-        color: #333;
-
+	    padding: 0;
+	    background: #f8f9fa;
+	    color: #333;
         font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
     }
     /* 전체 영역 */
@@ -135,10 +133,10 @@
         transition: all 0.2s ease;
         margin : 3px;
     }
-    /* 돌아가기 */
+    /* 홈으로 */
     .btn-home {
-        background: #f5f5f5;
-        color: #555;
+        background: #ddd;
+	    color: #333;
     }
     .btn-home:hover {
         background: #eaeaea;
@@ -154,9 +152,9 @@
         transform: translateY(-2px);
     }
 </style>
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
-<!-- include file="header.jsp" %> -->
 	<div class="notice-container">
     	<!-- 페이지 제목 -->
     	<div class="page-title">

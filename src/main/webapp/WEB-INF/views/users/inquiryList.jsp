@@ -15,10 +15,9 @@
     }
     body {
         margin: 0;
-        padding: 60px 20px;
-        background: #ffffff;
-        color: #333;
-        font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+	    padding: 0;
+	    background: #f8f9fa;
+	    color: #333;
     }
     /* 문의 목록 전체 영역 */
     .inquiry-container {
@@ -33,7 +32,7 @@
     .inquiry-title h1 {
         margin: 0;
         color: #333;
-        font-size: 32px;
+        font-size: 30px;
         font-weight: 800;
     }
     .inquiry-title p {
@@ -145,8 +144,8 @@
     }
     /* 홈으로 */
     .inquiry-home {
-        background: #f5f5f5;
-        color: #777;
+        background: #ddd;
+        color: #333;
     }
     .inquiry-home:hover {
         background: #e8e8e8;
@@ -161,6 +160,7 @@
         transform: translateY(-2px);
     }
 </style>
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
 	<c:if test="${param.error == 'notOwner'}">
