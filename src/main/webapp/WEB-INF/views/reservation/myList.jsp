@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 
 
 <!DOCTYPE html>
@@ -23,7 +24,7 @@
 		<!-- 예약 확인 -->
 		<c:choose>
 			<c:when test="${not empty myList}">
-				<table class="info-table reservation-table" width="700">
+				<table class="list-table" width="700">
 					<tr>
 						<th>대기번호</th>
 						<th>식당</th>
@@ -60,7 +61,7 @@
 
 		<c:if test="${not empty history}">
 			<div class="mypage-title">지난 예약 기록</div>
-			<table class="info-table reservation-table" width="700">
+			<table class="list-table" width="700">
 				<tr>
 					<th>식당</th>
 					<th>예약날짜</th>

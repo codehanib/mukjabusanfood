@@ -94,7 +94,7 @@
 	<update id="usersAuthUpdate"
 		parameterType="com.springboot.MUKJA.dto.usersDTO">
 		UPDATE users
-		SET u_auth = #{u_auth},r_no = #{r_no} where
+		SET u_auth = #{u_auth},r_no = #{r_no,jdbcType=INTEGER} where
 		u_no = #{u_no}
 	</update>
 
@@ -147,4 +147,10 @@
        SET r_no = #{r_no}
        WHERE u_no = #{u_no}
 	</update>
+	
+	<update id="deleteR_no">
+    UPDATE users
+    SET r_no = NULL
+    WHERE r_no = #{r_no}
+</update>
 </mapper>

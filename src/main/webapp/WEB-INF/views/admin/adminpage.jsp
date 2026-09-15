@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>식당 관리</title>
+<title>관리자 관리</title>
 <link rel="stylesheet" href="/css/mypage.css">
 </head>
 <body>
@@ -12,12 +12,7 @@
 <div class="mypage-container">
 
     <div class="mypage-title">
-    <span>식당페이지</span>
-    <c:if test="${not empty user && empty user.r_no}">
-        <a href="/restaurant/restaurantWriteForm" class="btn-outline title-action">
-            식당 등록
-        </a>
-    </c:if>
+    <span>관리자페이지</span>
 </div>
     
 
@@ -25,7 +20,7 @@
         <div class="mypage-logo">
             MY<span> MUKJA</span>
             <div class="mypage-text">
-                오너페이지에서는 식당 정보와<br>
+                관리페이지에서는 관리자 정보와<br>
                 예약, 주문 내역을<br>
                 확인하고 관리하실 수 있습니다.
             </div>
@@ -37,23 +32,23 @@
 
         
 
-        <!-- 식당 정보 수정 -->
-        <a href="/restaurant/updateForm?r_no=${user.r_no}" class="mypage-menu-item">
+        <!-- 관리자 정보 수정 -->
+        <a href="/admin/usersList" class="mypage-menu-item">
             <div class="mypage-menu-title">
-                update
-                <span>식당 정보 수정</span>
+                users
+                <span>회원 멤버 수정</span>
             </div>
             <div class="mypage-menu-desc">
-                등록한 식당 정보를<br>
+                등록한 관리자 정보를<br>
                 수정하실 수 있습니다.
             </div>
         </a>
 
         <!-- 예약 목록 -->
-        <a href="/reservation/ownerList" class="mypage-menu-item">
+        <a href="/admin/restaurantLis" class="mypage-menu-item">
             <div class="mypage-menu-title">
-                reservation
-                <span>예약 목록</span>
+                restaurantList
+                <span>식당 관리</span>
             </div>
             <div class="mypage-menu-desc">
                 들어온 예약을 확인하고<br>
@@ -62,10 +57,10 @@
         </a>
 
         <!-- 주문 목록 -->
-        <a href="/store/order/history?r_no=${user.r_no}" class="mypage-menu-item">
+        <a href="/admin/noticeWrite" class="mypage-menu-item">
             <div class="mypage-menu-title">
-                order
-                <span>주문 목록</span>
+                notice
+                <span>공지 작성</span>
             </div>
             <div class="mypage-menu-desc">
                 배달 주문 내역을<br>

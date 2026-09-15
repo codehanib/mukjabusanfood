@@ -1,0 +1,232 @@
+@charset "UTF-8";
+
+/* =========================================================
+   FOOTER 전체
+========================================================= */
+
+.footer {
+    width: 100%;
+
+    padding:
+        45px
+        max(30px, calc((100% - 1200px) / 2))
+        20px;
+
+    display: grid;
+
+    grid-template-columns: 220px 1fr 380px;
+
+    column-gap: 40px;
+
+    border-top: 1px solid #e0e0e0;
+
+    background-color: #f4f5f7;
+
+    color: #777777;
+
+    font-size: 12px;
+
+    line-height: 1.9;
+}
+
+
+
+/* =========================================================
+   1. Footer 로고
+========================================================= */
+
+.footer-logo {
+    display: flex;
+
+    align-items: flex-start;
+}
+
+
+.footer-logo img {
+    max-width: 190px;
+    max-height: 80px;
+}
+
+.footer-info-logo {
+    width: 380px !important;
+    height: 65px !important;
+    max-width: none !important;
+    max-height: none !important;
+    display: block;
+}
+
+/* =========================================================
+   2. 회사 정보
+========================================================= */
+
+.footer-company h3 {
+    margin-bottom: 10px;
+
+    color: #222222;
+
+    font-size: 18px;
+}
+
+
+.footer-company b {
+    color: #0874df;
+
+    font-size: 15px;
+}
+
+
+
+/* =========================================================
+   3. Footer 메뉴
+========================================================= */
+
+.footer-menu {
+    text-align: right;
+}
+
+
+/* 회사소개 / 이용약관 / 개인정보처리방침 등 */
+.footer-menu > div:first-child {
+    margin-bottom: 25px;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    flex-wrap: wrap;
+
+    gap: 16px;
+}
+
+
+.footer-menu a {
+    color: #444444;
+    font-weight: bold;
+    transition: 0.2s;
+    text-decoration: none;
+}
+
+
+.footer-menu a:hover {
+    color: #0874df;
+}
+s
+
+/* 안내 로고 이미지 */
+.footer-menu img {
+    max-width: 250px;
+
+    margin-left: auto;
+}
+
+
+
+/* =========================================================
+   4. Copyright
+========================================================= */
+
+.footer-bottom {
+    grid-column: 1 / -1;
+
+    margin-top: 35px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid #dddddd;
+
+    text-align: center;
+
+    color: #999999;
+
+    font-size: 11px;
+}
+
+
+
+/* =========================================================
+   5. Footer 반응형 - 1100px 이하
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .footer {
+        grid-template-columns: 1fr 2fr;
+    }
+
+
+    .footer-menu {
+        grid-column: 1 / -1;
+
+        margin-top: 30px;
+
+        text-align: left;
+    }
+
+
+    .footer-menu > div:first-child {
+        justify-content: flex-start;
+    }
+
+
+    .footer-menu img {
+        margin-left: 0;
+    }
+}
+
+
+
+/* =========================================================
+   6. Footer 반응형 - 600px 이하
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .footer {
+        padding: 35px 20px 20px;
+
+        grid-template-columns: 1fr;
+
+        row-gap: 25px;
+    }
+
+
+    .footer-logo {
+        justify-content: center;
+    }
+
+
+    .footer-logo img {
+        max-width: 170px;
+    }
+
+
+    .footer-company {
+        text-align: center;
+    }
+
+
+    .footer-menu {
+        grid-column: 1;
+
+        margin-top: 0;
+
+        text-align: center;
+    }
+
+
+    .footer-menu > div:first-child {
+        justify-content: center;
+
+        gap: 10px;
+    }
+
+
+    .footer-menu img {
+        margin: 0 auto;
+    }
+
+
+    .footer-bottom {
+        margin-top: 15px;
+    }
+}

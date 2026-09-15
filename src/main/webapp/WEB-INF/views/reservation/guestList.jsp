@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 
 <!DOCTYPE html>
@@ -11,18 +11,18 @@
 <title>예약목록</title>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/views/header.jsp" %>
 	<main>
 
-		<div>
-			<h2>예약목록</h2>
+		<div class="mypage-container">
+			<h2 class="mypage-title">예약목록</h2>
 			<p>MUKJA에 오신 것을 환영합니다.</p>
 		</div>
 
 		<!-- 예약 확인 -->
 		<c:choose>
 			<c:when test="${not empty myList}">
-				<table width="700" border="1">
+				<table class="list-table" width="700">
 					<tr>
 						<th>대기번호</th>
 						<th>식당</th>
@@ -41,14 +41,14 @@
 							<td>${res.res_time}</td>
 							<td>${res.res_count}</td>
 							<td>${res.res_stats}</td>
-							<td><a
+							<td>
 								href="/reservation/reservationDetail?res_no=${res.res_no}">보기</a>
 								<form action="/reservation/guestCancel" method="post"
 									style="display: inline">
 									<input type="hidden" name="res_no" value="${res.res_no}">
 									<input type="hidden" name="res_name" value="${res.res_name}">
 									<input type="hidden" name="res_tel" value="${res.res_tel}">
-									<button type="submit" onclick="return confirm('예약을 취소하시겠습니까?')">취소</button>
+									<button type="submit" class="btn" onclick="return confirm('예약을 취소하시겠습니까?')">취소</button>
 								</form></td>
 						</tr>
 					</c:forEach>
