@@ -39,7 +39,7 @@ public class WebSecurityConfig implements WebMvcConfigurer{
 					// [수정] .webp 등 다양한 이미지 확장자 및 루트 정적 파일/업로드 경로 추가
 					.requestMatchers("/css/**", "/js/**", "/images/**", "/*.webp", "/*.jpg", "/*.png", "/upload/**").permitAll() 
 					.requestMatchers("/guest/**").permitAll()
-					.requestMatchers("/users/**").hasAnyRole("USER","ADMIN")
+					.requestMatchers("/users/**").hasAnyRole("USER","ADMIN","OWNER")
 					.requestMatchers("/owner/**").hasAnyRole("OWNER","ADMIN")
 					.requestMatchers("/restaurant/restaurantWriteForm","/restaurant/insert","/restaurant/updateForm","/restaurant/update").hasRole("OWNER")
 					.requestMatchers("/admin/**","/restaurant/delete").hasAnyRole("ADMIN")

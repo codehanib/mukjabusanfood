@@ -45,4 +45,6 @@ public interface usersDAO {
 	public int review(int u_no);
 	public int reservation(int u_no);
 	public int usersRestaurantUpdate(usersDTO dto);
+	public void deleteR_no(int r_no);
+	
 }

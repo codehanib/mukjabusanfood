@@ -18,5 +18,7 @@ public class usersDTO {
 	private String 	u_auth;
 	private Date 	u_date;
 	private String 	u_stats;
-	private int 	r_no;
+	private Integer	r_no;
+	
+	
 }

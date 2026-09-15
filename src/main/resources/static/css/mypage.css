@@ -51,7 +51,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f7fbff;
+    background: #f8f9fa;
     border: 1px solid #ff9882;
     border-radius: 14px;
     box-shadow: 0 5px 18px rgba(8, 116, 223, 0.06);
@@ -276,6 +276,7 @@ body {
     font-weight: bold;
     font-size: 12px;
     text-decoration: none;
+    white-space: nowrap;
 }
 
 .btn-outline:hover {
@@ -295,4 +296,57 @@ body {
 
 .mypage-title .title-action {
     font-size: 13px;
+}
+/* =========================================================
+   목록형 테이블 (회원목록, 예약목록 등)
+========================================================= */
+.list-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    background-color: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.list-table th {
+    padding: 14px 16px;
+    background-color: #fff7f3;
+    color: #444;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 3px solid #ff6644;
+}
+
+.list-table td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.list-table tr:last-child td { border-bottom: none; }
+
+.list-table tr:hover td { background-color: #fff8f5; }
+
+.list-table a {
+    color: #ff6644;
+    font-weight: 600;
+    text-decoration: none;
+}
+.list-table a:hover { text-decoration: underline; }
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff6644;
+    color: #fff;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
 }

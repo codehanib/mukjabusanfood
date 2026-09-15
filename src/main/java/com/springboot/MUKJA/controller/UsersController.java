@@ -223,12 +223,11 @@ public class UsersController {
 	public String usersAuthUpdate(HttpServletRequest request) {
 		int u_no = Integer.parseInt(request.getParameter("u_no"));
 		String u_auth = request.getParameter("u_auth");
-		int r_no = Integer.parseInt(request.getParameter("r_no"));
 
 		usersDTO dto = new usersDTO();
 		dto.setU_no(u_no);
 		dto.setU_auth(u_auth);
-		dto.setR_no(r_no);
+		dto.setR_no(null);
 		usersDAO.usersAuthUpdate(dto);
 
 		return "redirect:/admin/usersView?u_no=" + u_no;
@@ -271,4 +270,17 @@ public class UsersController {
 		emailVerificationService.clearToken(token);
 		return "redirect:/login/login?resetSuccess=true";
 	}
+	@RequestMapping("/admin/adminpage")
+	 public String adminPage(Principal principal, Model model) {
+
+	     usersDTO user = usersDAO.findById(principal.getName());
+	     model.addAttribute("user", user);
+	     
+	     List<mukjaSearchDTO> popularSearchList =
+	    	        mukjaSearchdao.popularSearchList();
+
+	    	model.addAttribute("popularSearchList", popularSearchList);
+
+	     return "admin/adminpage";
+	 }
 }
