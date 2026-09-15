@@ -161,6 +161,7 @@ public class restaurantController {
 	    public String restaurantListCategory(
 	            @RequestParam("mukja_c_no") int mukja_c_no,
 	            @RequestParam(value = "page", defaultValue = "1") int page,
+	            @RequestParam(value = "sort", defaultValue = "1") String sort,
 	            Principal principal, Model model) {
 
 	        int pageSize = 20;
