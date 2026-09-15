@@ -32,12 +32,21 @@
 
 	</c:choose>
 	<br>
-		<!-- 관리자만 식당 삭제 -->
-	    <sec:authorize access="hasRole('ADMIN')">
-	        <a href="/restaurant/delete?r_no=${restaurant.r_no}&keyword=${keyword}">식당 삭제</a>
-	    </sec:authorize>
-	<h2>${restaurant.r_name}</h2>
+
+	<div class="restaurant-title-row">
 	
+	    <h2>${restaurant.r_name}</h2>
+	
+	    <!-- 관리자만 식당 삭제 -->
+	    <sec:authorize access="hasRole('ADMIN')">
+	        <a class="restaurant-delete-btn"
+	           href="/restaurant/delete?r_no=${restaurant.r_no}&keyword=${keyword}"
+	           onclick="return confirm('이 식당을 삭제하시겠습니까?');">
+	            식당 삭제
+	        </a>
+	    </sec:authorize>
+	
+	</div>
 	<c:choose>
 	    <c:when test="${reviewCount > 0}">
 	        <div class="restaurant-summary">

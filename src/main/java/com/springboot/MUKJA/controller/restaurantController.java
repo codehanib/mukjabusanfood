@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.springboot.MUKJA.dao.bookmarkDAO;
 import com.springboot.MUKJA.dao.mukjaSearchDAO;
@@ -100,6 +101,59 @@ public class restaurantController {
 	    model.addAttribute("regionList", restaurantdao.regionList());
 
 	    return "restaurant/restaurantList";
+	}
+	
+	
+	@RequestMapping("/admin/restaurantList")
+	public String adminRestaurantList(
+	        @RequestParam(value = "page", defaultValue = "1") int page,
+	        Model model) throws Exception {
+
+	    // 한 페이지에 식당 20개
+	    int pageSize = 20;
+
+	    int start = (page - 1) * pageSize;
+
+	    // 전체 식당 수
+	    int totalCount = restaurantdao.restaurantCount();
+
+	    // 전체 페이지 수
+	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+
+	    // 페이지 번호는 10개씩
+	    int pageBlock = 10;
+
+	    // 현재 페이지가 속한 시작 페이지
+	    int startPage = ((page - 1) / pageBlock) * pageBlock + 1;
+
+	    // 끝 페이지
+	    int endPage = Math.min(startPage + pageBlock - 1, totalPage);
+
+	    // 식당 목록
+	    List<restaurantDTO> restaurantList = restaurantdao.adminRestaurantList(start, pageSize);
+
+	    for (restaurantDTO restaurant : restaurantList) {
+
+	        // 영업시간 + 휴무일
+	        restaurantService.setRestaurantListTime(restaurant);
+	        // 리뷰
+	        int reviewCount = reviewdao.reviewCount(restaurant.getR_no());
+
+	        double reviewAvg =
+	                reviewdao.reviewAvg(restaurant.getR_no());
+
+	        restaurant.setReviewCount(reviewCount);
+	        restaurant.setReviewAvg(reviewAvg);
+	    }
+	    model.addAttribute("restaurantList", restaurantList);
+	    model.addAttribute("page", page);
+	    model.addAttribute("totalPage", totalPage);
+
+	    // 10개 단위 페이징
+	    model.addAttribute("startPage", startPage);
+	    model.addAttribute("endPage", endPage);
+
+	    return "restaurant/adminRestaurantList";
 	}
 	
 	  	// 음식종류별 식당 목록
@@ -335,17 +389,15 @@ public class restaurantController {
 	 @RequestMapping("/restaurant/delete")
 	 public String restaurantDelete(
 	         @RequestParam("r_no") int r_no,
-	         @RequestParam(value="keyword", required=false) String keyword)
-	         throws Exception {
+	         @RequestParam("keyword") String keyword,
+	         RedirectAttributes redirectAttributes) throws Exception {
 
 	     restaurantdao.restaurantDelete(r_no);
 	     service.delete(r_no);
 
-	     if (keyword != null && !keyword.trim().isEmpty()) {
-	         return "redirect:/restaurant/search?keyword=" + keyword;
-	     }
+	     redirectAttributes.addAttribute("keyword", keyword);
 
-	     return "redirect:/rnumberdelete";
+	     return "redirect:/restaurant/search";
 	 }
 	 
 	 

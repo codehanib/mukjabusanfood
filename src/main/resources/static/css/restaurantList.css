@@ -1,0 +1,379 @@
+/* =========================================
+   전체 페이지
+========================================= */
+body {
+    margin: 0;
+    background-color: #f8f9fa;
+    color: #333;
+    font-family: "Malgun Gothic", "맑은 고딕", sans-serif;
+}
+
+.restaurant-list-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 25px 80px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================
+   상단 뒤로가기 / HOME
+========================================= */
+.top-buttons {
+    margin-bottom: 28px;
+}
+
+.top-buttons button {
+    height: 40px;
+    min-width: 44px;
+    padding: 0 15px;
+    margin-right: 7px;
+
+    border: 1px solid #eaded9;
+    border-radius: 10px;
+
+    background-color: #fff;
+    color: #555;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.top-buttons button:hover {
+    background-color: #fff3ee;
+    border-color: #ffb5a3;
+    color: #ff6644;
+
+    transform: translateY(-1px);
+}
+
+.top-buttons button:last-child {
+    width: 80px;
+    font-size: 16px;
+}
+
+
+/* =========================================
+   검색 결과 없음
+========================================= */
+.empty-message {
+    margin-top: 30px;
+    padding: 60px 20px;
+
+    background-color: #fff;
+
+    border: 1px solid #eee;
+    border-radius: 15px;
+
+    text-align: center;
+    color: #999;
+    font-size: 16px;
+}
+
+
+/* =========================================
+   식당 카드
+========================================= */
+.restaurant-card {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    padding: 18px 18px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 17px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    transition: 0.2s;
+    
+    position: relative;
+    cursor: pointer;
+}
+
+.restaurant-card:hover {
+    border-color: #ffd7cc;
+
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   왼쪽 이미지
+========================================= */
+.restaurant-image-link {
+    width: 260px;
+    height: 180px;
+    flex-shrink: 0;
+    display: block;
+}
+
+.restaurant-image {
+    display: block;
+	width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    border-radius: 10px;
+
+    background-color: #f5f5f5;
+
+    transition: 0.2s;
+}
+
+.restaurant-image:hover {
+    opacity: 0.93;
+}
+
+
+/* =========================================
+   오른쪽 정보 영역
+========================================= */
+.restaurant-content {
+    flex: 1;
+    min-width: 0;
+    margin-left: 30px;
+}
+
+
+/* 식당 이름 */
+.restaurant-name-link {
+    display: inline-block;
+
+    color: inherit;
+    text-decoration: none;
+}
+
+.restaurant-name {
+    margin: 12px 0 7px;
+
+    color: #333;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+}
+
+.restaurant-name-link:hover .restaurant-name {
+    color: #ff6644;
+}
+
+
+/* =========================================
+   별점 / 리뷰 / 지역
+========================================= */
+.restaurant-summary {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    margin-bottom: 17px;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+.star {
+    color: #ffc107;
+    font-size: 19px;
+}
+
+.rating {
+    color: #333;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.review-count {
+    color: #777;
+}
+
+.restaurant-category {
+    margin-left: 4px;
+
+    color: #666;
+}
+
+
+/* =========================================
+   영업 정보
+========================================= */
+.restaurant-info {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.info-line {
+    display: flex;
+    align-items: flex-start;
+
+    margin-bottom: 8px;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.info-label {
+    flex-shrink: 0;
+
+    width: 70px;
+
+    color: #888;
+
+    font-weight: 600;
+}
+
+.info-value {
+    color: #444;
+    word-break: break-word;
+}
+
+
+/* 휴무일 조금 강조 */
+.rest-day {
+    color: #e05b42;
+}
+
+
+/* =========================================
+   예약하기
+========================================= */
+.reservation-btn {
+    position: absolute;
+    right: 24px;
+    bottom: 20px;
+
+    padding: 10px 22px;   /* 버튼 크기 증가 */
+    border: 1px solid #ff6548;
+    border-radius: 8px;
+
+    background-color: white;
+    color: #ff6548;
+
+    font-size: 15px;      /* 글씨도 조금 크게 */
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.reservation-btn:hover {
+    background-color: #fff0eb;
+    color: #ff6548;
+}
+
+/* =========================================
+   관리자 삭제
+========================================= */
+.admin-delete {
+    display: inline-block;
+
+    margin-left: 10px;
+
+    color: #999;
+
+    font-size: 12px;
+
+    text-decoration: none;
+}
+
+.admin-delete:hover {
+    color: #ff6644;
+    text-decoration: underline;
+}
+
+
+/* 기존 hr 숨김 */
+.restaurant-card hr {
+    display: none;
+}
+
+
+/* =========================================
+   모바일
+========================================= */
+@media (max-width: 700px) {
+
+    .restaurant-list-container {
+        padding: 20px 15px 60px;
+    }
+
+    .restaurant-card {
+        gap: 14px;
+        padding: 14px;
+    }
+
+    .restaurant-image {
+        width: 135px;
+        height: 125px;
+    }
+
+    .restaurant-name {
+        font-size: 19px;
+    }
+
+    .restaurant-summary {
+        font-size: 13px;
+        margin-bottom: 11px;
+    }
+
+    .info-line {
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .info-label {
+        width: 60px;
+    }
+
+    .reservation-btn {
+        width: 95px;
+        height: 35px;
+    }
+}
+
+.restaurant-info .info-line:last-child {
+    margin-bottom: 0;
+}
+
+
+.restaurant-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.restaurant-delete-btn {
+    display: inline-block;
+    padding: 4px 9px;
+
+    border: 1px solid #ff6548;
+    border-radius: 6px;
+
+    background-color: #ff6548;
+    color: white;
+
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.restaurant-delete-btn:hover {
+    background-color: #e95a3f;
+    border-color: #e95a3f;
+    color: white;
+}

@@ -140,7 +140,7 @@ body {
     padding: 30px 25px 130px;
     max-width: 900px;
     box-sizing: border-box;
-    background-color: #fffaf8;
+    background-color: #f8f9fa;
     color: #333;
     font-family: "Malgun Gothic", "맑은 고딕", sans-serif;
 }
@@ -1079,4 +1079,46 @@ body > table td:last-child {
     color: #ff5733 !important;
     border-color: #ff5733 !important;
     transform: translateY(-1px);
+}
+
+/* 식당 이름 + 삭제 버튼 */
+.restaurant-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0 12px;
+}
+
+.restaurant-title-row h2 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: #333;
+}
+
+/* 식당 삭제 버튼 */
+.restaurant-delete-btn {
+    display: inline-block;
+    padding: 5px 9px;
+
+    border: 1px solid #ff6644;
+    border-radius: 6px;
+
+    background-color: #fff;
+    color: #ff6644;
+
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.restaurant-delete-btn:hover {
+    background-color: #ff6644;
+    color: #fff;
 }

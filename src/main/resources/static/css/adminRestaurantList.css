@@ -1,0 +1,297 @@
+body {
+    margin: 0;
+    background-color: #f8f9fa;
+    color: #333;
+    font-family: "Malgun Gothic", "맑은 고딕", sans-serif;
+}
+
+/* 전체 영역 */
+.restaurant-list-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 25px 80px;
+    box-sizing: border-box;
+}
+
+/* 관리자 제목 */
+.admin-title-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.admin-title-area h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.admin-title-area span {
+    color: #999;
+    font-size: 14px;
+}
+
+/* 목록 없을 때 */
+.empty-message {
+    margin-top: 30px;
+    padding: 60px 20px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    text-align: center;
+    color: #999;
+    font-size: 16px;
+}
+
+/* 식당 카드 */
+.restaurant-card {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    padding: 18px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 17px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.restaurant-card:hover {
+    border-color: #ffd7cc;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+/* 식당 번호 */
+.restaurant-number {
+    width: 60px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ff6548;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* 이미지 */
+.restaurant-image-link {
+    width: 260px;
+    height: 180px;
+    flex-shrink: 0;
+    display: block;
+}
+
+.restaurant-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+    transition: opacity 0.2s ease;
+}
+
+.restaurant-image:hover {
+    opacity: 0.93;
+}
+
+/* 오른쪽 식당 정보 */
+.restaurant-content {
+    flex: 1;
+    min-width: 0;
+    margin-left: 30px;
+}
+
+/* 식당명 + 삭제 버튼 */
+.restaurant-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.restaurant-name {
+    margin: 12px 0 7px;
+    color: #333;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* 삭제 버튼 */
+.restaurant-delete-btn {
+    display: inline-block;
+    padding: 4px 9px;
+    border: 1px solid #ff6548;
+    border-radius: 6px;
+    background-color: #ff6548;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.restaurant-delete-btn:hover {
+    background-color: #e95a3f;
+    border-color: #e95a3f;
+    color: #fff;
+}
+
+/* 별점 / 리뷰 / 지역 / 카테고리 */
+.restaurant-summary {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 17px;
+    color: #777;
+    font-size: 14px;
+}
+
+.star {
+    color: #ffc107;
+    font-size: 19px;
+}
+
+.rating {
+    color: #333;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.review-count {
+    color: #777;
+}
+
+.restaurant-category {
+    margin-left: 4px;
+    color: #666;
+}
+
+/* 영업시간 / 휴무일 */
+.restaurant-info {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.info-line {
+    margin-bottom: 8px;
+    color: #444;
+    font-size: 14px;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.restaurant-info .info-line:last-child {
+    margin-bottom: 0;
+}
+
+/* 모바일 */
+@media (max-width: 700px) {
+
+    .restaurant-list-container {
+        padding: 20px 15px 60px;
+    }
+
+    .restaurant-card {
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .restaurant-number {
+        width: 42px;
+        font-size: 12px;
+    }
+
+    .restaurant-image-link {
+        width: 135px;
+        height: 125px;
+    }
+
+    .restaurant-content {
+        margin-left: 5px;
+    }
+
+    .restaurant-name {
+        margin-top: 5px;
+        font-size: 19px;
+    }
+
+    .restaurant-title-row {
+        gap: 7px;
+    }
+
+    .restaurant-delete-btn {
+        padding: 3px 7px;
+        font-size: 11px;
+    }
+
+    .restaurant-summary {
+        margin-bottom: 11px;
+        font-size: 13px;
+    }
+
+    .star {
+        font-size: 17px;
+    }
+
+    .rating {
+        font-size: 15px;
+    }
+
+    .info-line {
+        margin-bottom: 5px;
+        font-size: 13px;
+    }
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 35px 0;
+}
+
+.pagination a,
+.pagination span {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #ddd;
+    border-radius: 7px;
+
+    background: #fff;
+    color: #555;
+
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.pagination a:hover {
+    border-color: #ff6644;
+    color: #ff6644;
+}
+
+.pagination .active {
+    background: #ff6644;
+    border-color: #ff6644;
+    color: #fff;
+    font-weight: 700;
+}
