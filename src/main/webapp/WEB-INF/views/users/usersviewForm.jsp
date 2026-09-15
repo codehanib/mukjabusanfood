@@ -44,10 +44,11 @@
         </table>
 
         <div class="info-actions">
-            <a href="/users/passwordCheckForm?mode=update">회원정보 수정</a>
-            <a href="/users/passwordCheckForm?mode=passwd">비밀번호 변경</a>
-            <a href="/users/passwordCheckForm?mode=delete">회원 탈퇴</a>
-            <a href="/reservation/myList">내 예약 목록</a>
+            <div class="info-actions-left">
+                <a href="/users/passwordCheckForm?mode=update">회원정보 수정</a>
+                <a href="/users/passwordCheckForm?mode=passwd">비밀번호 변경</a>
+            </div>
+            <a href="/users/passwordCheckForm?mode=delete" class="btn-danger">회원 탈퇴</a>
         </div>
 
     </div>

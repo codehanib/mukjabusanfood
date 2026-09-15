@@ -12,7 +12,7 @@
 <div class="mypage-container">
 
     <div class="mypage-title">
-        마이페이지
+        <span>마이페이지</span>
     </div>
 
     <div class="member-info">
@@ -31,8 +31,8 @@
         <!-- 회원정보보기 -->
         <a href="/users/userviewForm" class="mypage-menu-item">
             <div class="mypage-menu-title">
-                profile
-                <span>회원정보보기</span>
+                회원정보보기
+                <span>profile</span>
             </div>
             <div class="mypage-menu-desc">
                 회원 정보를 확인하고<br>
@@ -43,20 +43,20 @@
         <!-- 예약확인 -->
         <a href="/reservation/myList" class="mypage-menu-item">
             <div class="mypage-menu-title">
-                reservation
-                <span>예약확인</span>
+                예약확인
+                <span>reservation</span>
             </div>
             <div class="mypage-menu-desc">
                 대기중인 예약과<br>
-                지난 예약 기록을 확인하실 수 있습니다.
+                예약 기록을 확인하실 수 있습니다.
             </div>
         </a>
 
         <!-- 찜 목록 -->
         <a href="/users/bookmarkList" class="mypage-menu-item">
             <div class="mypage-menu-title">
-                wishlist
-                <span>찜 목록</span>
+                찜 목록
+                <span>wishlist</span>
             </div>
             <div class="mypage-menu-desc">
                 찜한 식당 목록을<br>
@@ -67,8 +67,8 @@
         <!-- 1:1문의 -->
         <a href="/users/inquiryList" class="mypage-menu-item">
             <div class="mypage-menu-title">
-                inquiry
-                <span>1:1 문의</span>
+                1:1 문의
+                <span>inquiry</span>
             </div>
             <div class="mypage-menu-desc">
                 문의 내역을 확인하실 수 있습니다.<br>

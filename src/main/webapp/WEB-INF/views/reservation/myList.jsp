@@ -60,7 +60,7 @@
 		</c:choose>
 
 		<c:if test="${not empty history}">
-			<div class="mypage-title">지난 예약 기록</div>
+			<div class="mypage-title">예약 기록</div>
 			<table class="list-table" width="700">
 				<tr>
 					<th>식당</th>
