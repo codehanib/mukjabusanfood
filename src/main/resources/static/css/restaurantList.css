@@ -9,14 +9,11 @@ body {
 }
 
 .restaurant-list-container {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 30px 25px 80px;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
     box-sizing: border-box;
 }
-
-
 /* =========================================
    상단 뒤로가기 / HOME
 ========================================= */
@@ -250,27 +247,26 @@ body {
 ========================================= */
 .reservation-btn {
     position: absolute;
-    right: 24px;
+    right: 135px;
     bottom: 20px;
 
-    padding: 10px 22px;   /* 버튼 크기 증가 */
+    padding: 10px 22px;
     border: 1px solid #ff6548;
     border-radius: 8px;
+    background-color: #ff6548;
+    color: white;
 
-    background-color: white;
-    color: #ff6548;
-
-    font-size: 15px;      /* 글씨도 조금 크게 */
+    font-size: 15px;
     font-weight: 600;
     text-decoration: none;
-
     transition: all 0.2s ease;
     z-index: 2;
 }
 
 .reservation-btn:hover {
-    background-color: #fff0eb;
-    color: #ff6548;
+    background-color: #e95a3f;
+    border-color: #e95a3f;
+    color: white;
 }
 
 /* =========================================
@@ -376,4 +372,198 @@ body {
     background-color: #e95a3f;
     border-color: #e95a3f;
     color: white;
+}
+
+/* ================================
+   검색 결과 전체 레이아웃
+================================ */
+/* 메인과 동일한 전체 영역 */
+.page-wrapper {
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 25px 15px;
+}
+
+
+/* ================================
+   왼쪽 음식 카테고리
+   - 메인 페이지와 동일
+================================ */
+/* 메인과 동일한 왼쪽 카테고리 */
+.sidebar-category {
+    width: 210px;
+    background: white;
+    border-radius: 12px;
+    padding: 8px 15px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    flex-shrink: 0;
+    position: sticky;
+    top: 10px;
+    height: fit-content;
+    align-self: flex-start;
+    z-index: 99;
+}
+
+.sidebar-category h3 {
+    font-size: 1.1em;
+    font-weight: bold;
+    
+    margin-top: 2px;
+    padding-top: 0;
+     
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #222;
+}
+
+.category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-list li {
+    margin-bottom: 6px;
+}
+
+.category-list a {
+    display: block;
+    padding: 9px 12px;
+    border-radius: 6px;
+    color: #444;
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: all 0.2s;
+}
+
+.category-list a:hover,
+.category-list a.active {
+    background-color: #fff3e0;
+    color: #FF5722;
+    font-weight: bold;
+}
+
+
+/* ================================
+   오른쪽 검색 결과
+================================ */
+.restaurant-list-container {
+    width: min(900px, calc(100% - 260px));
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* ================================
+   반응형
+================================ */
+@media (max-width: 768px) {
+
+    .page-wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar-category {
+        width: 100%;
+        position: static;
+    }
+}
+
+
+
+/* 카테고리는 검색결과 왼쪽 */
+.sidebar-category {
+    position: absolute;
+    width: 210px;
+
+    left: 15px;
+    top: 25px;
+
+    background: white;
+    border-radius: 12px;
+    padding: 20px 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+
+    box-sizing: border-box;
+}
+
+.sidebar-category h3 {
+    font-size: 1.1em;
+    font-weight: bold;
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #222;
+}
+
+.category-list {
+    list-style: none;
+}
+
+.category-list li {
+    margin-bottom: 6px;
+}
+
+.category-list a {
+    display: block;
+    padding: 9px 12px;
+    border-radius: 6px;
+    color: #444;
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: all 0.2s;
+}
+
+.category-list a:hover,
+.category-list a.active {
+    background-color: #fff3e0;
+    color: #FF5722;
+    font-weight: bold;
+}
+
+
+.delivery-btn {
+    position: absolute;
+    right: 24px;
+    bottom: 20px;
+
+    padding: 10px 22px;
+    border: 1px solid #ff6548;
+    border-radius: 8px;
+    background-color: white;
+    color: #ff6548;
+
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.delivery-btn:hover {
+    background-color: #fff0eb;
+    color: #ff6548;
+}
+
+/* 화면이 좁아지면 카테고리를 검색결과 위로 이동 */
+@media (max-width: 1200px) {
+
+    .page-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .sidebar-category {
+        position: static;
+        width: 100%;
+        max-width: 900px;
+        margin-bottom: 20px;
+    }
+
+    .restaurant-list-container {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
 }

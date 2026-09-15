@@ -283,7 +283,7 @@
     </table>
 
 </form>
-
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KEY&libraries=services&autoload=false"></script>
 <script src="${pageContext.request.contextPath}/js/restaurantUpdate.js"></script>
 
