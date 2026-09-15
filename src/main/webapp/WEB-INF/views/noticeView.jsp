@@ -126,11 +126,12 @@
 	}
 	/* 목록 버튼 */
 	.btn-list {
-	    background: #FF4B32;
-	    color: white;
+		border: 1px solid #FF4B32;
+	    color: #FF4B32;
 	}
 	.btn-list:hover {
-	    background: #E83F28;
+	    background: #FF4B32;
+        color: #fff;
 	    transform: translateY(-2px);
 	}
 	/* 수정 버튼 */
@@ -240,4 +241,5 @@
 
 </div>
 </body>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </html>

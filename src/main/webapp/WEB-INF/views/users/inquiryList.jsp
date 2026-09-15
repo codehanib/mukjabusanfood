@@ -144,11 +144,12 @@
     }
     /* 홈으로 */
     .inquiry-home {
-        background: #ddd;
-        color: #333;
+        border: 1px solid #FF4B32;
+        color: #FF4B32;
     }
     .inquiry-home:hover {
-        background: #e8e8e8;
+        background: #FF4B32;
+        color: #fff;
     }
     /* 문의 작성 */
     .inquiry-write {
@@ -202,5 +203,6 @@
       <a href="/users/inquiryWriteForm" class="inquiry-write">문의 작성</a></sec:authorize>
     </div>
 </div>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>
