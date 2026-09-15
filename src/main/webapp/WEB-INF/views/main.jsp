@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
@@ -14,10 +13,10 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: '맑은 고딕', sans-serif; background-color: #f8f9fa; color: #333; line-height: 1.5; }
     
-    /* 전체 메인 래퍼 */
+    /* 1. 전체 메인 레이아웃 */
     .page-wrapper { display: flex; gap: 25px; max-width: 1400px; margin: 0 auto; padding: 25px 15px; position: relative; }
 
-    /* 1. 좌측 카테고리 고정 사이드바 */
+    /* 2. 좌측 카테고리 고정 사이드바 */
     .sidebar-category { 
         width: 210px; 
         background: white; 
@@ -40,13 +39,13 @@
     /* 우측 메인 컨텐츠 영역 */
     .main-content { flex: 1; min-width: 0; }
 
-    /* ================= 🎠 2. 상단 자동 롤링 광고 배너 스몰 툴 ================= */
+    /* 3. 🎠 자동 롤링 메인 배너 슬라이더 */
     .banner-slider-container {
         position: relative;
         width: 100%;
         height: 230px;
         overflow: hidden;
-        border-radius: 12px;
+        border-radius: 16px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         margin-bottom: 35px;
     }
@@ -63,28 +62,51 @@
         justify-content: space-between;
         align-items: center;
         padding: 30px 45px;
-        color: white;
+        color: #ffffff;
         text-decoration: none;
-        box-sizing: border-radius;
-        position: relative;
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
     }
-    
-    /* 각 슬라이드별 커스텀 배경색 / 이미지 예시 */
-    .slide-bg-1 { background: linear-gradient(135deg, #FF7043, #FF5722); }
-    .slide-bg-2 { background: linear-gradient(135deg, #42A5F5, #1E88E5); }
-    .slide-bg-3 { background: linear-gradient(135deg, #66BB6A, #43A047); }
-    .slide-bg-4 { background: linear-gradient(135deg, #AB47BC, #8E24AA); }
-    .slide-bg-5 { background: linear-gradient(135deg, #FFA726, #FB8C00); }
+    .banner-slide:hover { transform: translateY(-2px); }
 
-    .banner-text { max-width: 60%; z-index: 2; }
-    .banner-badge { display: inline-block; background: rgba(0,0,0,0.25); padding: 4px 12px; border-radius: 20px; font-size: 0.82em; margin-bottom: 8px; font-weight: bold; }
-    .banner-text h2 { font-size: 1.9em; margin-bottom: 8px; line-height: 1.2; word-break: keep-all; font-weight: bold; }
-    .banner-text p { font-size: 0.95em; opacity: 0.95; }
+    .banner-text { max-width: 65%; z-index: 2; }
+    .banner-badge { 
+        display: inline-block; 
+        background-color: #FF5722; 
+        color: #ffffff; 
+        font-size: 0.8em; 
+        font-weight: bold; 
+        padding: 4px 12px; 
+        border-radius: 12px; 
+        margin-bottom: 10px; 
+    }
+    .banner-text h2 { font-size: 1.55em; font-weight: bold; margin-bottom: 8px; color: #ffffff; word-break: keep-all; line-height: 1.25; }
+    .banner-text p { font-size: 0.92em; color: #e0e0e0; line-height: 1.4; word-break: keep-all; }
     
-    .banner-img-box { height: 160px; width: 220px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 2; }
+    .banner-img-box { 
+        width: 160px; 
+        height: 160px; 
+        border-radius: 50%; 
+        overflow: hidden; 
+        border: 3px solid rgba(255,255,255,0.25); 
+        flex-shrink: 0; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+        z-index: 2; 
+    }
     .banner-img-box img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* 좌/우 이동 화살표 버튼 */
+    /* 9가지 카테고리별 테마 배경 */
+    .slide-bg-korean   { background: linear-gradient(135deg, #3d2c20 0%, #5c4333 100%); }
+    .slide-bg-chinese  { background: linear-gradient(135deg, #8a1c1c 0%, #4a0e0e 100%); }
+    .slide-bg-japanese { background: linear-gradient(135deg, #1c2b36 0%, #2e4354 100%); }
+    .slide-bg-western  { background: linear-gradient(135deg, #2d3b2d 0%, #465946 100%); }
+    .slide-bg-meat     { background: linear-gradient(135deg, #421616 0%, #6e2525 100%); }
+    .slide-bg-seafood  { background: linear-gradient(135deg, #0e3d59 0%, #1d658f 100%); }
+    .slide-bg-cafe     { background: linear-gradient(135deg, #4d3a30 0%, #785a4a 100%); }
+    .slide-bg-pub      { background: linear-gradient(135deg, #2b2510 0%, #574b21 100%); }
+    .slide-bg-dining   { background: linear-gradient(135deg, #222222 0%, #3a3a3a 100%); }
+
+    /* 좌/우 화살표 및 카운터 */
     .slider-btn {
         position: absolute;
         top: 50%;
@@ -107,7 +129,6 @@
     .slider-btn.prev { left: 15px; }
     .slider-btn.next { right: 15px; }
 
-    /* 오른쪽 하단 카운터 (예: 1 / 5) */
     .slide-counter {
         position: absolute;
         bottom: 12px;
@@ -121,11 +142,10 @@
         z-index: 10;
     }
 
-    /* 공통 섹션 헤더 & 탭 */
+    /* 4. 공통 섹션 헤더 & 탭 */
     .section-header { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; margin-top: 30px; }
     .section-title { font-size: 1.35em; font-weight: bold; color: #111; display: flex; align-items: center; gap: 8px; }
     
-    /* 탭 메뉴 가로 스크롤 레이아웃 */
     .tab-scroll-container { width: 100%; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
     .tab-scroll-container::-webkit-scrollbar { height: 5px; }
     .tab-scroll-container::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
@@ -134,7 +154,7 @@
     .tab-btn { padding: 6px 16px; border: none; background: transparent; border-radius: 20px; cursor: pointer; font-size: 0.88em; color: #666; font-weight: bold; transition: all 0.2s; flex-shrink: 0; }
     .tab-btn.active { background: #FF5722; color: white; }
 
-    /* 카드 그리드 레이아웃 (4열 구성) */
+    /* 5. 4열 카드 그리드 레이아웃 */
     .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 20px; }
     
     .store-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; }
@@ -143,7 +163,7 @@
     .card-img-box { position: relative; width: 100%; height: 160px; background: #eee; }
     .card-img-box img { width: 100%; height: 100%; object-fit: cover; }
     .status-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold; }
-    .badge-price { background: #2e7d32; }
+    .badge-price { background: #2196F3; }
     .badge-star { background: #f57f17; }
     
     .card-content { padding: 15px; }
@@ -166,7 +186,6 @@
 <%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 
-
 <body>
 
 <div class="page-wrapper">
@@ -175,15 +194,15 @@
     <aside class="sidebar-category">
         <h3>🍽️ 음식 카테고리</h3>
         <ul class="category-list">
-            <li><a href="#" class="active">전체 메뉴</a></li>
-            <li><a href="#">🔥 인기 추천 맛집</a></li>
-            <li><a href="#">🥩 돈까스 / 일식</a></li>
-            <li><a href="#">🍚 한식 / 찌개</a></li>
-            <li><a href="#">🍕 피자 / 양식</a></li>
-            <li><a href="#">🍗 치킨 / 패스트푸드</a></li>
-            <li><a href="#">🥟 중식 / 아시안</a></li>
-            <li><a href="#">☕ 디저트 / 카페</a></li>
-            <li><a href="#">🌙 야식 / 족발 / 보쌈</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?category=0" class="active">전체 메뉴</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?category=1">🍚 한식</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=2">🥟 중식</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=3">🥩 일식</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=4">🍕 양식 / 세계음식</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=5">🍗 육류</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=6">🦞 해산물</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=7">☕ 디저트 / 카페</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=8">🌙 기타</a></li>
         </ul>
     </aside>
 
@@ -193,64 +212,130 @@
         <!-- 🎠 1. 자동 롤링 메인 광고 배너 영역 -->
         <div class="banner-slider-container" id="bannerSlider">
             <div class="banner-track" id="bannerTrack">
-                
-                <!-- 슬라이드 1 (클릭시 해당 가게로 이동) -->
-                <a href="${pageContext.request.contextPath}/store/detail?r_no=6047" class="banner-slide slide-bg-1">
+            
+                <!-- 1. 한식: 금죽헌 금정산성점 (r_no=403) -->
+                <a href="${pageContext.request.contextPath}/restaurant/restaurantDetail?r_no=403" class="banner-slide slide-bg-korean">
                     <div class="banner-text">
-                        <span class="banner-badge">🔥 TODAY'S PICK</span>
-                        <h2>오늘의 수제 돈카츠 추천 맛집</h2>
-                        <p>바삭한 식감과 육즙 가득한 프리미엄 일식 돈카츠 10% 할인 진행중!</p>
+                        <span class="banner-badge">🔥 든든한 한식 PICK</span>
+                        <h2>금정산성 깊은 맛, 소불고기 버섯전골</h2>
+                        <p>오랫동안 푹 삶아낸 진한 육수와 야채의 완벽한 풍미! (금죽헌)</p>
                     </div>
                     <div class="banner-img-box">
-                        <img src="https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=400&q=80" alt="광고1">
+                        <img src="https://ugc-images.catchtable.co.kr/shop/manager/images/5e94deed191b437d96b5b0106d360cd6" 
+                             alt="금죽헌 금정산성점"
+                             onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80';">
                     </div>
                 </a>
 
-                <!-- 슬라이드 2 -->
-                <a href="${pageContext.request.contextPath}/store/detail?r_no=6042" class="banner-slide slide-bg-2">
+                <!-- 2. 중식: 송정돌짬뽕 (r_no=226) -->
+                <a href="${pageContext.request.contextPath}/store/detail?r_no=226" class="banner-slide slide-bg-chinese">
                     <div class="banner-text">
-                        <span class="banner-badge">✨ NEW OPEN</span>
-                        <h2>올선데이 광안점 수제 베이글</h2>
-                        <p>갓 구워낸 쫄깃한 베이글과 풍미 가득한 크림치즈의 만남</p>
+                        <span class="banner-badge">🥟 이색 중식 PICK</span>
+                        <h2>볶음·야끼·일반 3가지 조화! 송정돌짬뽕</h2>
+                        <p>뜨거운 돌판 위에서 지글지글 끓어오르는 특별한 해물 돌짬뽕</p>
                     </div>
                     <div class="banner-img-box">
-                        <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80" alt="광고2">
+                        <img src="https://ugc-images.catchtable.co.kr/shop/manager/images/b8aeff9b3c1a447db1f72ce961501cbe" 
+                             alt="송정돌짬뽕"
+                             onerror="this.src='https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=400&q=80';">
                     </div>
                 </a>
 
-                <!-- 슬라이드 3 -->
-                <a href="${pageContext.request.contextPath}/store/detail?r_no=6045" class="banner-slide slide-bg-3">
+                <!-- 3. 일식: 허교수스시 (r_no=19) -->
+                <a href="${pageContext.request.contextPath}/store/detail?r_no=19" class="banner-slide slide-bg-japanese">
                     <div class="banner-text">
-                        <span class="banner-badge">🍗 SPECIAL EVENT</span>
-                        <h2>묵자치킨 범천점 배달팁 0원!</h2>
-                        <p>비삭하고 촉촉한 양념치킨 주문 시 무조건 배달팁 무료 혜택</p>
+                        <span class="banner-badge">🍣 정통 일식 PICK</span>
+                        <h2>해운대 에도마에 스시, 허교수스시</h2>
+                        <p>부산 엘시티에서 만나는 최고급 정통 오마카세 다이닝</p>
                     </div>
                     <div class="banner-img-box">
-                        <img src="https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=400&q=80" alt="광고3">
+                        <img src="https://ugc-images.catchtable.co.kr/shop/manager/images/72319353a2f44804bbe00c75309077db" 
+                             alt="허교수스시"
+                             onerror="this.src='https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=400&q=80';">
                     </div>
                 </a>
 
-                <!-- 슬라이드 4 -->
-                <a href="${pageContext.request.contextPath}/store/detail?r_no=6043" class="banner-slide slide-bg-4">
+                <!-- 4. 양식/세계음식: PUSIL (r_no=16) -->
+                <a href="${pageContext.request.contextPath}/store/detail?r_no=16" class="banner-slide slide-bg-western">
                     <div class="banner-text">
-                        <span class="banner-badge">🍕 CHEESE BOMB</span>
-                        <h2>화덕 피자 & 오븐 파스타 세트</h2>
-                        <p>입안 가득 터지는 치즈! 정통 ই탈리안 화덕피자를 우리집에서</p>
+                        <span class="banner-badge">🍝 생면 파스타 PICK</span>
+                        <h2>당일 제면 생면 레스토랑, PUSIL</h2>
+                        <p>광안리 프라이빗한 공간에서 즐기는 감성 생면 파스타</p>
                     </div>
                     <div class="banner-img-box">
-                        <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80" alt="광고4">
+                        <img src="https://ugc-images.catchtable.co.kr/catchtable/shopinfo/saa6YddgITBoc-_JFuzp4kw/1094c48a70bb4e9fac756b52c077fd6a" 
+                             alt="PUSIL"
+                             onerror="this.src='https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=400&q=80';">
                     </div>
                 </a>
 
-                <!-- 슬라이드 5 -->
-                <a href="${pageContext.request.contextPath}/store/detail?r_no=6044" class="banner-slide slide-bg-5">
+                <!-- 5. 육류: 비쇼쿠 광안점 (r_no=12) -->
+                <a href="${pageContext.request.contextPath}/store/detail?r_no=12" class="banner-slide slide-bg-meat">
                     <div class="banner-text">
-                        <span class="banner-badge">🍱 LUNCH BOX</span>
-                        <h2>금요일식당 한식 정식 특가</h2>
-                        <p>정성스럽게 차린 정갈한 가정식 백반 정식 배달 개시</p>
+                        <span class="banner-badge">🥩 한우 야키니꾸 PICK</span>
+                        <h2>사계절 눈내리는 한우, 비쇼쿠 광안점</h2>
+                        <p>최상급 한우의 사르르 녹는 육즙과 특별한 감성 야키니꾸</p>
                     </div>
                     <div class="banner-img-box">
-                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80" alt="광고5">
+                        <img src="https://ugc-images.catchtable.co.kr/shop/manager/images/e51b19bd92f6427ebbe84351166efb46" 
+                             alt="비쇼쿠 광안점"
+                             onerror="this.src='https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80';">
+                    </div>
+                </a>
+
+                <!-- 6. 해산물: 식감 (r_no=296) -->
+                <a href="${pageContext.request.contextPath}/store/detail?r_no=296" class="banner-slide slide-bg-seafood">
+                    <div class="banner-text">
+                        <span class="banner-badge">🦞 싱싱 해산물 PICK</span>
+                        <h2>입안 가득 터지는 완벽함, 식감</h2>
+                        <p>신선함이 살아있는 프리미엄 해산물 요리의 진수를 느껴보세요!</p>
+                    </div>
+                    <div class="banner-img-box">
+                        <img src="https://ugc-images.catchtable.co.kr/shop/manager/images/c339d589e39346079f490ad1c413b018" 
+                             alt="식감"
+                             onerror="this.src='https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=400&q=80';">
+                    </div>
+                </a>
+
+                <!-- 7. 디저트/카페: 카페 레이어드 센텀시티점 (r_no=113) -->
+                <a href="${pageContext.request.contextPath}/store/detail?r_no=113" class="banner-slide slide-bg-cafe">
+                    <div class="banner-text">
+                        <span class="banner-badge">☕ 빈티지 디저트 PICK</span>
+                        <h2>런던&파리 감성 카페 레이어드 센텀점</h2>
+                        <p>유럽 가정집의 따스함과 당일 픽업 스콘·케이크 디저트 천국</p>
+                    </div>
+                    <div class="banner-img-box">
+                        <img src="https://ugc-images.catchtable.co.kr/catchtable/shopinfo/sdwnJbWEzsobRazmSnoyJqw/70231c18e79549928fe1af6ef220f56b" 
+                             alt="카페 레이어드"
+                             onerror="this.src='https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=400&q=80';">
+                    </div>
+                </a>
+
+                <!-- 8. 주점: 글라스앤보틀 (r_no=139) -->
+                <a href="${pageContext.request.contextPath}/store/detail?r_no=139" class="banner-slide slide-bg-pub">
+                    <div class="banner-text">
+                        <span class="banner-badge">🍺 야키토리 다이닝 PICK</span>
+                        <h2>에비수 생맥주 & 야키토리, 글라스앤보틀</h2>
+                        <p>시원한 하이볼·와인과 완벽 조화를 이루는 숯불 야키토리 코스</p>
+                    </div>
+                    <div class="banner-img-box">
+                        <img src="https://ugc-images.catchtable.co.kr/shop/manager/images/e30c8b9b2abd44c89286bff40826e81c" 
+                             alt="글라스앤보틀"
+                             onerror="this.src='https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=400&q=80';">
+                    </div>
+                </a>
+
+                <!-- 9. 기타: 주양간 제안 동래직영점 (r_no=102) -->
+                <a href="${pageContext.request.contextPath}/store/detail?r_no=102" class="banner-slide slide-bg-dining">
+                    <div class="banner-text">
+                        <span class="banner-badge">🍷 퓨전 한식 다이닝 PICK</span>
+                        <h2>육해공의 다채로운 조화, 주양간 제안</h2>
+                        <p>육류와 해산물의 풍성한 맛을 담아낸 동래 한식 다이닝바</p>
+                    </div>
+                    <div class="banner-img-box">
+                        <img src="https://ugc-images.catchtable.co.kr/shop/manager/images/ec8f05f4be6d48db94133c84c8c18267" 
+                             alt="주양간 제안"
+                             onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80';">
                     </div>
                 </a>
 
@@ -259,256 +344,71 @@
             <!-- 컨트롤 버튼 & 카운터 -->
             <button class="slider-btn prev" onclick="moveBanner(-1)">❮</button>
             <button class="slider-btn next" onclick="moveBanner(1)">❯</button>
-            <div class="slide-counter" id="bannerCounter">1 / 5</div>
+            <div class="slide-counter" id="bannerCounter">1 / 9</div>
         </div>
 
-        <!-- 2. 지역별 추천 맛집 섹션 -->
-        <div class="section-header" style="margin-top: 0;">
-            <div class="section-title">📍 지역별 인기 추천 매장</div>
-            <div class="tab-scroll-container">
-                <div class="tab-group">
-                    <button class="tab-btn active" onclick="filterTab(this, 'region', '전체')">전체</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '부산진구')">부산진구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '남구')">남구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '해운대구')">해운대구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '수영구')">수영구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '연제구')">연제구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '동래구')">동래구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '금정구')">금정구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '북구')">북구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '사하구')">사하구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '사상구')">사상구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '강서구')">강서구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '중구')">중구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '서구')">서구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '동구')">동구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '영도구')">영도구</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'region', '기장군')">기장군</button>
-                </div>
-            </div>
-        </div>
+		<!-- 2. 지역별 추천 맛집 섹션 -->
+		<div class="section-header" style="margin-top: 0;">
+		    <div class="section-title">📍 지역별 인기 추천 매장</div>
+		    <div class="tab-scroll-container">
+		        <div class="tab-group" id="regionTabGroup">
+		            <button class="tab-btn active" onclick="changeRegionTab(this, '전체')">전체</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '부산진구')">부산진구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '남구')">남구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '해운대구')">해운대구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '수영구')">수영구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '연제구')">연제구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '동래구')">동래구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '금정구')">금정구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '북구')">북구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '사하구')">사하구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '사상구')">사상구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '강서구')">강서구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '중구')">중구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '서구')">서구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '동구')">동구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '영도구')">영도구</button>
+		            <button class="tab-btn" onclick="changeRegionTab(this, '기장군')">기장군</button>
+		        </div>
+		    </div>
+		</div>
+		
+		<!-- 4개 매장이 보여질 카드 그리드 -->
+		<div class="grid-container" id="regionStoreGrid">
+		    <!-- 비동기로 4개씩 동적 렌더링 됩니다 -->
+		</div>
 
-        <div class="grid-container">
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge">영업중</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">묵자치킨 범천점</div>
-                    <div class="store-info"><span class="rating">★ 4.9</span><span>• 최소주문 15,000원</span></div>
-                    <div class="card-footer"><span>🚀 배달팁 2,000원</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge">영업중</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">미지응3</div>
-                    <div class="store-info"><span class="rating">★ 4.9</span><span>• 최소주문 15,000원</span></div>
-                    <div class="card-footer"><span>🚀 배달팁 2,000원</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge">영업중</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">test</div>
-                    <div class="store-info"><span class="rating">★ 4.8</span><span>• 최소주문 15,000원</span></div>
-                    <div class="card-footer"><span>🚀 배달팁 2,000원</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge">영업중</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">금요일식당</div>
-                    <div class="store-info"><span class="rating">★ 4.9</span><span>• 최소주문 15,000원</span></div>
-                    <div class="card-footer"><span>🚀 배달팁 2,000원</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-        </div>
+        <!-- 3. 고객 평점 TOP 브랜드 매장 섹션 -->
+		<div class="section-header">
+		    <div class="section-title">⭐ 고객 평점 TOP 브랜드 매장</div>
+		    <div class="tab-scroll-container">
+		        <div class="tab-group" id="ratingTabGroup">
+		            <button class="tab-btn active" onclick="changeRatingTab(this, 'all')">전체보기</button>
+		            <button class="tab-btn" onclick="changeRatingTab(this, 'rating_4.8')">★ 4.8 이상</button>
+		            <button class="tab-btn" onclick="changeRatingTab(this, 'rating_4.5')">★ 4.5 이상</button>
+		            <button class="tab-btn" onclick="changeRatingTab(this, 'rating_4.0')">★ 4.0 이상</button>
+		        </div>
+		    </div>
+		</div>
+		
+		<!-- 비동기로 4개씩 카드 동적 출력 (평점) -->
+		<div class="grid-container" id="ratingStoreGrid">
+		</div>
 
-        <!-- 3. 평점 높은 순 BEST 매장 섹션 -->
-        <div class="section-header">
-            <div class="section-title">⭐ 고객 평점 TOP 브랜드 매장</div>
-            <div class="tab-scroll-container">
-                <div class="tab-group">
-                    <button class="tab-btn active" onclick="filterTab(this, 'rating', 'all')">전체보기</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'rating', '5.0')">★ 5.0 만점</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'rating', '4.9')">★ 4.9 이상</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'rating', 'review')">리뷰 500개 이상</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid-container">
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge badge-star">★ 5.0</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">LAB 24 프리미엄 돈카츠</div>
-                    <div class="store-info"><span class="rating">★ 5.0 (680+)</span><span>• 최소 12,000원</span></div>
-                    <div class="card-footer"><span>🚀 20분 소요</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge badge-star">★ 4.9</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">올선데이 광안 수제베이글</div>
-                    <div class="store-info"><span class="rating">★ 4.9 (1,200+)</span><span>• 최소 10,000원</span></div>
-                    <div class="card-footer"><span>🚀 15분 소요</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge badge-star">★ 4.9</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">야키토리 슛 전포 본점</div>
-                    <div class="store-info"><span class="rating">★ 4.9 (450+)</span><span>• 최소 16,000원</span></div>
-                    <div class="card-footer"><span>🚀 25분 소요</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge badge-star">★ 4.8</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">화덕피자 파스타 전문점</div>
-                    <div class="store-info"><span class="rating">★ 4.8 (890+)</span><span>• 최소 14,000원</span></div>
-                    <div class="card-footer"><span>🚀 30분 소요</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. 가성비 알뜰 매장 섹션 -->
-        <div class="section-header">
-            <div class="section-title">💰 부담 없는 가성비 & 알뜰 배달 추천</div>
-            <div class="tab-scroll-container">
-                <div class="tab-group">
-                    <button class="tab-btn active" onclick="filterTab(this, 'price', 'all')">전체보기</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'price', '10000')">1만원 이하 (갓성비)</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'price', '15000')">1만원~1.5만원</button>
-                    <button class="tab-btn" onclick="filterTab(this, 'price', 'tip')">배달팁 2,000원 이하</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid-container">
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge badge-price">최소 8,000원</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">할매 뚝배기 국밥</div>
-                    <div class="store-info"><span class="rating">★ 4.8</span><span>• 최소 8,000원</span></div>
-                    <div class="card-footer"><span>🚀 배달팁 1,000원</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge badge-price">최소 9,900원</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">수제 수제버거 1인세트</div>
-                    <div class="store-info"><span class="rating">★ 4.7</span><span>• 최소 9,900원</span></div>
-                    <div class="card-footer"><span>🚀 배달팁 1,500원</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge badge-price">최소 10,000원</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">프레시 샐러드 & 샌드위치</div>
-                    <div class="store-info"><span class="rating">★ 4.9</span><span>• 최소 10,000원</span></div>
-                    <div class="card-footer"><span>🚀 배달팁 2,000원</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-            <div class="store-card">
-                <div class="card-img-box">
-                    <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=400&q=80" alt="매장">
-                    <span class="status-badge badge-price">최소 11,000원</span>
-                </div>
-                <div class="card-content">
-                    <div class="store-name">착한짜장 중화요리</div>
-                    <div class="store-info"><span class="rating">★ 4.6</span><span>• 최소 11,000원</span></div>
-                    <div class="card-footer"><span>🚀 배달팁 1,000원</span><span class="btn-detail">보기</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 5. 전체 입점 가게 목록 (20개 리스트) -->
+        <!-- 4. 맛있는 배달 매장 전체 보기 (DB AJAX & 5초 자동 롤링) -->
         <div class="section-header">
             <div class="section-title">🏪 맛있는 배달 매장 전체 보기</div>
         </div>
 
-        <div class="grid-container">
-            <c:forEach var="r" items="${allRestaurantList}" varStatus="status">
-                <a href="${pageContext.request.contextPath}/store/detail?r_no=${r.r_no}" class="store-card">
-                    <div class="card-img-box">
-                        <img src="${not empty r.r_img ? r.r_img : 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80'}" 
-                             alt="${r.r_name}"
-                             onerror="this.src='https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=400&q=80';">
-                    </div>
-                    <div class="card-content">
-                        <div class="store-name">${r.r_name}</div>
-                        <div class="store-info">
-                            <span class="rating">★ 4.8</span>
-                            <span>• 배달시간 20~30분</span>
-                        </div>
-                        <div class="card-footer">
-                            <span>배달팁 2,000원</span>
-                            <span class="btn-detail">주문하기</span>
-                        </div>
-                    </div>
-                </a>
-            </c:forEach>
-
-            <c:if test="${empty allRestaurantList}">
-                <c:forEach var="i" begin="1" end="20">
-                    <div class="store-card">
-                        <div class="card-img-box">
-                            <img src="https://picsum.photos/300/160?random=${i}" alt="더미매장">
-                        </div>
-                        <div class="card-content">
-                            <div class="store-name">Mukja 맛있는 가게 #${i}호점</div>
-                            <div class="store-info">
-                                <span class="rating">★ 4.${(i % 3) + 7}</span>
-                                <span>• 최소주문 12,000원</span>
-                            </div>
-                            <div class="card-footer">
-                                <span>🚀 20~30분 소요</span>
-                                <span class="btn-detail">주문하기</span>
-                            </div>
-                        </div>
-                    </div>
-                </c:forEach>
-            </c:if>
+        <div class="grid-container" id="allStoreGrid">
+            <!-- 비동기로 DB 매장 정보 4개씩 동적 출력 -->
         </div>
 
     </main>
 
 </div>
 
-<!-- 🎠 상단 자동 롤링 광고 배너 자바스크립트 -->
+<!-- 🎠 1. 메인 배너 자동 롤링 자바스크립트 -->
 <script>
     var currentSlide = 0;
     var track = document.getElementById('bannerTrack');
@@ -518,6 +418,7 @@
     var autoSlideTimer = null;
 
     function updateSlider() {
+        if (!track) return;
         track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
         if (counter) {
             counter.innerText = (currentSlide + 1) + ' / ' + totalSlides;
@@ -537,7 +438,7 @@
     function startAutoSlide() {
         autoSlideTimer = setInterval(function() {
             moveBanner(1);
-        }, 3500); // 3.5초마다 다음 슬라이드로 자동 이동
+        }, 3500);
     }
 
     function stopAutoSlide() {
@@ -546,22 +447,281 @@
         }
     }
 
-    // 마우스가 배너 위에 오면 자동 이동 멈춤, 벗어나면 다시 재개
     var sliderContainer = document.getElementById('bannerSlider');
-    sliderContainer.addEventListener('mouseenter', stopAutoSlide);
-    sliderContainer.addEventListener('mouseleave', startAutoSlide);
+    if (sliderContainer) {
+        sliderContainer.addEventListener('mouseenter', stopAutoSlide);
+        sliderContainer.addEventListener('mouseleave', startAutoSlide);
+        startAutoSlide();
+    }
+</script>
 
-    // 최초 자동 롤링 시작
-    startAutoSlide();
+<!-- 🤖 2. 지역별 자동 롤링 & AJAX 스크립트 -->
+<script>
+    var currentRegion = '전체';
+    var currentRegionStores = [];
+    var regionPageIndex = 0;
+    var regionRotateTimer = null;
+    var contextPath = "${pageContext.request.contextPath}";
 
-    // 탭 필터링 클릭 함수
-    function filterTab(btnElement, type, value) {
-        var parentGroup = btnElement.closest('.tab-group');
-        var buttons = parentGroup.querySelectorAll('.tab-btn');
+    document.addEventListener("DOMContentLoaded", function() {
+        fetchRegionStores('전체');
+    });
+
+    function changeRegionTab(btnElement, regionName) {
+        var buttons = document.querySelectorAll('#regionTabGroup .tab-btn');
         buttons.forEach(function(btn) { btn.classList.remove('active'); });
         btnElement.classList.add('active');
 
-        console.log("필터 유형: " + type + ", 값: " + value);
+        currentRegion = regionName;
+        regionPageIndex = 0;
+        fetchRegionStores(regionName);
+    }
+
+    function fetchRegionStores(regionName) {
+        fetch(contextPath + '/api/store/region?region=' + encodeURIComponent(regionName))
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                currentRegionStores = data;
+                regionPageIndex = 0;
+                renderRegionGrid();
+                resetRegionAutoRotate();
+            })
+            .catch(function(err) {
+                console.error("지역 매장 로드 실패:", err);
+            });
+    }
+
+    function renderRegionGrid() {
+        var grid = document.getElementById('regionStoreGrid');
+        if (!grid) return;
+
+        if (!currentRegionStores || currentRegionStores.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #888; background: white; border-radius: 10px;">등록된 매장이 없습니다.</div>';
+            return;
+        }
+
+        var pageSize = 4;
+        var total = currentRegionStores.length;
+        var startIdx = (regionPageIndex * pageSize) % total;
+        
+        var displayItems = [];
+        for (var i = 0; i < pageSize; i++) {
+            displayItems.push(currentRegionStores[(startIdx + i) % total]);
+        }
+
+        var html = '';
+        displayItems.forEach(function(r) {
+            var imgUrl = r.r_img ? r.r_img : 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80';
+            var defaultImg = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=400&q=80';
+            var point = r.r_point ? parseFloat(r.r_point).toFixed(1) : '0.0';
+            var timeInfo = r.r_time ? r.r_time : (r.r_info ? r.r_info : '영업시간 참조');
+
+            html += '<a href="' + contextPath + '/restaurant/restaurantDetail?r_no=' + r.r_no + '" class="store-card">';
+            html += '  <div class="card-img-box">';
+            html += '    <img src="' + imgUrl + '" alt="' + r.r_name + '" onerror="this.src=\'' + defaultImg + '\';">';
+            html += '    <span class="status-badge">영업중</span>';
+            html += '  </div>';
+            html += '  <div class="card-content">';
+            html += '    <div class="store-name">' + r.r_name + '</div>';
+            html += '    <div class="store-info">';
+            html += '      <span class="rating">★ ' + point + '</span>';
+            html += '      <span>• ' + (r.r_region ? r.r_region : '부산') + '</span>';
+            html += '    </div>';
+            html += '    <div class="card-footer">';
+            html += '      <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;">🕒 ' + timeInfo + '</span>';
+            html += '      <span class="btn-detail">보기</span>';
+            html += '    </div>';
+            html += '  </div>';
+            html += '</a>';
+        });
+
+        grid.innerHTML = html;
+    }
+
+    function resetRegionAutoRotate() {
+        if (regionRotateTimer) clearInterval(regionRotateTimer);
+        regionRotateTimer = setInterval(function() {
+            if (currentRegionStores.length > 4) {
+                regionPageIndex++;
+                renderRegionGrid();
+            }
+        }, 5000);
+    }
+</script>
+
+<!-- 🤖 3. 평점 TOP 매장 AJAX & 자동 롤링 스크립트 -->
+<script>
+    var currentRatingFilter = 'all';
+    var currentRatingStores = [];
+    var ratingPageIndex = 0;
+    var ratingRotateTimer = null;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        fetchRatingStores('all');
+    });
+
+    function changeRatingTab(btnElement, filterValue) {
+        var buttons = document.querySelectorAll('#ratingTabGroup .tab-btn');
+        buttons.forEach(function(btn) { btn.classList.remove('active'); });
+        btnElement.classList.add('active');
+
+        currentRatingFilter = filterValue;
+        ratingPageIndex = 0;
+        fetchRatingStores(filterValue);
+    }
+
+    function fetchRatingStores(filterValue) {
+        fetch(contextPath + '/api/store/top-rating?filter=' + encodeURIComponent(filterValue))
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                currentRatingStores = data;
+                ratingPageIndex = 0;
+                renderRatingGrid();
+                resetRatingAutoRotate();
+            })
+            .catch(function(err) {
+                console.error("평점 매장 로드 실패:", err);
+            });
+    }
+
+    function renderRatingGrid() {
+        var grid = document.getElementById('ratingStoreGrid');
+        if (!grid) return;
+
+        if (!currentRatingStores || currentRatingStores.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #888; background: white; border-radius: 10px;">조건에 해당하는 매장이 없습니다.</div>';
+            return;
+        }
+
+        var pageSize = 4;
+        var total = currentRatingStores.length;
+        var startIdx = (ratingPageIndex * pageSize) % total;
+        
+        var displayItems = [];
+        for (var i = 0; i < pageSize; i++) {
+            displayItems.push(currentRatingStores[(startIdx + i) % total]);
+        }
+
+        var html = '';
+        displayItems.forEach(function(r) {
+            var imgUrl = r.r_img ? r.r_img : 'https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=400&q=80';
+            var defaultImg = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=400&q=80';
+            var point = r.r_point ? parseFloat(r.r_point).toFixed(1) : '0.0';
+            var reviewCnt = r.reviewCount ? r.reviewCount : 0;
+            var timeInfo = r.r_time ? r.r_time : (r.r_info ? r.r_info : '영업시간 참조');
+
+            html += '<a href="' + contextPath + '/restaurant/restaurantDetail?r_no=' + r.r_no + '" class="store-card">';
+            html += '  <div class="card-img-box">';
+            html += '    <img src="' + imgUrl + '" alt="' + r.r_name + '" onerror="this.src=\'' + defaultImg + '\';">';
+            html += '    <span class="status-badge badge-star">★ ' + point + '</span>';
+            html += '  </div>';
+            html += '  <div class="card-content">';
+            html += '    <div class="store-name">' + r.r_name + '</div>';
+            html += '    <div class="store-info">';
+            html += '      <span class="rating">★ ' + point + ' (' + reviewCnt + '+)</span>';
+            html += '      <span>• ' + (r.r_region ? r.r_region : '부산') + '</span>';
+            html += '    </div>';
+            html += '    <div class="card-footer">';
+            html += '      <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;">🕒 ' + timeInfo + '</span>';
+            html += '      <span class="btn-detail">보기</span>';
+            html += '    </div>';
+            html += '  </div>';
+            html += '</a>';
+        });
+
+        grid.innerHTML = html;
+    }
+
+    function resetRatingAutoRotate() {
+        if (ratingRotateTimer) clearInterval(ratingRotateTimer);
+        ratingRotateTimer = setInterval(function() {
+            if (currentRatingStores.length > 4) {
+                ratingPageIndex++;
+                renderRatingGrid();
+            }
+        }, 5000);
+    }
+</script>
+
+<!-- 🤖 4. 전체 매장 목록 DB AJAX 통신 & 5초 자동 롤링 스크립트 -->
+<script>
+    var currentAllStores = [];
+    var allPageIndex = 0;
+    var allRotateTimer = null;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        fetchAllStores();
+    });
+
+    function fetchAllStores() {
+        fetch(contextPath + '/api/store/all')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                currentAllStores = data;
+                allPageIndex = 0;
+                renderAllGrid();
+                resetAllAutoRotate();
+            })
+            .catch(function(err) {
+                console.error("전체 매장 로드 실패:", err);
+            });
+    }
+
+    function renderAllGrid() {
+        var grid = document.getElementById('allStoreGrid');
+        if (!grid) return;
+
+        if (!currentAllStores || currentAllStores.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #888; background: white; border-radius: 10px;">등록된 매장이 없습니다.</div>';
+            return;
+        }
+
+        var pageSize = 4;
+        var total = currentAllStores.length;
+        var startIdx = (allPageIndex * pageSize) % total;
+        
+        var displayItems = [];
+        for (var i = 0; i < pageSize; i++) {
+            displayItems.push(currentAllStores[(startIdx + i) % total]);
+        }
+
+        var html = '';
+        displayItems.forEach(function(r) {
+            var imgUrl = r.r_img ? r.r_img : 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80';
+            var defaultImg = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=400&q=80';
+            var point = r.r_point ? parseFloat(r.r_point).toFixed(1) : '0.0';
+            var timeInfo = r.r_time ? r.r_time : (r.r_info ? r.r_info : '영업시간 참조');
+
+            html += '<a href="' + contextPath + '/restaurant/restaurantDetail?r_no=' + r.r_no + '" class="store-card">';
+            html += '  <div class="card-img-box">';
+            html += '    <img src="' + imgUrl + '" alt="' + r.r_name + '" onerror="this.src=\'' + defaultImg + '\';">';
+            html += '    <span class="status-badge">전체매장</span>';
+            html += '  </div>';
+            html += '  <div class="card-content">';
+            html += '    <div class="store-name">' + r.r_name + '</div>';
+            html += '    <div class="store-info">';
+            html += '      <span class="rating">★ ' + point + '</span>';
+            html += '      <span>• ' + (r.r_region ? r.r_region : '부산') + '</span>';
+            html += '    </div>';
+            html += '    <div class="card-footer">';
+            html += '      <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;">🕒 ' + timeInfo + '</span>';
+            html += '      <span class="btn-detail">주문하기</span>';
+            html += '    </div>';
+            html += '  </div>';
+            html += '</a>';
+        });
+
+        grid.innerHTML = html;
+    }
+
+    function resetAllAutoRotate() {
+        if (allRotateTimer) clearInterval(allRotateTimer);
+        allRotateTimer = setInterval(function() {
+            if (currentAllStores.length > 4) {
+                allPageIndex++;
+                renderAllGrid();
+            }
+        }, 5000);
     }
 </script>
 

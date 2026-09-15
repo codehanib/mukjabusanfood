@@ -25,6 +25,7 @@ public interface restaurantDAO {
 	    // 음식종류별 식당 목록
 	    public List<restaurantDTO> restaurantListCategory(
 	            @Param("mukja_c_no") int mukja_c_no,
+	            @Param("sort") String sort,
 	            @Param("start") int start,
 	            @Param("pageSize") int pageSize);
 	    
@@ -76,5 +77,20 @@ public interface restaurantDAO {
 		
 		// 메뉴판 이미지 삭제
 		int menuBoardImageDelete(@Param("mbi_no") int mbi_no);
+		
+		// 메인화면 지역별 가게 자동 전환 ajax용 
+		public List<restaurantDTO> restaurantListRegion(@Param("r_region") String r_region);
+		
+		// 메인화면 평점 조건별 TOP 매장 조회 (AJAX)
+		public List<restaurantDTO> restaurantListTopRating(@Param("filter") String filter);
+
+		// 메인화면 전체 매장 목록 조회 (AJAX)
+		public List<restaurantDTO> restaurantListAll();
+		
+	    //관리자용 식당 목록
+	    public List<restaurantDTO> adminRestaurantList(
+	           @Param("start") int start,
+	           @Param("pageSize") int pageSize
+	    ) throws Exception;
 		
 }

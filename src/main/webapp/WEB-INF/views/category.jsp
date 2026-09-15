@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="referrer" content="no-referrer">
-<title>${selectedCategory != null ? selectedCategory : '카테고리별 맛집'} - Mukja</title>
+<title>${selectedCategory != null ? selectedCategory : '전체 맛집'} - Mukja</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: '맑은 고딕', sans-serif; background-color: #f8f9fa; color: #333; line-height: 1.5; }
@@ -87,20 +88,25 @@
 </head>
 <body>
 
+<!-- 📌 최상단 공통 헤더 불러오기 (body 바로 밑 최상단 위치) -->
+<%@ include file="/WEB-INF/views/header.jsp" %>
+
 <div class="page-wrapper">
 
     <!-- 1. 좌측 카테고리 고정 사이드바 -->
     <aside class="sidebar-category">
         <h3>🍽️ 음식 카테고리</h3>
         <ul class="category-list">
-            <li><a href="${pageContext.request.contextPath}/store/category?cate=all" class="${selectedCate == 'all' || empty selectedCate ? 'active' : ''}">전체 메뉴</a></li>
-            <li><a href="${pageContext.request.contextPath}/store/category?cate=1" class="${selectedCate == '1' ? 'active' : ''}">🥩 돈까스 / 일식</a></li>
-            <li><a href="${pageContext.request.contextPath}/store/category?cate=2" class="${selectedCate == '2' ? 'active' : ''}">🍚 한식 / 찌개</a></li>
-            <li><a href="${pageContext.request.contextPath}/store/category?cate=3" class="${selectedCate == '3' ? 'active' : ''}">🍕 피자 / 양식</a></li>
-            <li><a href="${pageContext.request.contextPath}/store/category?cate=4" class="${selectedCate == '4' ? 'active' : ''}">🍗 치킨 / 패스트푸드</a></li>
-            <li><a href="${pageContext.request.contextPath}/store/category?cate=5" class="${selectedCate == '5' ? 'active' : ''}">🥟 중식 / 아시안</a></li>
-            <li><a href="${pageContext.request.contextPath}/store/category?cate=6" class="${selectedCate == '6' ? 'active' : ''}">☕ 디저트 / 카페</a></li>
-            <li><a href="${pageContext.request.contextPath}/store/category?cate=7" class="${selectedCate == '7' ? 'active' : ''}">🌙 야식 / 족발 / 보쌈</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=0" class="${selectedCate == 0 || empty selectedCate ? 'active' : ''}">전체 메뉴</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=1" class="${selectedCate == 1 ? 'active' : ''}">🍚 한식</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=2" class="${selectedCate == 2 ? 'active' : ''}">🥟 중식</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=3" class="${selectedCate == 3 ? 'active' : ''}">🥩 일식</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=4" class="${selectedCate == 4 ? 'active' : ''}">🍕 양식 / 세계음식</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=5" class="${selectedCate == 5 ? 'active' : ''}">🍗 육류</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=6" class="${selectedCate == 6 ? 'active' : ''}">🦞 해산물</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=7" class="${selectedCate == 7 ? 'active' : ''}">☕ 카페 / 디저트</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=8" class="${selectedCate == 8 ? 'active' : ''}">🍺 주점</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=9" class="${selectedCate == 9 ? 'active' : ''}">🌙 기타</a></li>
         </ul>
     </aside>
 
@@ -135,16 +141,12 @@
                             <span class="status-badge">영업중</span>
                         </div>
                         <div class="card-content">
-                            <!-- DB 컬럼: r_name -->
                             <div class="store-name">${r.r_name}</div>
                             <div class="store-info">
-                                <!-- DB 컬럼: r_point -->
                                 <span class="rating">★ ${r.r_point != null ? r.r_point : '0.0'}</span>
-                                <!-- DB 컬럼: r_region -->
                                 <span>• ${r.r_region != null ? r.r_region : '부산'}</span>
                             </div>
                             <div class="card-footer">
-                                <!-- DB 컬럼: r_time -->
                                 <span>🕒 ${not empty r.r_time ? r.r_time : '영업시간 참조'}</span>
                                 <span class="btn-detail">상세보기</span>
                             </div>
@@ -167,16 +169,16 @@
         <c:if test="${totalPage > 1}">
             <div class="pagination">
                 <c:if test="${startPage > 1}">
-                    <a href="${pageContext.request.contextPath}/store/category?cate=${selectedCate}&page=${startPage - 1}&sort=${sort}" class="page-item">이전</a>
+                    <a href="${pageContext.request.contextPath}/category?cate=${selectedCate}&page=${startPage - 1}&sort=${sort}" class="page-item">이전</a>
                 </c:if>
 
                 <c:forEach var="p" begin="${startPage}" end="${endPage}">
-                    <a href="${pageContext.request.contextPath}/store/category?cate=${selectedCate}&page=${p}&sort=${sort}" 
+                    <a href="${pageContext.request.contextPath}/category?cate=${selectedCate}&page=${p}&sort=${sort}" 
                        class="page-item ${p == page ? 'active' : ''}">${p}</a>
                 </c:forEach>
 
                 <c:if test="${endPage < totalPage}">
-                    <a href="${pageContext.request.contextPath}/store/category?cate=${selectedCate}&page=${endPage + 1}&sort=${sort}" class="page-item">다음</a>
+                    <a href="${pageContext.request.contextPath}/category?cate=${selectedCate}&page=${endPage + 1}&sort=${sort}" class="page-item">다음</a>
                 </c:if>
             </div>
         </c:if>
@@ -186,8 +188,8 @@
 
 <script>
     function changeSort(sortType) {
-        var currentCate = "${selectedCate != null ? selectedCate : 'all'}";
-        location.href = "${pageContext.request.contextPath}/store/category?cate=" + encodeURIComponent(currentCate) + "&sort=" + sortType;
+        var currentCate = "${selectedCate != null ? selectedCate : 0}";
+        location.href = "${pageContext.request.contextPath}/category?cate=" + currentCate + "&sort=" + sortType;
     }
 </script>
 
