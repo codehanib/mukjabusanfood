@@ -8,7 +8,7 @@
 </head>
 <body>
 	<script>
-	    alert("문의 답변이 등록되었습니다.");
+	    alert("답변이 등록되었습니다.");
 	    window.opener.location.reload();
 	    window.close();
 	</script>

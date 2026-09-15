@@ -4,10 +4,9 @@
 }
 body {
     margin: 0;
-    padding: 60px 20px;
-    background: #ffffff;
+    padding: 0px 0px;
+    background: #f8f9fa;
     color: #333;
-    font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
 }
 
 /* 전체 영역 */
@@ -24,7 +23,7 @@ body {
 .inquiry-page-title h1 {
     margin: 0;
     color: #333;
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 800;
 }
 .inquiry-page-title p {
@@ -55,7 +54,7 @@ body {
     display: block;
     margin-bottom: 9px;
     color: #444;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
 }
 /* 제목 입력 */
@@ -112,7 +111,7 @@ body {
 }
 /* 버튼 공통 */
 .inquiry-form-buttons input,
-.inquiry-form-buttons a {
+.inquiry-form-buttons button {
     min-width: 100px;
     padding: 12px 20px;
     border: none;
@@ -124,7 +123,6 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
 }
-
 
 /* 취소 / 다시쓰기 */
 .inquiry-btn-reset {

@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <title>공지 수정폼</title>
 <link rel="stylesheet" href="/css/noticeForm.css">
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
 <div class="notice-container">

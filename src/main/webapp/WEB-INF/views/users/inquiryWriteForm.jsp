@@ -5,15 +5,30 @@
 <head>
 <meta charset="UTF-8">
 <title>문의 작성</title>
+<link rel="stylesheet" href="/css/inquiryForm.css">
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
-	<h3>문의 작성</h3>
-	<hr>
-	<form name="inquiryWriteForm" method="post" action="/users/inquiryInsert">
-		<p>제목 <input type="text" name="mi_title"></p>
-		<p>내용</p>
-		<p><textarea name="mi_content" rows="15" cols="60"></textarea></p>
-		<button type="submit">문의등록</button>
+<div class="inquiry-form-container">
+	<div class="inquiry-page-title">
+        <h1>1:1 문의 작성</h1>
+        <p>식당 예약이나 배달 주문, 사이트 관련 문의사항을 남겨주세요.</p>
+    </div>
+
+	<form name="inquiryWriteForm" method="post" action="/users/inquiryInsert"  class="inquiry-form">
+		<div class="inquiry-form-group">
+			<label for="mi_title">제목</label>
+			<input type="text" name="mi_title" class="inquiry-title-input">
+		</div>
+		<div class="inquiry-form-group">
+			<label for="mi_content">내용</label>
+			<textarea name="mi_content" rows="15" class="inquiry-content-input"></textarea>
+		<div class="inquiry-form-buttons">
+		<button type="reset" class="nquiry-btn-reset">다시쓰기</button>
+		<button type="submit" class="inquiry-btn-submit">문의등록</button>
+		</div>
+		</div>
 	</form>
+</div>
 </body>
 </html>

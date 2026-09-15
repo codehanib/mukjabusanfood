@@ -9,39 +9,38 @@
 <meta charset="UTF-8">
 <title>공지 상세보기</title>
 <style>
-	* {
-	    box-sizing: border-box;
-	}
-	body {
-	    margin: 0;
-	    padding: 60px 20px;
-	    background: #ffffff;
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        margin: 0;
+	    padding: 0;
+	    background: #f8f9fa;
 	    color: #333;
-	    font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
-	}
-	/* 전체 영역 */
-	.notice-container {
-	    width: 800px;
-	    max-width: 100%;
-	    margin: 0 auto;
-	}
-	/* 페이지 제목 */
-	.page-title {
-	    margin-bottom: 30px;
-	    text-align: left;
-	}
-	.page-title h1 {
-	    margin: 0;
-	    color: #darkgeay;
-	    font-size: 32px;
-	    font-weight: 800;
-	}
-	.page-title p {
-	    margin-top: 8px;
-	    color: #999;
-	    font-size: 14px;
-	}
-	
+    }
+    /* 전체 영역 */
+    .notice-container {
+        width: 800px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    /* 페이지 제목 */
+    .page-title {
+        margin-bottom: 30px;
+        text-align: left;
+    }
+    .page-title h1 {
+        margin: 0;
+        color: #darkgeay;
+        font-size: 32px;
+        font-weight: 800;
+    }
+    .page-title p {
+        margin-top: 8px;
+
+        color: #999;
+        font-size: 14px;
+    }
 	/* 공지사항 테이블 */
 	.notice-table {
 	    width: 100%;
@@ -136,7 +135,7 @@
 	}
 	/* 수정 버튼 */
 	.btn-edit {
-	    background: #FFF0EC;
+	    background: #FFDDD4;
 	    color: #FF4B32;
 	}
 	.btn-edit:hover {
@@ -144,8 +143,8 @@
 	}
 	/* 삭제 버튼 */
 	.btn-delete {
-	    background: #f5f5f5;
-	    color: #777;
+	    background: #ddd;
+        color: #333;
 	}
 	.btn-delete:hover {
 	    background: #e8e8e8;
@@ -182,9 +181,9 @@
 	    text-decoration: underline;
 	}
 </style>
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
-<!-- include file="header.jsp" %> -->
 	<div class="notice-container">
     <div class="page-title">
         <h1>공지사항</h1>
@@ -215,15 +214,7 @@
     		</td>
 		</tr>
 	</table>
-	<div class="button-area">
-	<a href="/noticeList" class="btn-list">목록으로</a>
-	<sec:authorize access="hasRole('ADMIN')">
-	<a href="/admin/noticeUpdateForm?nt_no=${ntview.nt_no}" class="btn-edit">공지 수정</a>
-	<a href="/admin/noticeDelete?nt_no=${ntview.nt_no}" class="btn-delete">공지 삭제</a>
-	</sec:authorize>
-	</div>
-	
-	<div class="prev-next">
+		<div class="prev-next">
 	<c:if test="${not empty next}">
         <p>
         <span>다음글</span>
@@ -238,8 +229,15 @@
                 ${prev.nt_title}</a>
         </p>
     </c:if>
-
 	</div>
+	<div class="button-area">
+	<a href="/noticeList" class="btn-list">목록으로</a>
+	<sec:authorize access="hasRole('ADMIN')">
+	<a href="/admin/noticeUpdateForm?nt_no=${ntview.nt_no}" class="btn-edit">공지 수정</a>
+	<a href="/admin/noticeDelete?nt_no=${ntview.nt_no}" class="btn-delete">공지 삭제</a>
+	</sec:authorize>
+	</div>
+
 </div>
 </body>
 </html>
