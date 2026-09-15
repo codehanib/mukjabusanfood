@@ -864,21 +864,60 @@ private void insertMenuBoardImages(
              );
  }
 }
-private void deleteMenuBoardImages(
-        List<Integer> deleteMbiNoList
-) {
 
-    if (deleteMbiNoList == null) {
-        return;
-    }
-
-    for (Integer mbiNo : deleteMbiNoList) {
-
-        if (mbiNo == null) {
-            continue;
-        }
-
-        restaurantdao.menuBoardImageDelete(mbiNo);
-    }
+	private void deleteMenuBoardImages(
+	        List<Integer> deleteMbiNoList
+	) {
+	
+	    if (deleteMbiNoList == null) {
+	        return;
+	    }
+	
+	    for (Integer mbiNo : deleteMbiNoList) {
+	
+	        if (mbiNo == null) {
+	            continue;
+	        }
+	
+	        restaurantdao.menuBoardImageDelete(mbiNo);
+	    }
 }
+
+	public void setRestaurantListTime(restaurantDTO restaurant) {
+	
+	    String r_time = restaurant.getR_time();
+	
+	    if (r_time == null || r_time.trim().isEmpty()) {
+	        restaurant.setSimple_time("정보 없음");
+	        restaurant.setRest_day("없음");
+	        return;
+	    }
+	
+	    // 영업시간
+	    java.util.regex.Matcher timeMatcher =
+	        java.util.regex.Pattern
+	            .compile("(\\d{1,2}:\\d{2})\\s*~\\s*(?:새벽\\s*)?(\\d{1,2}:\\d{2})")
+	            .matcher(r_time);
+	
+	    if (timeMatcher.find()) {
+	        restaurant.setSimple_time(
+	            timeMatcher.group(1) + " ~ " + timeMatcher.group(2)
+	        );
+	    } else {
+	        restaurant.setSimple_time("정보 없음");
+	    }
+	
+	    // 휴무일
+	    java.util.regex.Matcher restMatcher =
+	        java.util.regex.Pattern
+	            .compile("(월|화|수|목|금|토|일)·(?:\\d{1,2}/\\d{1,2}\\s*)?(?:매주\\s*(?:월|화|수|목|금|토|일)요일\\s*)?휴무")
+	            .matcher(r_time);
+	
+	    if (restMatcher.find()) {
+	        restaurant.setRest_day(restMatcher.group(1));
+	    } else {
+	        restaurant.setRest_day("없음");
+	    }
+	}
+
 }
