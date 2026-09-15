@@ -72,7 +72,7 @@ public class restaurantController {
 	
     // Elasticsearch 식당 검색
 	@RequestMapping("/restaurant/search")
-	public String restaurantSearch(@RequestParam("keyword") String keyword,
+	public String restaurantSearch(@RequestParam(value = "keyword",required = false) String keyword,
 	        						Model model) throws Exception {
 		
 	    if (keyword == null || keyword.trim().isEmpty()) {
@@ -391,9 +391,10 @@ public class restaurantController {
 	 @RequestMapping("/restaurant/delete")
 	 public String restaurantDelete(
 	         @RequestParam("r_no") int r_no,
-	         @RequestParam("keyword") String keyword,
+	         @RequestParam(value="keyword" , required = false) String keyword,
 	         RedirectAttributes redirectAttributes) throws Exception {
-
+		 
+		 usersdao.deleteR_no(r_no);
 	     restaurantdao.restaurantDelete(r_no);
 	     service.delete(r_no);
 
