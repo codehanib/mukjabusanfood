@@ -167,7 +167,7 @@ public class restaurantController {
 	        int start = (page - 1) * pageSize;
 
 	        List<restaurantDTO> restaurantList
-	            = restaurantdao.restaurantListCategory(mukja_c_no,start,pageSize);
+	            = restaurantdao.restaurantListCategory(mukja_c_no,sort,start,pageSize);
 
 	        int count = restaurantdao.restaurantCountCategory(mukja_c_no);
 	        int totalPage = (int) Math.ceil((double) count / pageSize);
@@ -190,6 +190,7 @@ public class restaurantController {
 
 	        return "main";
 	    }
+	    
 	    
 	    // 지역별 식당 목록
 	    @RequestMapping("/restaurant/region")
