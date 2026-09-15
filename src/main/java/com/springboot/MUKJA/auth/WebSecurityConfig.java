@@ -31,8 +31,8 @@ public class WebSecurityConfig implements WebMvcConfigurer{
 			.authorizeHttpRequests(request -> request
 					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 					.requestMatchers("/","/writeForm","/loginForm","/usersInsert", "/checkId","/jusoPopup","/usersInsert","/loginsuccess",
-						    "/email/sendCode","/email/verifyCode","/password/**","/header","/footer","/main","/customerService2","/error",
-						    "/autocomplete","/restaurant/detail","/restaurant/category","/restaurant/search","/reservation/**","/delivery/admin_delivery_manage").permitAll()
+					        "/email/sendCode","/email/verifyCode","/password/**","/header","/footer","/main","/customerService2","/error",
+					        "/autocomplete","/restaurant/detail","/restaurant/restaurantDetail","/restaurant/category","/restaurant/search","/reservation/**","/delivery/admin_delivery_manage","/api/**","/category/**","/store/**").permitAll()
 					.requestMatchers("/noticeList", "/noticeView").permitAll()
 					.requestMatchers("/login/**","/loginError").permitAll()
 										

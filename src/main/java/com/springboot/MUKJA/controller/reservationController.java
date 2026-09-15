@@ -181,7 +181,9 @@ public class reservationController {
     public String ownerReservationList(Model model, Authentication authentication) {
         usersDTO owner = usersDAO.findById(authentication.getName());
         List<reservationDTO> list = reservationDAO.ownerReservationList(owner.getR_no());
+        List<reservationDTO> allList = reservationDAO.ownerAllList(owner.getR_no()); 
         model.addAttribute("list", list);
+        model.addAttribute("allList",allList);
         return "reservation/ownerList";
     }
     
@@ -262,4 +264,5 @@ public class reservationController {
         model.addAttribute("myList", guestList);
         return "reservation/guestList";
     }
+    
 }

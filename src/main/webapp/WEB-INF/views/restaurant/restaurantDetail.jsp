@@ -248,7 +248,6 @@
 	            <div class="review-empty">리뷰가 없습니다.</div>
 	        </c:otherwise>
 	    </c:choose>
-	</div>
 	<hr>
 
 	<!-- 위치 -->
@@ -358,6 +357,8 @@
 	         class="image-modal-content"
 	         onclick="event.stopPropagation()">
 	</div>
+    
+    <%@ include file="/WEB-INF/views/footer.jsp" %>
     
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false">
 	</script>

@@ -197,7 +197,7 @@ public class mainController {
 			List<restaurantDTO> menuBoardImageList = restaurantDao.menuBoardImageList(r_no);
 			model.addAttribute("menuBoardImageList", menuBoardImageList);
 
-			return "restaurant/restaurantDetail";
+			return "redirect:/restaurant/detail?r_no=" + r_no;
 		}
 	
 	

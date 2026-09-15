@@ -67,15 +67,21 @@ public class RestaurantESService {
         SearchSourceBuilder builder = new SearchSourceBuilder();
 
         builder.query(
-            QueryBuilders.multiMatchQuery(
-                keyword,
-                "r_name",
-                "r_region",
-                "r_addr",
-                "mukja_c_name",
-                "mn_name"
-            )
-        );
+        	    QueryBuilders.boolQuery()
+        	        .should(QueryBuilders.matchQuery("r_name", keyword).boost(5.0f))
+        	        .should(QueryBuilders.matchQuery("r_region", keyword).boost(3.0f))
+        	        .should(QueryBuilders.matchQuery("r_addr", keyword).boost(2.0f))
+        	        .should(QueryBuilders.matchQuery("mukja_c_name", keyword).boost(3.0f))
+        	        .should(QueryBuilders.matchQuery("mn_name", keyword).boost(2.0f))
+
+        	        // 부분 입력 검색
+        	        .should(QueryBuilders.matchQuery("r_name.auto", keyword).boost(4.0f))
+        	        .should(QueryBuilders.matchQuery("r_region.auto", keyword).boost(2.0f))
+        	        .should(QueryBuilders.matchQuery("mukja_c_name.auto", keyword).boost(2.0f))
+        	        .should(QueryBuilders.matchQuery("mn_name.auto", keyword).boost(1.5f))
+
+        	        .minimumShouldMatch(1)
+        	);
         
         builder.size(20);
         request.source(builder);
@@ -181,134 +187,82 @@ public class RestaurantESService {
 
 
     // 식당명 자동완성 + 하이라이트
- // 식당명 + 지역 + 주소 + 음식종류 + 메뉴명 자동완성
+    // 식당명 + 지역 + 주소 + 음식종류 + 메뉴명 자동완성
     public List<Map<String, String>> autocompleteHighlight(
             String keyword) throws Exception {
 
         SearchRequest request = new SearchRequest("restaurants");
-
         SearchSourceBuilder source = new SearchSourceBuilder();
 
         source.size(10);
 
-        // 여러 필드에서 자동완성 검색
         source.query(
             QueryBuilders.multiMatchQuery(
                 keyword,
-                "r_name",
-                "r_region",
-                "mukja_c_name",
-                "mn_name"
+                "r_name.auto",
+                "r_region.auto",
+                "mukja_c_name.auto",
+                "mn_name.auto"
             )
-            .type(org.elasticsearch.index.query.MultiMatchQueryBuilder.Type.PHRASE_PREFIX)
         );
-
-        HighlightBuilder highlight =
-                new HighlightBuilder();
-
-        highlight.field("r_name");
-        highlight.field("r_region");
-        highlight.field("mukja_c_name");
-        highlight.field("mn_name");
-
-        highlight.preTags("<em>");
-        highlight.postTags("</em>");
-
-        source.highlighter(highlight);
 
         request.source(source);
 
         SearchResponse response =
-                client.search(
-                    request,
-                    RequestOptions.DEFAULT
-                );
+                client.search(request, RequestOptions.DEFAULT);
 
         List<Map<String, String>> result = new ArrayList<>();
         Set<String> duplicateCheck = new HashSet<>();
 
         for (SearchHit hit : response.getHits().getHits()) {
 
-            Map<String, Object> sourceMap =
-                    hit.getSourceAsMap();
+            Map<String, Object> sourceMap = hit.getSourceAsMap();
 
-            String text = "";
-            String highlighted = "";
+            String[] fields = {
+                "r_name",
+                "r_region",
+                "mukja_c_name",
+                "mn_name"
+            };
 
-            // 식당명
-            if (hit.getHighlightFields().get("r_name") != null) {
+            for (String field : fields) {
 
-                text = sourceMap.get("r_name").toString();
+                Object value = sourceMap.get(field);
 
-                highlighted =
-                        hit.getHighlightFields()
-                           .get("r_name")
-                           .fragments()[0]
-                           .string();
-            }
-
-            // 지역
-            else if (hit.getHighlightFields().get("r_region") != null) {
-
-                text = sourceMap.get("r_region").toString();
-
-                highlighted =
-                        hit.getHighlightFields()
-                           .get("r_region")
-                           .fragments()[0]
-                           .string();
-            }
-
-            // 음식종류
-            else if (hit.getHighlightFields().get("mukja_c_name") != null) {
-
-                text = sourceMap.get("mukja_c_name").toString();
-
-                highlighted =
-                        hit.getHighlightFields()
-                           .get("mukja_c_name")
-                           .fragments()[0]
-                           .string();
-            }
-
-            // 메뉴명
-            else if (hit.getHighlightFields().get("mn_name") != null) {
-
-                Object mnName = sourceMap.get("mn_name");
-
-                if (mnName != null) {
-                    text = mnName.toString();
-                }
-
-                highlighted =
-                        hit.getHighlightFields()
-                           .get("mn_name")
-                           .fragments()[0]
-                           .string();
-            }
-
-            if (!highlighted.isEmpty()) {
-
-                // 같은 자동완성 문구 중복 제거
-                String plainText =
-                        highlighted
-                            .replace("<em>", "")
-                            .replace("</em>", "");
-
-                if (duplicateCheck.contains(plainText)) {
+                if (value == null) {
                     continue;
                 }
 
-                duplicateCheck.add(plainText);
+                String text = value.toString();
 
-                Map<String, String> map =
-                        new HashMap<>();
+                // 입력한 글자가 포함된 값만 자동완성에 표시
+                if (!text.contains(keyword)) {
+                    continue;
+                }
 
-                map.put("text", plainText);
+                if (duplicateCheck.contains(text)) {
+                    continue;
+                }
+
+                duplicateCheck.add(text);
+
+                String highlighted =
+                        text.replace(
+                            keyword,
+                            "<em>" + keyword + "</em>"
+                        );
+
+                Map<String, String> map = new HashMap<>();
+                map.put("text", text);
                 map.put("highlight", highlighted);
 
                 result.add(map);
-            }        }
+
+                if (result.size() >= 10) {
+                    return result;
+                }
+            }
+        }
 
         return result;
     }

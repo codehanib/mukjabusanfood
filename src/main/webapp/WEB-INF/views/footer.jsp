@@ -10,20 +10,17 @@
 
     <!-- 1. 왼쪽 : 로고 -->
     <div class="footer-logo">
-
-        <img src="/images/logo.png" alt="MUKJA 로고">
-
+        <img src="/images/footerlogo.png" alt="MUKJA 로고">
     </div>
-
 
     <!-- 2. 가운데 : 회사정보 -->
     <div class="footer-company">
 
-        <h3>MUKJA</h3>
+        <h3>묵자 MUKJA - 부산 식당 예약 & 배달 주문 사이트</h3>
 
         상호명 : MUKJA <br>
 
-        사업자등록번호 : 155-45-67890
+        사업자등록번호 : 123-12-12345
         대표자명 : 김은진, 이동희, 차도일, 홍혜진 <br>
 
         주소 : 부산 부산진구 중앙대로 627,
@@ -35,7 +32,7 @@
         이메일 : MUKJA@gmail.com <br>
 
         고객센터 :
-        <b>1644-1550</b>
+        <b>1234-1110</b>
         (평일 09:00~18:00)
 
     </div>
@@ -43,22 +40,14 @@
 
     <!-- 3. 오른쪽 : 이용안내 -->
     <div class="footer-menu">
-
         <div>
-
-            <a href="#">회사소개</a>
-            <a href="#">이용약관</a>
-            <a href="#">개인정보처리방침</a>
-            <a href="#">청소년보호정책</a>
-
+            <a href="/noticeList">서비스 이용약관</a>
+            <a href="/noticeList">위치정보 이용약관</a>
+            <a href="/noticeList">개인정보 처리방침</a>
+            <a href="/noticeList">리뷰 운영 정책</a>
+            <a href="/users/inquiryList" onclick="return confirm('로그인이 필요한 서비스입니다.');">입점 문의</a>
         </div>
-
-        <div>
-            <img src="/images/footerLogo.png" alt="안내로고" class="footer-info-logo">
-        </div>
-
     </div>
-
 
     <!-- 4. Copyright -->
     <div class="footer-bottom">

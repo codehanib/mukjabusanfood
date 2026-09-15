@@ -75,6 +75,7 @@
 		left join restaurant rt on r.r_no = rt.r_no
 		where r.u_no = #{u_no}
   and r.res_stats = '대기중'
+  and r.res_day >= trunc(sysdate)
 order by r.res_day asc
 	</select>
 	
@@ -108,6 +109,7 @@ order by r.res_day desc
 	<select id="ownerReservationList" resultType="com.springboot.MUKJA.dto.reservationDTO">
 		select * from reservation
 		where r_no = #{r_no} and res_stats = '대기중'
+			and res_day >= trunc(sysdate)
 		order by res_day asc
 	</select>
 	
@@ -131,5 +133,13 @@ order by r.res_day desc
       and res_day = #{res_day}
       and res_stats = '대기중'
 </update>
+
+<!-- 사장님 예약 받은 목록 -->
+<select id="ownerAllList">
+	select * from reservation
+	where r_no = #{r_no}
+		and res_day >= trunc(sysdate)
+	order by res_day asc, res_time asc
+</select>
 	
 </mapper>

@@ -9,48 +9,16 @@
 <head>
 <meta charset="UTF-8">
 <title>리뷰 리스트</title>
-<style>
-    /* 리뷰 이미지 */
-    .review-img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        cursor: pointer;
-    }
-    .image-modal {
-        display: none;
-        position: fixed;
-        z-index: 9999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-
-        justify-content: center;
-        align-items: center;
-    }
-    /* 크게 보여줄 이미지 */
-    .image-modal img {
-        max-width: 70%;
-        max-height: 70%;
-        object-fit: contain;
-    }
-    /* 닫기 버튼 */
-    .close-modal {
-        position: absolute;
-        top: 20px;
-        right: 30px;
-        color: white;
-        font-size: 40px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-</style>
+<link rel="stylesheet" href="/css/reviewList.css">
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
+	 <div class="review-top">
 	 <h2>식당 리뷰</h2>
-	 전체 ${rvcount} 개
+	 </div>
+	 <div class="review-count">
+    	전체 ${rvcount} 개
+	 </div>
 	 <br>
 	 <br>
 	 <c:choose>
@@ -97,7 +65,7 @@
 	 		</c:forEach>
 	 	</c:when>
 	 	<c:otherwise>
-	 		<p>리뷰가 없습니다.</p>
+	 		<p class="nothing-review">리뷰가 없습니다.</p>
 	 	</c:otherwise>
 	 </c:choose>
 	 <a href="/restaurant/detail?r_no=${r_no}">돌아가기</a>
@@ -119,5 +87,6 @@
         modal.style.display = "none";
     }
 </script>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

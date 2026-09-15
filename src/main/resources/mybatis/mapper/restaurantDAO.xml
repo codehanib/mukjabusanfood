@@ -17,7 +17,7 @@
     <!-- 메인 식당 목록 : 번호 순 + 페이징 -->
     <select id="mainrestaurantList" resultType="com.springboot.MUKJA.dto.restaurantDTO">
         SELECT * from restaurant
-        	ORDER BY r_no DESC
+        	ORDER BY r_no asc
 	    	OFFSET #{start} ROWS
 	    	FETCH NEXT #{pageSize} ROWS ONLY
     </select>

@@ -16,6 +16,74 @@
 <body>
 <%@ include file="/WEB-INF/views/header.jsp" %>
 
+<div class="page-wrapper">
+
+    <!-- 왼쪽 음식 카테고리 -->
+    <aside class="sidebar-category">
+
+        <h3>🍽️ 음식 카테고리</h3>
+
+			 <ul class="category-list">
+			
+			    <li>
+			        <a href="${pageContext.request.contextPath}/main">
+			            전체 메뉴
+			        </a>
+			    </li>
+			
+			    <li>
+			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=1">
+			            🍚 한식
+			        </a>
+			    </li>
+			
+			    <li>
+			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=2">
+			            🥟 중식
+			        </a>
+			    </li>
+			
+			    <li>
+			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=3">
+			            🥩 일식
+			        </a>
+			    </li>
+			
+			    <li>
+			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=4">
+			            🍕 양식 / 세계음식
+			        </a>
+			    </li>
+			
+			    <li>
+			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=5">
+			            🍗 육류
+			        </a>
+			    </li>
+			
+			    <li>
+			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=6">
+			            🦞 해산물
+			        </a>
+			    </li>
+			
+			    <li>
+			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=7">
+			            ☕ 디저트 / 카페
+			        </a>
+			    </li>
+			
+			    <li>
+			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=8">
+			            🌙 기타
+			        </a>
+			    </li>
+			
+			</ul>
+    </aside>
+
+
+<!-- 오른쪽 검색 결과 -->
 <div class="restaurant-list-container">
 
     <!-- 검색 결과 없음 -->
@@ -51,10 +119,11 @@
 				        <h2 class="restaurant-name">${restaurant.r_name}</h2>
 				    </a>
 				
+				<sec:authorize access="hasRole('ADMIN')">
 				    <a class="restaurant-delete-btn" href="/restaurant/delete?r_no=${restaurant.r_no}&keyword=${keyword}" onclick="event.stopPropagation(); return confirm('식당을 삭제하시겠습니까?');">
 				        식당 삭제
 				    </a>
-				
+				</sec:authorize>
 				</div>
 
                 <!-- 별점 / 리뷰 / 지역 -->
@@ -96,9 +165,14 @@
 				</div>
 
 
-                <!-- 예약 -->
-				<a class="reservation-btn" href="/reservation/reservationInsert?r_no=${restaurant.r_no}" onclick="event.stopPropagation();">
+				<!-- 예약 -->
+				<a class="reservation-btn" href="${pageContext.request.contextPath}/reservation/reservationInsert?r_no=${restaurant.r_no}" onclick="event.stopPropagation();">
 				    예약하기
+				</a>
+				
+				<!-- 배달 -->
+				<a class="delivery-btn" href="${pageContext.request.contextPath}/cart/delivery/menu?r_no=${restaurant.r_no}" onclick="event.stopPropagation();">
+				    배달주문
 				</a>
 
             </div>
@@ -109,4 +183,7 @@
 
 </div>
 
+</div>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
+</html>

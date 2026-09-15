@@ -84,7 +84,7 @@
 			            ${restaurant.r_name}
 			        </h2>
 			
-			        <a class="restaurant-delete-btn" href="/admin/restaurant/delete?r_no=${restaurant.r_no}" onclick="event.stopPropagation(); return confirm('이 식당을 삭제하시겠습니까?');">
+			        <a class="restaurant-delete-btn" href="/restaurant/delete?r_no=${restaurant.r_no}" onclick="event.stopPropagation(); return confirm('이 식당을 삭제하시겠습니까?');">
 			            식당 삭제
 			        </a>
 			
@@ -162,12 +162,10 @@
 	
 	            <c:choose>
 	
-	                <!-- 현재 페이지 -->
 	                <c:when test="${p == page}">
 	                    <span class="active">${p}</span>
 	                </c:when>
 	
-	                <!-- 다른 페이지 -->
 	                <c:otherwise>
 	                    <a href="/admin/restaurantList?page=${p}">
 	                        ${p}
@@ -191,6 +189,6 @@
 	</c:if>
 
 </div>
-
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

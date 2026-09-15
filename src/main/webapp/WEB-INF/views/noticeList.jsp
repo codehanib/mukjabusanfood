@@ -135,11 +135,12 @@
     }
     /* 홈으로 */
     .btn-home {
-        background: #ddd;
-	    color: #333;
+        border: 1px solid #FF4B32;
+		color: #FF4B32;
     }
     .btn-home:hover {
-        background: #eaeaea;
+        background: #FF4B32;
+        color: #fff;
         transform: translateY(-2px);
     }
     /* 공지 작성 */
@@ -189,5 +190,6 @@
     </p>
     </div>
 </div>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>
