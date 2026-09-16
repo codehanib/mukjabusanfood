@@ -13,6 +13,8 @@
 </head>
 
 <body>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
+
 	<button type="button" onclick="history.back()">
 	    <i class="fa-solid fa-chevron-left"></i>
 	</button>

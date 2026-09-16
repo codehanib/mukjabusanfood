@@ -15,6 +15,7 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/header.jsp" %>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 
 <div class="page-wrapper">
 
