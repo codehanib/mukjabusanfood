@@ -1,11 +1,43 @@
 /* 리뷰 작성폼과 수정폼의 CSS */
-	.star-rating {
+	* {
+	    box-sizing: border-box;
+	}
+	
+	.review-write-page {
+	    margin: 0;
+	    padding: 0px 0px;
+	    background-color: #f8f9fa;
+	    color: #333;}
+	
+/* 리뷰 작성 제목 */
+	.review-write-page h3 {
+	    width: 600px;
+	    margin: 0 auto 25px;
+	    font-size: 24px;
+	    font-weight: 700;
+	    color: #222;
+	    text-align: center;
+	}
+	
+/* 리뷰 작성 폼 */
+	.review-write-page form[name="reviewwriteform"],
+	.review-write-page form[name="reviewUpdateform"] {
+	    width: 600px;
+	    margin: 0 auto;
+	    padding: 35px 40px;
+	    background-color: #fff;
+	    border-radius: 15px;
+	    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	}
+
+/* 평점 영역 */
+	.review-write-page .star-rating {
 	    display: inline-block;
 	}
-	.stars {
+	.review-write-page .stars {
 	    display: flex;
 	}	
-	.star {
+	.review-write-page .star {
 	    position: relative;
 	    display: inline-block;
 	    width: 33px;
@@ -15,10 +47,10 @@
 	    color: #ddd;
 	    cursor: pointer;
 	}
-	.star.full {
+	.review-write-page .star.full {
 	    color: #ffc107;
 	}
-	.star.half::before {
+	.review-write-page .star.half::before {
 	    content: "★";
 	    position: absolute;
 	    left: 0;
@@ -26,4 +58,120 @@
 	    width: 50%;
 	    overflow: hidden;
 	    color: #ffc107;
+	}
+	
+	.review-write-page #rv_content {
+    display: block;
+    width: 100%;
+    min-height: 150px;
+    margin-top: 10px;
+    padding: 15px;
+
+    border: 1px solid #ddd;
+    border-radius: 10px;
+
+    background-color: #fff;
+    color: #333;
+
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+
+    resize: vertical;
+    outline: none;
+
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease;
+	}
+
+	.review-write-page #rv_content::placeholder {
+	    color: #aaa;
+	}
+	
+	.review-write-page #rv_content:focus {
+	    border-color: #FF4B32;
+	    box-shadow: 0 0 0 3px rgba(255, 75, 50, 0.12);
+	}
+
+
+	/* ========================================
+	   이미지 등록
+	   ======================================== */
+	
+	.review-write-page label[for="reviewFiles"] {
+	    display: inline-block;
+	    margin-top: 20px;
+	    margin-bottom: 8px;
+	
+	    color: #444;
+	    font-size: 14px;
+	    font-weight: 600;
+	}
+	
+	
+	.review-write-page #reviewFiles {
+	    display: block;
+	    width: 100%;
+	    padding: 10px;
+	
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	
+	    background-color: #fafafa;
+	    color: #555;
+	
+	    font-size: 13px;
+	    cursor: pointer;
+	}
+
+
+	/* 파일 선택 버튼 */
+	.review-write-page #reviewFiles::file-selector-button {
+	    margin-right: 10px;
+	    padding: 7px 12px;
+	
+	    border: none;
+	    border-radius: 6px;
+	
+	    background-color: #fff0ed;
+	    color: #FF4B32;
+	
+	    font-weight: 600;
+	    cursor: pointer;
+	
+	    transition: background-color 0.2s ease;
+	}
+	
+	.review-write-page #reviewFiles::file-selector-button:hover {
+	    background-color: #ffe1dc;
+	}
+
+	.review-write-page .smbtn {
+	    display: block;
+	    width: 100%;
+	    height: 48px;
+	
+	    margin-top: 25px;
+	
+	    border: none;
+	    border-radius: 9px;
+	
+	    background-color: #FF4B32;
+	    color: #fff;
+	
+	    font-size: 15px;
+	    font-weight: 700;
+	
+	    cursor: pointer;
+	
+	    transition: background-color 0.2s ease,
+	                transform 0.15s ease;
+	}
+	
+	.review-write-page .smbtn:hover {
+	    background-color: #e9412a;
+	}
+	
+	.review-write-page .smbtn:active {
+	    transform: scale(0.98);
 	}

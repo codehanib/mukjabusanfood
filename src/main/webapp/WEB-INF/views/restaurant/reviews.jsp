@@ -87,6 +87,7 @@
         modal.style.display = "none";
     }
 </script>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>
