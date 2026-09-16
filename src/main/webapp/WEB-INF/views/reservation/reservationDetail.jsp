@@ -27,12 +27,12 @@
         <tr><th>예약상태</th><td>${dto.res_stats}</td></tr>
         <tr><th>대기현황</th><td>내 앞에 ${dto.res_wait}팀 대기중</td></tr>
     </table>
-
-    <div class="info-actions">
-        <a href="/main" class="primary">홈으로</a>
-    </div>
-
+	<div class="info-actions">
+    <a href="/reservation/reservationUpdateForm?res_no=${dto.res_no}">예약 수정</a>
+    <a href="/main" class="primary">홈으로</a>
 </div>
 
+</div>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

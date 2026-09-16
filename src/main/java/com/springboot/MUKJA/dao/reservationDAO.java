@@ -59,4 +59,5 @@ public interface reservationDAO {
 		
 		// 사장님 예약받은것들
 		public List<reservationDTO> ownerAllList(@Param("r_no") int r_no);
+		public int reassignResNum(@Param("res_no") int res_no, @Param("r_no") int r_no, @Param("res_day") Date res_day);
 }

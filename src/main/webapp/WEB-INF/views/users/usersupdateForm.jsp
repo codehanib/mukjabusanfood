@@ -12,8 +12,8 @@
 </head>
 <script src="/js/writeForm.js"></script>
 <body class="signup-body">
-
 <main>
+<%@ include file="/WEB-INF/views/header.jsp" %>
 
     <div class="login-wrapper">
     <div class="login-card signup-card">
@@ -152,7 +152,7 @@
 
     </div>
     </div>
-
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </main>
 
 </body>
