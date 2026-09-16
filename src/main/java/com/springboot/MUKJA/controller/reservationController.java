@@ -21,6 +21,8 @@ import com.springboot.MUKJA.dao.usersDAO;
 import com.springboot.MUKJA.dto.reservationDTO;
 import com.springboot.MUKJA.dto.usersDTO;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/reservation")
 public class reservationController {
@@ -263,6 +265,61 @@ public class reservationController {
         }
         model.addAttribute("myList", guestList);
         return "reservation/guestList";
+    }
+    
+    @RequestMapping("/reservationUpdateForm")
+    public String reservationUpdateForm(
+            @RequestParam("res_no") int res_no,
+            @RequestParam(value = "res_name", required = false) String res_name,
+            @RequestParam(value = "res_tel", required = false) String res_tel,
+            @RequestParam(value = "res_day", required = false) String res_day,
+            @RequestParam(value = "res_time", required = false) String res_time,
+            @RequestParam(value = "res_count", required = false) Integer res_count,
+            Model model, Authentication authentication, HttpServletRequest request) throws Exception {
+
+        if ("GET".equalsIgnoreCase(request.getMethod())) {
+            // ===== 폼 조회 =====
+            reservationDTO dto = reservationDAO.reservationDetail(res_no);
+
+            if (authentication != null && authentication.isAuthenticated()
+                    && !"anonymousUser".equals(authentication.getName())) {
+                usersDTO loginUser = usersDAO.findById(authentication.getName());
+                if (dto.getU_no() == null || dto.getU_no() != loginUser.getU_no()) {
+                    return "redirect:/reservation/myList";
+                }
+            }
+
+            model.addAttribute("dto", dto);
+            return "reservation/reservationUpdateForm";
+
+        } else {
+            // ===== 실제 수정 처리 =====
+            reservationDTO oldDto = reservationDAO.reservationDetail(res_no);
+            Date oldDay = oldDto.getRes_day();
+            int r_no = oldDto.getR_no();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date newDay = sdf.parse(res_day);
+
+            reservationDTO dto = new reservationDTO();
+            dto.setRes_no(res_no);
+            dto.setRes_name(res_name);
+            dto.setRes_tel(res_tel);
+            dto.setRes_day(newDay);
+            dto.setRes_time(res_time);
+            dto.setRes_count(res_count);
+            dto.setRes_stats(oldDto.getRes_stats());
+
+            reservationDAO.reservationUpdate(dto);
+
+            if (!oldDay.equals(newDay)) {
+                reservationDAO.reassignResNum(res_no, r_no, newDay);
+                reservationDAO.recalculateWait(r_no, oldDay);
+            }
+            reservationDAO.recalculateWait(r_no, newDay);
+
+            return "redirect:/reservation/reservationDetail?res_no=" + res_no;
+        }
     }
     
 }

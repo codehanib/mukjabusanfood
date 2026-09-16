@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +12,7 @@
 <link rel="stylesheet" href="/css/login.css">
 </head>
 <body class="login-body">
+	<%@ include file="/WEB-INF/views/header.jsp" %>
 
 	<div class="login-wrapper">
 		<div class="login-card">
@@ -40,5 +44,6 @@
 		</div>
 	</div>
 
+	<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

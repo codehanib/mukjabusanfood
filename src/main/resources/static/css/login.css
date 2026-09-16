@@ -7,9 +7,6 @@
 .login-body {
     min-height: 100vh;
     margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: #f8f9fa;
     font-family: Arial, sans-serif;
     color: #222;
@@ -31,6 +28,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 60px 0;
 }
 
 /* 카드 */
@@ -363,4 +361,36 @@
 
 .input-box.stack input {
     width: 100%;
+}
+#u_email {
+    width: 140px;
+}
+/* 비밀번호 찾기 - 섹션 간 여백 및 인증 영역 전환 효과 */
+.login-title {
+    margin-bottom: 32px;
+}
+
+.input-box + .input-box {
+    margin-top: 4px;
+}
+
+#codeArea {
+    margin-top: 6px;
+    animation: fadeInDown 0.25s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.input-box .btn-login {
+    width: auto;
+    margin-bottom: 0;
+    flex-shrink: 0;
 }
