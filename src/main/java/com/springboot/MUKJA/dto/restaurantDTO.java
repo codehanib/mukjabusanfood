@@ -38,5 +38,7 @@ public class restaurantDTO {
     
     private int mbi_no;
  	private String mbi_img;
+ 	
+ 	private int r_avg_price; 
 
 }

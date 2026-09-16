@@ -1,6 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,6 +29,7 @@
 		  .empty-msg { text-align: center; padding: 50px 0; color: #888; font-size: 1.05em; }
 		  table th:last-child,table td:last-child {white-space: nowrap; width: 90px; text-align: center;}
 	</style>
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
 	<div class="container">
@@ -82,5 +84,6 @@
 			</tbody>
 		</table>
 	</div>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

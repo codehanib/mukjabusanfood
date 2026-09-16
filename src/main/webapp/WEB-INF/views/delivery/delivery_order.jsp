@@ -1,14 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>배달 주문하기 - Mukja</title>
 <style>
-    body { font-family: '맑은 고딕', sans-serif; margin: 20px; background-color: #f8f9fa; }
-    .form-container { max-width: 650px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 25px; border-radius: 12px; background: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    body { font-family: '맑은 고딕', sans-serif; margin: 0; background-color: #f8f9fa; }
+    .form-container { max-width: 650px; margin: 30px auto; border: 1px solid #e0e0e0; padding: 25px; border-radius: 12px; background: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .section-title { font-size: 1.1em; font-weight: bold; border-bottom: 2px solid #FF5722; padding-bottom: 8px; margin-top: 25px; margin-bottom: 15px; color: #333; }
     .form-group { margin-bottom: 15px; }
     label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
@@ -32,44 +33,44 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services"></script>
 
-<!-- ==================== 포트원 연결 =================== -->
-<!-- 0. jQuery 라이브러리 올바른 주소 -->
+<!-- 포트원 결제 SDK -->
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<!-- 1. 포트원 v1 sdk 라이브러리 (오타 수정: iamport.js) -->
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 
-<!-- 2. JSP 변수를 js 객체로 전달 -->
+<!-- JS 데이터 전달 -->
 <script>
-	const ORDER_DATA = {
-		rName: "${r_name}",
-		totalPrice: parseInt("${totalPrice + deliveryFee}")
-	};
+    const ORDER_DATA = {
+        rName: "${r_name}",
+        totalPrice: parseInt("${(totalPrice != null ? totalPrice : 0) + (deliveryFee != null ? deliveryFee : 3000)}")
+    };
 </script>
 
-<!-- 3. 외부 payment.js 파일 로드 -->
+<!-- 외부 payment.js 로드 -->
 <script src="${pageContext.request.contextPath}/js/payment.js"></script>
-
 </head>
+
 <body>
+
+<%@ include file="/WEB-INF/views/header.jsp" %>
 
 <div class="form-container">
     <h2>🛒 배달 주문 작성</h2>
     
-    <!-- id="orderForm" 지정 및 컨트롤러 매핑 URL 통일 (/delivery/order) -->
-    <form id="orderForm" action="${pageContext.request.contextPath}/delivery/order" method="POST">
-        <!-- 컨트롤러 전송용 hidden 파라미터들 -->
+    <form id="orderForm" action="${pageContext.request.contextPath}/delivery/order/create" method="POST">
+        
         <input type="hidden" name="r_no" value="${r_no}">
         <input type="hidden" name="u_no" value="${u_no}">
         <input type="hidden" name="mc_no" value="${mc_no}">
-        <input type="hidden" name="totalPrice" value="${totalPrice}">
+        <!-- ★ 오타 수정 (<<input -> <input) -->
+        <input type="hidden" name="d_total_price" value="${totalPrice + deliveryFee}">
         <input type="hidden" name="deliveryFee" value="${deliveryFee}">
         <input type="hidden" name="py_type" value="배달">
         
-        <!-- 위도/경도 값 -->
+        <!-- 위도/경도 기본값 -->
         <input type="hidden" name="d_lat" id="d_lat" value="35.1765">
         <input type="hidden" name="d_lng" id="d_lng" value="129.0785">
 
-        <!-- 1. 주문 메뉴 내역 (JSTL 반복문) -->
+        <!-- 1. 주문 메뉴 내역 -->
         <div class="section-title">🍽️ 주문 메뉴 확인</div>
         <table class="menu-table">
             <thead>
@@ -82,6 +83,7 @@
             <tbody>
                 <c:forEach var="item" items="${cartList}">
                     <tr>
+                        <!-- ★ 필드명 복구 (mcm_name -> mn_name) -->
                         <td>${item.mn_name}</td>
                         <td style="text-align: center;">${item.mcm_count}개</td>
                         <td class="price">
@@ -117,7 +119,7 @@
             </div>
         </div>
 
-        <!-- 3. 배달 주소 입력 (payment.js의 id="d_addr", id="d_detail_addr"와 통일) -->
+        <!-- 3. 배달 주소 입력 -->
         <div class="section-title">📍 배달지 정보</div>
         <div class="form-group">
             <label for="d_addr">배달 주소</label>
@@ -135,7 +137,7 @@
 </div>
 
 <script>
-    // 주소 검색 및 위경도 추출
+    // 주소 검색 및 위경도 추출 함수
     function execDaumPostcode() {
         new daum.Postcode({
             oncomplete: function(data) {
@@ -143,17 +145,17 @@
                 document.getElementById("d_addr").value = addr;
 
                 var geocoder = new kakao.maps.services.Geocoder();
-
                 geocoder.addressSearch(addr, function(result, status) {
                     if (status === kakao.maps.services.Status.OK) {
                         document.getElementById("d_lat").value = result[0].y;
                         document.getElementById("d_lng").value = result[0].x;
-                        console.log("추출된 좌표 -> 위도: " + result[0].y + ", 경도: " + result[0].x);
                     }
                 });
             }
         }).open();
     }
 </script>
+
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %> <!-- ★ fmt 태그 라이브러리 추가 -->
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -44,6 +45,8 @@
     .btn-cancel { background-color: #e53e3e; } /* 강제 취소 */
     .btn-complete { background-color: #319795; } /* 강제 완료 */
 </style>
+
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
 
@@ -82,9 +85,9 @@
         </div>
     </div>
 
-    <!-- 3. 필터 및 식당/주문 검색 -->
+    <!-- 3. 필터 및 식당/주문 검색 (★ action 경로 수정됨) -->
     <div class="search-section">
-        <form class="search-form" action="${pageContext.request.contextPath}/admin/delivery/manage" method="GET">
+        <form class="search-form" action="${pageContext.request.contextPath}/admin/deliveryManage" method="GET">
             <input type="text" class="search-input" name="restaurantKeyword" placeholder="식당명 검색..." value="${param.restaurantKeyword}">
             <input type="text" class="search-input" name="orderIdKeyword" placeholder="주문번호(#) 검색..." value="${param.orderIdKeyword}">
             
@@ -165,6 +168,6 @@
     </div>
 
 </div>
-
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.springboot.MUKJA.controller;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -87,16 +88,35 @@ public class DeliveryController {
         return "delivery/delivery_order";
     }
 
-    // 1-2. 고객 배달 주문 생성 처리
-    @PostMapping("/delivery/order/create")
-    public String createOrder(deliveryDTO dto, @RequestParam(value = "u_no", defaultValue = "5") int u_no) {
-        if (dto.getU_no() <= 0) {
-            dto.setU_no(u_no);
-        }
-
-        deliveryDao.insertDelivery(dto);
-        return "redirect:/delivery/detail?d_no=" + dto.getD_no();
-    }
+	 // 1-2. 고객 배달 주문 생성 처리
+	    @PostMapping("/delivery/order/create")
+	    public String createOrder(
+	            deliveryDTO dto, 
+	            @RequestParam(value = "mc_no", defaultValue = "1") int mc_no,
+	            @RequestParam(value = "u_no", defaultValue = "5") int u_no) {
+	
+	        if (dto.getU_no() <= 0) {
+	            dto.setU_no(u_no);
+	        }
+	
+	        // 장바구니 총 금액 계산
+	        List<cartMenuDTO> cartList = cartMenuDao.selectCartMenuList(mc_no);
+	        int totalPrice = 0;
+	        if (cartList != null) {
+	            for (cartMenuDTO item : cartList) {
+	                totalPrice += (item.getMcm_price() * item.getMcm_count());
+	            }
+	        }
+	        
+	        int deliveryFee = 3000;
+	        
+	        // ★ dto 변수명에 맞게 setD_total_price 적용
+	        dto.setD_total_price(totalPrice + deliveryFee);
+	
+	        deliveryDao.insertDelivery(dto);
+	
+	        return "redirect:/delivery/detail?d_no=" + dto.getD_no();
+	    }
 
     // 1-3. 고객 주문 상세 현황 및 실시간 위치 추적 페이지
     @GetMapping("/delivery/detail")
@@ -263,64 +283,100 @@ public class DeliveryController {
     }
 
 
-    // =========================================================================
-    // 3. 관리자 관제 기능 (통합 관제 대시보드, 강제 상태 변경)
-    // =========================================================================
+ // =========================================================================
+ // 3. 관리자 관제 기능 (통합 관제 대시보드, 강제 상태 변경)
+ // =========================================================================
 
-    // 3-1. 관리자 배달 관제 대시보드
-    @GetMapping("/delivery/admin_delivery_manage")
-    public String adminDeliveryManage(
-            @RequestParam(value = "restaurantKeyword", required = false) String restaurantKeyword,
-            @RequestParam(value = "orderIdKeyword", required = false) String orderIdKeyword,
-            @RequestParam(value = "d_stats", required = false) String d_stats,
-            @RequestParam(value = "r_name", required = false) String r_name,
-            @RequestParam(value = "u_name", required = false) String u_name,
-            Model model) {
-
-        List<deliveryDTO> allDeliveryList = deliveryDao.selectOrderList();
-
-        int todayTotalCount = (allDeliveryList != null) ? allDeliveryList.size() : 0;
-        int deliveringCount = 0;
-        int todayTotalAmount = 0;
-
-        if (allDeliveryList != null) {
-            for (deliveryDTO delivery : allDeliveryList) {
-                if ("배달중".equals(delivery.getD_stats())) {
-                    deliveringCount++;
-                }
-            }
-        }
-        
-        model.addAttribute("r_name", r_name);
-        model.addAttribute("u_name",u_name);
-        model.addAttribute("allDeliveryList", allDeliveryList);
-        model.addAttribute("todayTotalCount", todayTotalCount);
-        model.addAttribute("deliveringCount", deliveringCount);
-        model.addAttribute("todayTotalAmount", todayTotalAmount);
-
-        return "delivery/admin_delivery_manage";
-    }
-
-    // 3-2. 관리자 강제 상태 변경 (강제 취소/강제 완료)
-    @PostMapping("/delivery/forceUpdate")
-    public String forceUpdateOrder(
-            @RequestParam("d_no") int d_no,
-            @RequestParam("actionType") String actionType) {
-
-        deliveryDTO dto = new deliveryDTO();
-        dto.setD_no(d_no);
-
-        if ("CANCEL".equals(actionType)) {
-            dto.setD_stats("주문거절");
-        } else if ("COMPLETE".equals(actionType)) {
-            dto.setD_stats("배달완료");
-        }
-
-        deliveryDao.updateOrderStatus(dto);
-
-        return "redirect:/delivery/admin_delivery_manage";
-    }
-
+	 // 3-1. 관리자 배달 관제 대시보드 (두 주소 모두 연결)
+	 @GetMapping({"/admin/deliveryManage", "/delivery/admin_delivery_manage"})
+	 public String adminDeliveryManage(
+	         @RequestParam(value = "restaurantKeyword", required = false) String restaurantKeyword,
+	         @RequestParam(value = "orderIdKeyword", required = false) String orderIdKeyword,
+	         @RequestParam(value = "d_stats", required = false) String d_stats,
+	         @RequestParam(value = "r_name", required = false) String r_name,
+	         @RequestParam(value = "u_name", required = false) String u_name,
+	         Model model) {
+	
+	     // DB에서 전체 배달 데이터 조회
+	     List<deliveryDTO> allDeliveryList = deliveryDao.selectOrderList();
+	     
+	     // 검색 조건 필터링
+	     if (allDeliveryList != null) {
+	      // 1.식당명 검색
+	     if (restaurantKeyword != null && !restaurantKeyword.trim().isEmpty()) {
+	            String kw = restaurantKeyword.trim().toLowerCase();
+	            allDeliveryList = allDeliveryList.stream()
+	                    .filter(d -> d.getR_name() != null && d.getR_name().toLowerCase().contains(kw))
+	                    .collect(Collectors.toList());
+	        }
+	     
+	      // 2. 주문번호 검색
+	     if (orderIdKeyword != null && !orderIdKeyword.trim().isEmpty()) {
+	            String kw = orderIdKeyword.trim();
+	            allDeliveryList = allDeliveryList.stream()
+	                    .filter(d -> String.valueOf(d.getD_no()).contains(kw))
+	                    .collect(Collectors.toList());
+	        }
+	      // 3.주문상태 검색
+	     if (d_stats != null && !d_stats.trim().isEmpty()) {
+	            allDeliveryList = allDeliveryList.stream()
+	                    .filter(d -> d_stats.equals(d.getD_stats()))
+	                    .collect(Collectors.toList());
+	        }
+	    }
+	     
+	     // 통계 카운터 계산
+	     int todayTotalCount = (allDeliveryList != null) ? allDeliveryList.size() : 0;
+	     int deliveringCount = 0;
+	     int todayTotalAmount = 0;
+	     
+	     
+	     if (allDeliveryList != null) {
+	         for (deliveryDTO delivery : allDeliveryList) {
+	        	 
+	        	 // 실시간 배달 중인 건수 카운트
+	             if ("배달중".equals(delivery.getD_stats())) {
+	                 deliveringCount++;
+	             }
+	             
+	             // 배달완료 건수 금액누적(금일)
+	             if ("배달완료".equals(delivery.getD_stats())) {
+	                 todayTotalAmount += delivery.getD_total_price();
+	             }
+	         }
+	     }
+	     
+	     // 모델 전달
+	     model.addAttribute("r_name", r_name);
+	     model.addAttribute("u_name", u_name);
+	     model.addAttribute("allDeliveryList", allDeliveryList);
+	     model.addAttribute("todayTotalCount", todayTotalCount);
+	     model.addAttribute("deliveringCount", deliveringCount);
+	     model.addAttribute("todayTotalAmount", todayTotalAmount);
+	
+	     return "delivery/admin_delivery_manage";
+	 }
+	
+	 // 3-2. 관리자 강제 상태 변경 (강제 취소/강제 완료)
+	 @PostMapping("/delivery/forceUpdate")
+	 public String forceUpdateOrder(
+	         @RequestParam("d_no") int d_no,
+	         @RequestParam("actionType") String actionType) {
+	
+	     deliveryDTO dto = new deliveryDTO();
+	     dto.setD_no(d_no);
+	
+	     if ("CANCEL".equals(actionType)) {
+	         dto.setD_stats("주문거절");
+	     } else if ("COMPLETE".equals(actionType)) {
+	         dto.setD_stats("배달완료");
+	     }
+	
+	     deliveryDao.updateOrderStatus(dto);
+	
+	     // 변경 후 대시보드로 리다이렉트
+	     return "redirect:/admin/deliveryManage";
+	 	}
 
     // =========================================================================
     // 4. 결제 및 주문 승인 프로세스

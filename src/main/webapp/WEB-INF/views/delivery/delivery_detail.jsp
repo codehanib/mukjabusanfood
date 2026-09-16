@@ -1,6 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html>
@@ -41,7 +42,7 @@
 </c:if>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
 
@@ -276,6 +277,6 @@ initDeliveryMap(
         }
     });
 </script>
-
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>
