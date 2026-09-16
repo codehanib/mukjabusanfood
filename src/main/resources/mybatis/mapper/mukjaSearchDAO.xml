@@ -8,6 +8,11 @@
     <insert id="searchLogInsert"
             parameterType="com.springboot.MUKJA.dto.mukjaSearchDTO">
 
+		
+	    <selectKey keyProperty="ms_no" resultType="int" order="BEFORE">
+	        SELECT mukja_search_seq.NEXTVAL FROM dual
+	    </selectKey>
+
         INSERT INTO MUKJA_SEARCH (
             ms_no,
             ms_word
@@ -29,6 +34,14 @@
 	    ORDER BY ms_count DESC
 	    FETCH FIRST 5 ROWS ONLY
 	
+	</select>
+	
+	<select id="searchListAll" resultType="com.springboot.MUKJA.dto.mukjaSearchDTO">
+	    SELECT ms_no,
+	           ms_word,
+	           ms_date
+	    FROM mukja_search
+	    ORDER BY ms_no
 	</select>
 
 </mapper>

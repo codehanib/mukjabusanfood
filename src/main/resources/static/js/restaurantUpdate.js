@@ -18,16 +18,18 @@ function jusoCallBack(roadAddrPart1, addrDetail, zipNo) {
         document.getElementById("r_region").value = parts[1];
     }
 
-    // 주소 변경 시 기존 좌표 초기화
-    document.getElementById("r_lat").value = "";
-    document.getElementById("r_lon").value = "";
-
+    // 새 주소로 좌표 검색
     searchLatLon(roadAddrPart1);
 }
 
 
 /* 주소 → 위도/경도 */
 function searchLatLon(address) {
+
+    if (!address || address.trim() === "") {
+        alert("주소가 없습니다.");
+        return;
+    }
 
     kakao.maps.load(function() {
 
@@ -43,32 +45,31 @@ function searchLatLon(address) {
                     kakao.maps.services.Status.OK
                 ) {
 
-                    document.getElementById("r_lat").value =
-                        result[0].y;
+                    const lat = result[0].y;
+                    const lon = result[0].x;
 
-                    document.getElementById("r_lon").value =
-                        result[0].x;
+                    document.getElementById("r_lat").value = lat;
+                    document.getElementById("r_lon").value = lon;
 
-                    console.log("위도:", result[0].y);
-                    console.log("경도:", result[0].x);
+                    console.log("주소:", address);
+                    console.log("위도:", lat);
+                    console.log("경도:", lon);
 
                 } else {
 
-                    document.getElementById("r_lat").value = "";
-                    document.getElementById("r_lon").value = "";
-
-                    console.log("좌표 검색 실패:", address, status);
+                    console.log(
+                        "좌표 검색 실패:",
+                        address,
+                        status
+                    );
 
                     alert(
                         "주소의 위도/경도를 찾지 못했습니다."
                     );
                 }
-
             }
         );
-
     });
-
 }
 
 
@@ -82,6 +83,9 @@ document.restaurantUpdateForm.addEventListener(
 
         const lon =
             document.getElementById("r_lon").value;
+
+        console.log("수정할 위도:", lat);
+        console.log("수정할 경도:", lon);
 
         if (!lat || !lon) {
 

@@ -2,9 +2,9 @@ package com.springboot.MUKJA.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -17,10 +17,10 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.springboot.MUKJA.dto.mukjaSearchDTO;
 import com.springboot.MUKJA.dto.restaurantDTO;
 
 @Service
@@ -275,5 +275,26 @@ public class RestaurantESService {
         request.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
         
         client.delete(request, RequestOptions.DEFAULT);
+    }
+    
+    
+ // 검색로그 Elasticsearch 저장
+    public void saveSearchLog(mukjaSearchDTO dto) throws Exception {
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("ms_no", dto.getMs_no());
+        map.put("ms_word", dto.getMs_word());
+        map.put("ms_date", System.currentTimeMillis());
+
+        IndexRequest request = new IndexRequest("mukja_search")
+                .id(String.valueOf(dto.getMs_no()))
+                .source(map);
+
+        request.setRefreshPolicy(
+                WriteRequest.RefreshPolicy.WAIT_UNTIL
+        );
+
+        client.index(request, RequestOptions.DEFAULT);
     }
 }

@@ -12,6 +12,8 @@
 
 <body>
 <%@ include file="/WEB-INF/views/header.jsp" %>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
+
 <h2>식당 정보 수정</h2>
 
 <form action="/restaurant/update" method="post" name="restaurantUpdateForm" enctype="multipart/form-data">

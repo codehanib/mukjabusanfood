@@ -12,4 +12,6 @@ public interface mukjaSearchDAO {
 	int searchLogInsert(mukjaSearchDTO dto);
 	
 	List<mukjaSearchDTO> popularSearchList();
+	
+	List<mukjaSearchDTO> searchListAll();
 }

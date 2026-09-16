@@ -83,6 +83,10 @@ public class restaurantController {
 	    mukjaSearchDTO searchDTO = new mukjaSearchDTO();
 	    searchDTO.setMs_word(keyword);
 	    searchdao.searchLogInsert(searchDTO);
+	    service.saveSearchLog(searchDTO);
+	    
+	    // Elasticsearch에도 검색로그 저장
+	    service.saveSearchLog(searchDTO);
 	    
 	    // Elasticsearch 검색
 	    List<restaurantDTO> restaurantList = service.search(keyword);
@@ -304,7 +308,8 @@ public class restaurantController {
 	 
 	// 식당 등록 처리
 	 @RequestMapping("/restaurant/insert")
-	 public String restaurantInsert( restaurantDTO dto,
+	 public String restaurantInsert(
+	         restaurantDTO dto,
 	         @RequestParam(value = "r_upload", required = false) MultipartFile file,
 	         @RequestParam(value = "mn_name", required = false) List<String> mnNameList,
 	         @RequestParam(value = "mn_content", required = false) List<String> mnContentList,
@@ -313,8 +318,22 @@ public class restaurantController {
 	         @RequestParam(value = "mbi_upload", required = false) List<MultipartFile> mbiUploadList,
 	         Principal principal) throws Exception {
 
-	     restaurantService.insertRestaurant(dto,file, mnNameList, mnContentList, mnPriceList,
-	             mnUploadList, mbiUploadList, principal.getName()
+	     System.out.println("===== 식당 등록 Controller 진입 =====");
+	     System.out.println("principal = " + principal);
+
+	     if (principal != null) {
+	         System.out.println("로그인 아이디 = " + principal.getName());
+	     }
+
+	     restaurantService.insertRestaurant(
+	         dto,
+	         file,
+	         mnNameList,
+	         mnContentList,
+	         mnPriceList,
+	         mnUploadList,
+	         mbiUploadList,
+	         principal.getName()
 	     );
 
 	     return "redirect:/main";

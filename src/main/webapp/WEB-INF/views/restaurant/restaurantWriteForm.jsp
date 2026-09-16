@@ -9,8 +9,10 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/header.jsp" %>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
+
 	<h2>식당 등록</h2>
-	<form action="/restaurant/insert" method="post" name="restaurantWriteForm" enctype="multipart/form-data">
+	<form action="/restaurant/insert" method="post" name="restaurantWriteForm" enctype="multipart/form-data"  novalidate>
 		<!-- 화면에는 안 보이지만 등록할 때 같이 전송 -->
 	    <input type="hidden" id="r_region" name="r_region">
 	    <input type="hidden" id="r_lat" name="r_lat">
@@ -18,28 +20,28 @@
 	<table border="1">
 		<tr>
 			<td>식당 이름</td>
-			<td><input type="text" name="r_name" required></td>
+			<td><input type="text" id="r_name"name="r_name" required></td>
 		</tr>
 		<tr>
 			<td>식당 주소</td>
 			<td>
-				<input type="text" id="r_addr" name="r_addr" readonly required>
+				<input type="text" id="r_addr" name="r_addr" readonly>
     			<input type="button" value="주소 검색" onclick="goPopup();">
     		</td>
 		</tr>
 		<tr>
 		    <td>식당 이미지</td>
 		    <td>
-		        <input type="file" name="r_upload" accept="image/*" required>
+		        <input type="file" id="r_upload" name="r_upload" accept="image/*" required>
 		    </td>
 		</tr>
 		<tr>
 			<td>매장 소개</td>
-			<td><textarea name="r_info" rows="5" cols="60"></textarea></td>
+			<td><textarea id="r_info" name="r_info" rows="5" cols="60"></textarea></td>
 		</tr>
 		<tr>
 			<td>영업시간</td>
-			<td><textarea name="r_time" rows="7" cols="60"
+			<td><textarea id="r_time" name="r_time" rows="7" cols="60"
 placeholder="월 휴무 
 화 15:00~21:00  브레이크 타임 17:00~17:30
 수 15:00~21:00  브레이크 타임 17:00~17:30
@@ -50,12 +52,12 @@ placeholder="월 휴무
 		</tr>
 		<tr>
 			<td>휴무일</td>
-			<td><input type="text" name="r_rest" required></td>
+			<td><input type="text" id="r_rest" name="r_rest" required></td>
 		</tr>
 		<tr>
 		    <td>음식종류</td>
 		    <td>
-		        <select name="mukja_c_no" required>
+		        <select id="mukja_c_no" name="mukja_c_no" required>
 		            <option value="">음식종류 선택</option>
 		
 		            <c:forEach var="category" items="${categoryList}">
@@ -69,10 +71,7 @@ placeholder="월 휴무
 		<tr>
 		    <td>메뉴판 이미지</td>
 		    <td>
-		        <input type="file"
-		               name="mbi_upload"
-		               accept="image/*"
-		               multiple>
+		        <input type="file" id="mbi_upload" name="mbi_upload" accept="image/*" multiple>
 		    </td>
 		</tr>
 		<tr>
@@ -82,19 +81,19 @@ placeholder="월 휴무
 		
 		            <div class="menu-item">
 		                메뉴명
-		                <input type="text" name="mn_name">
+		                <input type="text" name="mn_name" required>
 		                <br>
 		
 		                메뉴설명
-		                <textarea name="mn_content"></textarea>
+		                <textarea name="mn_content" required></textarea>
 		                <br>
 		
 		                가격
-		                <input type="number" name="mn_price" placeholder="10000">
+		                <input type="number" name="mn_price" placeholder="10000" required> 
 		                <br>
 		
 		                메뉴이미지
-		                <input type="file" name="mn_upload" accept="image/*">
+		                <input type="file" name="mn_upload" accept="image/*" required>
 
 		            </div>
 		
@@ -106,7 +105,7 @@ placeholder="월 휴무
 		<tr>
 		    <td>상세 정보</td>
 		    <td>
-			 <textarea name="r_desc" rows="10" cols="60"
+			 <textarea id="r_desc" name="r_desc" rows="10" cols="60"
 placeholder="전화번호: 051-000-0000
 주차안내: 제휴주차장 1시간 무료주차 제공
 편의시설: 웰컴키즈존, 아기의자, 자동결제
@@ -123,6 +122,7 @@ placeholder="전화번호: 051-000-0000
         
     </table>
 	</form>
+	
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false"></script>
 <script src="${pageContext.request.contextPath}/js/restaurantWrite.js"></script>
