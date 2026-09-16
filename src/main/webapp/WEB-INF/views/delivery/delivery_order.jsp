@@ -83,7 +83,7 @@
             <tbody>
                 <c:forEach var="item" items="${cartList}">
                     <tr>
-                        <!-- ★ 필드명 복구 (mcm_name -> mn_name) -->
+                        
                         <td>${item.mn_name}</td>
                         <td style="text-align: center;">${item.mcm_count}개</td>
                         <td class="price">
