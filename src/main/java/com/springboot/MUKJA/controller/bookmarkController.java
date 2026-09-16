@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springboot.MUKJA.dao.bookmarkDAO;
+import com.springboot.MUKJA.dao.reviewDAO;
 import com.springboot.MUKJA.dao.usersDAO;
 import com.springboot.MUKJA.dto.bookmarkDTO;
 import com.springboot.MUKJA.dto.usersDTO;
@@ -21,6 +22,8 @@ public class bookmarkController {
 	private bookmarkDAO bkdao;
 	@Autowired
 	private usersDAO udao;
+	@Autowired
+	private reviewDAO rvdao;
 	
 	// 북마크 목록 조회
 	@RequestMapping("/users/bookmarkList")
@@ -30,6 +33,12 @@ public class bookmarkController {
 		int u_no = users.getU_no();
 		
 		List<bookmarkDTO> bookmarklist = bkdao.bookmarkList(u_no);
+		
+		for (bookmarkDTO bookmark : bookmarklist) {
+	        int r_no = bookmark.getR_no();
+	    
+	    double rvpoint = rvdao.reviewAvg(r_no);
+	    bookmark.setReviewAvg(rvpoint);}
 		
 		model.addAttribute("bklist",bookmarklist);
 		

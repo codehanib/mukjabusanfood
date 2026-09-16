@@ -12,4 +12,6 @@ public class bookmarkDTO {
 	private String r_name;
 	private String r_region;
 	private String r_point;
+	// 평점 계산 불러오기
+	private double reviewAvg;
 }

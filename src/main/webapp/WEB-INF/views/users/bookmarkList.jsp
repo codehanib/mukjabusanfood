@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -195,7 +196,7 @@
                                 ${bk.r_region}
                             </p>
                             <p class="restaurant-point">
-                                ★ ${bk.r_point}
+                                ★ <fmt:formatNumber value="${bk.reviewAvg}" pattern="0.0"/>
                             </p>
                         </div>
                         <!-- 버튼 -->
@@ -214,6 +215,7 @@
         </c:otherwise>
     </c:choose>
     <a class="home-btn" href="/main">홈으로</a>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

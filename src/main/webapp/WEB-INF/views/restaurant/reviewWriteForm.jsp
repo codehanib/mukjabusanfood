@@ -6,8 +6,9 @@
 <meta charset="UTF-8">
 <title>리뷰 작성</title>
 <link rel="stylesheet" href="/css/reviewWrite.css">
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
-<body>
+<body class="review-write-page">
 	<h3>리뷰 쓰기</h3>
 	<form name="reviewwriteform" method="post" action="/restaurant/reviewInsert" enctype="multipart/form-data">
 		<input type="hidden" name="r_no" value="${r_no}">
@@ -29,9 +30,10 @@
 		<label for="reviewFiles">이미지등록</label> <br>
 		<input type="file" name="reviewFiles" multiple accept="image/*">
 		<br>
-		<button type="submit">리뷰 작성</button> <br>
+		<button type="submit" class="smbtn">리뷰 작성</button> <br>
 	</form>
 <!-- 스크립트 구역 -->
 <script src="/js/reviewWrite.js"></script>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>
