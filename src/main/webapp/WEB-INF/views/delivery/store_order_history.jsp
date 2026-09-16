@@ -1,6 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,6 +46,8 @@
     .btn-detail:hover { background-color: #1976D2; }
     .btn-search { background-color: #333; color: white; }
 </style>
+
+<%@ include file="/WEB-INF/views/header.jsp" %>
 </head>
 <body>
 
@@ -158,6 +161,6 @@
         </table>
     </div>
 </div>
-
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

@@ -199,6 +199,13 @@ public class mainController {
 
 			return "redirect:/restaurant/detail?r_no=" + r_no;
 		}
+		
+		 //  visual_dashboard 실행 컨트롤러
+        @GetMapping("/admin/visual/dashboard")
+        public String visualDashboard() {
+           
+            return "admin/visual_dashboard"; 
+        }
 	
 	
 	

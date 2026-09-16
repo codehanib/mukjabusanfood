@@ -217,8 +217,12 @@
 
 	<!-- 메인화면 전체 배달 매장 목록 조회 (AJAX용) -->
 	<select id="restaurantListAll" resultType="com.springboot.MUKJA.dto.restaurantDTO">
-	    SELECT r.*, c.mukja_c_name, 
-	           (SELECT COUNT(*) FROM r_review rev WHERE rev.r_no = r.r_no) AS "reviewCount"
+	    SELECT 
+	        r.*, 
+	        c.mukja_c_name, 
+	        (SELECT COUNT(*) FROM r_review rev WHERE rev.r_no = r.r_no) AS reviewCount,
+	        -- 식당별 평균 메뉴 가격 계산 (mn_price 변수로 매핑)
+	        NVL(ROUND((SELECT AVG(m.mn_price) FROM menu m WHERE m.r_no = r.r_no)), 0) AS mn_price
 	      FROM restaurant r
 	   LEFT JOIN mukja_category c ON r.mukja_c_no = c.mukja_c_no
 	   ORDER BY r.r_no DESC
@@ -243,6 +247,8 @@
 	    OFFSET #{start} ROWS
 	    FETCH NEXT #{pageSize} ROWS ONLY
 	</select>
+	
+
 	
 	
 	<delete id="menuBoardImageDelete">

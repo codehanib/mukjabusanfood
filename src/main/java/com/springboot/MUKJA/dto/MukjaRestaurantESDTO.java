@@ -1,9 +1,10 @@
 package com.springboot.MUKJA.dto;
 
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.GeoPointField;
 
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class MukjaRestaurantESDTO {
     @Field(type = FieldType.Text)
     private String r_addr;
 
-    @Field(type = FieldType.Keyword) // ★ Kibana 시각화/그룹화용 필드
+    @Field(type = FieldType.Keyword) //  Kibana 시각화/그룹화용 필드
     private String r_region;
 
     @Field(type = FieldType.Float)
@@ -37,6 +38,12 @@ public class MukjaRestaurantESDTO {
     @Field(type = FieldType.Integer)
     private Integer mukja_c_no;
 
-    @Field(type = FieldType.Keyword) // ★ 카테고리별 차트용 필드
+    @Field(type = FieldType.Keyword) //  카테고리별 차트용 필드
     private String mukja_c_name;
+    
+    @Field(type = FieldType.Integer)
+    private Integer r_avg_price; // 식당 평균 메뉴 가격
+    
+    @GeoPointField
+    private String location;  //지도용
 }

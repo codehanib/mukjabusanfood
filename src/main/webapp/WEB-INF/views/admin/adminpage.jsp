@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +8,7 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/header.jsp" %>
+
 <div class="mypage-container">
 
     <div class="mypage-title">
@@ -19,8 +19,8 @@
         <div class="mypage-logo">
             MY<span> MUKJA</span>
             <div class="mypage-text">
-                관리자 페이지에서는 회원, 식당, 공지사항, 문의 내역을<br>
-                확인하고 관리하실 수 있습니다.
+                관리자 페이지에서는 회원, 식당, 공지사항, 문의 내역 및<br>
+                시각화 데이터와 주문 현황을 확인하고 관리하실 수 있습니다.
             </div>
         </div>
     </div>
@@ -75,9 +75,34 @@
             </div>
         </a>
 
-    </div>
+        <!-- 시각화 분석 대시보드 -->
+        <a href="/admin/visual/dashboard" class="mypage-menu-item">
+            <div class="mypage-menu-title">
+                시각화 분석
+                <span>visualization</span>
+            </div>
+            <div class="mypage-menu-desc">
+                외식 물가 및 식당 분포<br>
+                시각화 자료를 확인하실 수 있습니다.
+            </div>
+        </a>
 
-</div>
+        <!-- 주문현황 관리 -->
+        <a href="/admin/deliveryManage" class="mypage-menu-item">
+            <div class="mypage-menu-title">
+                주문현황 관리
+                <span>orders</span>
+            </div>
+            <div class="mypage-menu-desc">
+                실시간 주문 내역을<br>
+                확인하고 관리하실 수 있습니다.
+            </div>
+        </a>
 
+    </div> 
+
+</div> 
+
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

@@ -19,5 +19,6 @@ public class deliveryDTO {
 	private int u_no;
 	private String r_name;
 	private String u_name;
-	private int d_total_price;
+	private int d_total_price; // 주문1건당 전체 가격
+
 }
