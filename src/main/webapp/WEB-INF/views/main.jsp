@@ -201,8 +201,9 @@
             <li><a href="${pageContext.request.contextPath}/category?cate=4">🍕 양식 / 세계음식</a></li>
             <li><a href="${pageContext.request.contextPath}/category?cate=5">🍗 육류</a></li>
             <li><a href="${pageContext.request.contextPath}/category?cate=6">🦞 해산물</a></li>
-            <li><a href="${pageContext.request.contextPath}/category?cate=7">☕ 디저트 / 카페</a></li>
-            <li><a href="${pageContext.request.contextPath}/category?cate=8">🌙 기타</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=7">☕ 카페 / 디저트</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=8">🍺 주점</a></li>
+            <li><a href="${pageContext.request.contextPath}/category?cate=9">🌙 기타</a></li>
         </ul>
     </aside>
 
@@ -484,7 +485,7 @@
                 currentRegionStores = data;
                 regionPageIndex = 0;
                 renderRegionGrid();
-                resetRegionAutoRotate();
+                //resetRegionAutoRotate();
             })
             .catch(function(err) {
                 console.error("지역 매장 로드 실패:", err);
@@ -545,7 +546,7 @@
                 regionPageIndex++;
                 renderRegionGrid();
             }
-        }, 5000);
+        }, 7000);
     }
 </script>
 
@@ -577,7 +578,7 @@
                 currentRatingStores = data;
                 ratingPageIndex = 0;
                 renderRatingGrid();
-                resetRatingAutoRotate();
+                //resetRatingAutoRotate();
             })
             .catch(function(err) {
                 console.error("평점 매장 로드 실패:", err);
@@ -630,16 +631,6 @@
         });
 
         grid.innerHTML = html;
-    }
-
-    function resetRatingAutoRotate() {
-        if (ratingRotateTimer) clearInterval(ratingRotateTimer);
-        ratingRotateTimer = setInterval(function() {
-            if (currentRatingStores.length > 4) {
-                ratingPageIndex++;
-                renderRatingGrid();
-            }
-        }, 5000);
     }
 </script>
 
@@ -713,17 +704,8 @@
 
         grid.innerHTML = html;
     }
-
-    function resetAllAutoRotate() {
-        if (allRotateTimer) clearInterval(allRotateTimer);
-        allRotateTimer = setInterval(function() {
-            if (currentAllStores.length > 4) {
-                allPageIndex++;
-                renderAllGrid();
-            }
-        }, 5000);
-    }
 </script>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 </body>
 </html>
