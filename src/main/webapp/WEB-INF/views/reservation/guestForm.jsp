@@ -9,8 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <title>예약조회</title>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/mypage.css">
+<link rel="stylesheet" href="/css/mypage.css">
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/header.jsp"%>
@@ -47,5 +46,7 @@
 			</form>
 	</main>
 	<%@ include file="/WEB-INF/views/footer.jsp"%>
+	<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
+	
 </body>
 </html>

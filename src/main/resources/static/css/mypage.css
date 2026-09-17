@@ -241,11 +241,36 @@ body {
 }
 
 .info-table td {
-    padding: 18px 24px;
+    padding: 16px 24px;
     font-size: 14px;
     color: #222;
 }
 
+.info-table td input[type="text"] {
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #e5e9ee;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.info-table td input[type="text"]:focus {
+    border-color: #ff6644;
+}
+
+.info-table td input#res_tel1 {
+    width: 60px;
+    text-align: center;
+}
+
+.info-table td input#res_tel2,
+.info-table td input#res_tel3 {
+    width: 70px;
+    text-align: center;
+}
 /* 버튼 영역 */
 .info-actions {
     display: flex;
@@ -321,33 +346,52 @@ body {
 }
 
 .list-table th {
-    padding: 14px 16px;
-    background-color: #fff;
-    color: #444;
-    font-size: 14px;
-    font-weight: 600;
+    padding: 16px;
+    background-color: #fffaf8;
+    color: #333;
+    font-size: 13px;
+    font-weight: 700;
     text-align: center;
+    letter-spacing: 0.3px;
     border-bottom: 3px solid #ff6644;
 }
 
 .list-table td {
-    padding: 14px 16px;
+    padding: 15px 16px;
     font-size: 14px;
     color: #333;
     text-align: center;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.18s ease;
+}
+
+.list-table tbody tr:nth-child(even) td {
+    background-color: #fcfcfd;
 }
 
 .list-table tr:last-child td { border-bottom: none; }
 
 .list-table tr:hover td { background-color: #fff8f5; }
 
-.list-table a {
-    color: #ff6644;
+/* 첫 열은 번호/ID → 흐린 회색으로 시선 분산 방지 */
+.list-table td:first-child {
+    color: #999;
+    font-size: 13px;
+}
+
+/* 제목/이름 링크 셀 */
+.list-table td a {
+    position: relative;
+    color: #333;
     font-weight: 600;
     text-decoration: none;
+    transition: color 0.2s ease;
 }
-.list-table a:hover { text-decoration: underline; }
+
+.list-table td a:hover {
+    color: #ff6644;
+    text-decoration: none;
+}
 
 .reservation-table th,
 .reservation-table td {
@@ -371,6 +415,11 @@ body {
     }
     .mypage-menu {
         grid-template-columns: 1fr;
+    }
+    .list-table th,
+    .list-table td {
+        padding: 12px 10px;
+        font-size: 13px;
     }
 }
 
@@ -674,6 +723,7 @@ body {
 .signup-table td input[type="text"]:focus,
 .signup-table td input[type="password"]:focus {
     border-color: #ff6644;
+    box-shadow: 0 0 0 3px rgba(255, 102, 68, 0.12);
 }
 
 .signup-table td select {
@@ -683,6 +733,12 @@ body {
     border-radius: 8px;
     font-size: 14px;
     background-color: #fff;
+}
+
+.signup-table td select:focus {
+    border-color: #ff6644;
+    box-shadow: 0 0 0 3px rgba(255, 102, 68, 0.12);
+    outline: none;
 }
 
 /* 중복확인/우편번호 검색/인증번호 발송 등 보조 버튼 */

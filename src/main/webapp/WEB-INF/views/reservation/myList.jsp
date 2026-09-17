@@ -80,5 +80,7 @@
 
 	</main>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
+
 </body>
 </html>

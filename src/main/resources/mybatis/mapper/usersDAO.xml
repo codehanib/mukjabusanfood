@@ -20,6 +20,7 @@
 		resultType="com.springboot.MUKJA.dto.usersDTO">
 		SELECT u_no, u_id, u_name, u_tel, u_email
 		FROM users
+		WHERE u_stats != 'NONE'
 		ORDER BY
 		u_no ASC
 	</select>
