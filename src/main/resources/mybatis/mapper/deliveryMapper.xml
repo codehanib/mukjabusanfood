@@ -119,7 +119,7 @@
         ORDER BY d.d_reg_date DESC
     </select>
 
-    <!-- 8. 관리자 전체 주문 리스트 조회 (식당 이름 JOIN 추가) -->
+    <!-- 8. 관리자 전체 주문 리스트 조회 (식당/유저 JOIN & dv_menu 실시간 주문 총액 계산) -->
 	<select id="selectOrderList" resultType="com.springboot.MUKJA.dto.deliveryDTO">
 	    SELECT
 	        d.d_no, 
@@ -134,7 +134,10 @@
 	        d.r_no, 
 	        d.u_no,
 	        r.r_name,
-	        u.u_name
+	        u.u_name,
+	        NVL((SELECT SUM(dvm_price * dvm_count) 
+	             FROM dv_menu 
+	             WHERE d_no = d.d_no), 0) AS d_total_price
 	    FROM delivery d
 	    JOIN restaurant r ON d.r_no = r.r_no
 	    JOIN users u ON d.u_no = u.u_no

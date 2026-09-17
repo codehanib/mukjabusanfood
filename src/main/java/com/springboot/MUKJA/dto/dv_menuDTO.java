@@ -14,5 +14,6 @@ public class dv_menuDTO {
 	private String mn_name;
 	private String mn_content;
 	private String mn_img;
+	private String mn_price;
 }
 	
