@@ -123,11 +123,12 @@
 	/* 답변 내용 */
 	.answer-content {
 	    min-height: 130px;
-	    padding: 25px 5px;
+	    padding: 25px 30px;
 	    color: #555;
 	    font-size: 15px;
 	    line-height: 1.8;
-	    white-space: pre-wrap;
+	    white-space: pre-line;
+	    word-break: break-word;
 	}
 	/* 답변 준비중 */
 	.answer-content:has(+ *) {

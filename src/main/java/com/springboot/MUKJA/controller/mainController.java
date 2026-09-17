@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springboot.MUKJA.dao.mukjaSearchDAO;
 import com.springboot.MUKJA.dao.restaurantDAO;
+import com.springboot.MUKJA.dao.reviewDAO;
 import com.springboot.MUKJA.dao.usersDAO;
 import com.springboot.MUKJA.dto.menuDTO;
 import com.springboot.MUKJA.dto.mukjaSearchDTO;
@@ -31,6 +32,9 @@ public class mainController {
 	@Autowired
 	private usersDAO usersDao;
 	
+	@Autowired
+	private reviewDAO rvdao;
+
 	// 메인페이지 진입 컨트롤러
 	@GetMapping("/")
 	public String index() {
@@ -42,23 +46,51 @@ public class mainController {
     @ResponseBody
     public List<restaurantDTO> getStoresByRegion(@RequestParam(value = "region", defaultValue = "전체") String region) {
         // XML에서 #{r_region}으로 받고 있으므로 region 값을 전달
-        return restaurantDao.restaurantListRegion(region);
+        //return restaurantDao.restaurantListRegion(region);
+        // 지역별 식당 목록 조회
+        List<restaurantDTO> storeList =
+                restaurantDao.restaurantListRegion(region);
+
+        // 각 식당의 리뷰 평균을 r_point에 적용
+        for (restaurantDTO restaurant : storeList) {
+            double avgPoint = rvdao.reviewAvg(restaurant.getR_no());
+            restaurant.setR_point(avgPoint);
+        }
+        return storeList;
     }
     
     // 평정별 매장 목록
     @GetMapping("/api/store/top-rating")
     @ResponseBody
     public List<restaurantDTO> getStoresByTopRating(@RequestParam(value = "filter", defaultValue = "all") String filter) {
-        // 사용자가 눌른 탭 값('rating_4.5', 'review_500' 등)을 DAO로 전달
-        return restaurantDao.restaurantListTopRating(filter);
+        // 사용자가 누른 탭 값('rating_4.5', 'review_500' 등)을 DAO로 전달
+        //return restaurantDao.restaurantListTopRating(filter);
+        List<restaurantDTO> storeList =
+                restaurantDao.restaurantListTopRating(filter);
+
+        for (restaurantDTO restaurant : storeList) {
+            double avgPoint = rvdao.reviewAvg(restaurant.getR_no());
+            restaurant.setR_point(avgPoint);
+        }
+        return storeList;
     }
     
 	 // 전체 매장 목록 
-	    @GetMapping("/api/store/all")
-	    @ResponseBody
-	    public List<restaurantDTO> getStoresAll() {
-	        return restaurantDao.restaurantListAll();
-	    }
+	 @GetMapping("/api/store/all")
+	 @ResponseBody
+	 public List<restaurantDTO> getStoresAll() {
+	    //return restaurantDao.restaurantListAll();
+		// 전체 식당 목록 조회
+		List<restaurantDTO> storeList =
+		        restaurantDao.restaurantListAll();
+
+		// 각 식당의 리뷰 평균을 r_point에 적용
+		for (restaurantDTO restaurant : storeList) {
+		    double avgPoint = rvdao.reviewAvg(restaurant.getR_no());
+		    restaurant.setR_point(avgPoint);
+		}
+		return storeList;	 
+	 }
 	
 	//메인페이지 실행 컨트롤러
 	@RequestMapping("/main")
@@ -72,7 +104,13 @@ public class mainController {
 
         // 현재 페이지 식당 목록
         List<restaurantDTO> restaurantList = restaurantDao.mainrestaurantList(start, pageSize);
-
+        
+        // 평점 평균
+        for (restaurantDTO restaurant : restaurantList) {
+            double avgPoint = rvdao.reviewAvg(restaurant.getR_no());
+            restaurant.setR_point(avgPoint);
+        }
+        
         int count = restaurantDao.restaurantCount();
         int totalPage = (int) Math.ceil((double) count / pageSize);
 
@@ -138,9 +176,14 @@ public class mainController {
 	        storeList = restaurantDao.restaurantListCategory(mukja_c_no, sort, start, pageSize);
 	        totalCount = restaurantDao.restaurantCountCategory(mukja_c_no);
 	    }
-
-	   
-		 // 3. 평점 높은순(sort=rating) 정렬 로직
+	    
+	    // 평점 평균
+	    for (restaurantDTO restaurant : storeList) {
+	        double avgPoint = rvdao.reviewAvg(restaurant.getR_no());
+	        restaurant.setR_point(avgPoint);
+	    }
+	    
+		// 3. 평점 높은순(sort=rating) 정렬 로직
 		    if ("rating".equals(sort) && storeList != null) {
 		        storeList.sort((r1, r2) -> {
 		            double p1 = r1.getR_point();
@@ -207,7 +250,5 @@ public class mainController {
             return "admin/visual_dashboard"; 
         }
 	
-	
-	
- 
+
 }
