@@ -374,3 +374,9 @@ form[name="restaurantUpdateForm"] img[width="100"] {
     width: 150px;
     height: auto;
 }
+
+/* restaurantList 페이지에서 footer 너비 깨짐 방지 */
+body > .footer {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}

@@ -294,3 +294,9 @@ select,
 button {
     font-family: "Malgun Gothic", "맑은 고딕", sans-serif !important;
 }
+
+/* restaurantList 페이지에서 footer 너비 깨짐 방지 */
+body > .footer {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}

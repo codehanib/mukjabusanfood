@@ -40,7 +40,13 @@
             width: 100%;
             border: none;
             display: block;
+            
         }
+        
+        .container-fluid .card-custom {
+		    width: 70%;
+		    margin: 0 auto;
+		}
     </style>
 </head>
 <body>
@@ -71,8 +77,8 @@
                         <!-- 지도가 카드 영역에 꽉 차도록 height 750px 지정 -->
                         <iframe class="kibana-frame" 
                                 src="http://192.168.10.49:5601/app/dashboards#/view/a4c6f880-b171-11f1-9d15-c965fba4529f?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))" 
-                                height="750" 
-                                width="100%" 
+                                height="700" 
+                                width="70%" 
                                 style="border:none;">
                         </iframe>
                     </div>
@@ -85,14 +91,14 @@
             <div class="col-12">
                 <div class="card card-custom">
                     <div class="card-header-custom">
-                        <span class="text-dark">📊 카테고리별 식당 수 및 입점 현황 분석</span>
+                        <span class="text-dark">📊 입점 현황 분석 및 인기 검색어</span>
                         <span class="badge bg-info text-white">STATISTICS</span>
                     </div>
                     <div class="card-body p-0">
                         <iframe class="kibana-frame" 
                                 src="http://192.168.10.49:5601/app/dashboards#/view/abdf0710-b0dc-11f1-9d15-c965fba4529f?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))" 
-                                height="650" 
-                                width="100%" 
+                                height="900" 
+                                width="70%" 
                                 style="border:none;">
                         </iframe>
                     </div>
