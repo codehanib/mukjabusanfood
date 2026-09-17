@@ -308,7 +308,7 @@ public class reservationController {
             dto.setRes_day(newDay);
             dto.setRes_time(res_time);
             dto.setRes_count(res_count);
-            dto.setRes_stats(oldDto.getRes_stats());
+            dto.setRes_stats("대기중");
 
             reservationDAO.reservationUpdate(dto);
 

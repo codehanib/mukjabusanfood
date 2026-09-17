@@ -104,5 +104,8 @@
 		</form>
 	</div>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
+<script>
+document.getElementById('res_day').min = new Date().toISOString().split('T')[0];
+</script>
 </body>
 </html>
