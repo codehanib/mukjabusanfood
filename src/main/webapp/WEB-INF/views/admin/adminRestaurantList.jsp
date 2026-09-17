@@ -20,7 +20,6 @@
 <body>
 
 <%@ include file="/WEB-INF/views/header.jsp" %>
-<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 
 <div class="restaurant-list-container">
 
@@ -190,6 +189,7 @@
 	</c:if>
 
 </div>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

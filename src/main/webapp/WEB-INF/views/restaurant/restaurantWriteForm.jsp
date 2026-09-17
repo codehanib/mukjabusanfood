@@ -9,7 +9,6 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/header.jsp" %>
-<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 
 	<h2>식당 등록</h2>
 	<form action="/restaurant/insert" method="post" name="restaurantWriteForm" enctype="multipart/form-data"  novalidate>
@@ -122,7 +121,7 @@ placeholder="전화번호: 051-000-0000
         
     </table>
 	</form>
-	
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false"></script>
 <script src="${pageContext.request.contextPath}/js/restaurantWrite.js"></script>

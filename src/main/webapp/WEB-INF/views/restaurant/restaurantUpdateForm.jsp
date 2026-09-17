@@ -12,7 +12,6 @@
 
 <body>
 <%@ include file="/WEB-INF/views/header.jsp" %>
-<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 
 <h2>식당 정보 수정</h2>
 
@@ -285,6 +284,7 @@
     </table>
 
 </form>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KEY&libraries=services&autoload=false"></script>
 <script src="${pageContext.request.contextPath}/js/restaurantUpdate.js"></script>

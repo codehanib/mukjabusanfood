@@ -13,7 +13,6 @@
 </head>
 
 <body>
-<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 
 	<button type="button" onclick="history.back()">
 	    <i class="fa-solid fa-chevron-left"></i>
@@ -361,7 +360,7 @@
 	</div>
     
     <%@ include file="/WEB-INF/views/footer.jsp" %>
-    
+    <%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false">
 	</script>
 	

@@ -62,7 +62,6 @@ public class ElasticSyncController {
 
     // 6. 검색어
     @Autowired private mukjaSearchDAO mukjaSearchDao;
-    @Autowired private mukjaSearchDAO mukjaSearchESDao;
     
     @Autowired
     private RestHighLevelClient client;
@@ -152,13 +151,17 @@ public class ElasticSyncController {
     //  4. 전체 인덱스 한 번에 동기화
     // ========================================================
     @GetMapping("/sync/all")
-    public String syncAll() {
+    public String syncAll() throws Exception {
+
         String msg1 = syncRestaurants();
         String msg2 = syncDeliveries();
         String msg3 = syncPayments();
+        String msg4 = syncSearch();
 
-        return String.format("=== 전체 동기화 완료 ===<br>%s<br>%s<br>%s",
-                msg1, msg2, msg3);
+        return String.format(
+            "=== 전체 동기화 완료 ===<br>%s<br>%s<br>%s<br>%s",
+            msg1, msg2, msg3, msg4
+        );
     }
     
     // ========================================================
@@ -179,7 +182,10 @@ public class ElasticSyncController {
 
             map.put("ms_no", dto.getMs_no());
             map.put("ms_word", dto.getMs_word());
-            map.put("ms_date", dto.getMs_date().getTime());
+            map.put(
+            	    "ms_date",
+            	    dto.getMs_date() != null ? dto.getMs_date().getTime() : null
+            	);
 
             IndexRequest request = new IndexRequest("mukja_search")
                     .id(String.valueOf(dto.getMs_no()))

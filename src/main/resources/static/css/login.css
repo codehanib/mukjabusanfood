@@ -31,6 +31,10 @@
     padding: 60px 0;
 }
 
+.login-body .login-wrapper {
+    padding-top: 170px;
+}
+
 /* 카드 */
 .login-card {
     width: 380px;
@@ -393,4 +397,9 @@
     width: auto;
     margin-bottom: 0;
     flex-shrink: 0;
+}
+
+/* 회원가입 폼만 위로 이동 */
+.signup-body .signup-card {
+    transform: translateY(-50px);
 }

@@ -15,7 +15,6 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/header.jsp" %>
-<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 
 <div class="page-wrapper">
 
@@ -24,63 +23,69 @@
 
         <h3>🍽️ 음식 카테고리</h3>
 
-			 <ul class="category-list">
-			
-			    <li>
-			        <a href="${pageContext.request.contextPath}/main">
-			            전체 메뉴
-			        </a>
-			    </li>
-			
-			    <li>
-			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=1">
-			            🍚 한식
-			        </a>
-			    </li>
-			
-			    <li>
-			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=2">
-			            🥟 중식
-			        </a>
-			    </li>
-			
-			    <li>
-			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=3">
-			            🥩 일식
-			        </a>
-			    </li>
-			
-			    <li>
-			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=4">
-			            🍕 양식 / 세계음식
-			        </a>
-			    </li>
-			
-			    <li>
-			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=5">
-			            🍗 육류
-			        </a>
-			    </li>
-			
-			    <li>
-			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=6">
-			            🦞 해산물
-			        </a>
-			    </li>
-			
-			    <li>
-			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=7">
-			            ☕ 디저트 / 카페
-			        </a>
-			    </li>
-			
-			    <li>
-			        <a href="${pageContext.request.contextPath}/restaurant/category?mukja_c_no=8">
-			            🌙 기타
-			        </a>
-			    </li>
-			
-			</ul>
+		<ul class="category-list">
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=0">
+		            전체 메뉴
+		        </a>
+		    </li>
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=1">
+		            🍚 한식
+		        </a>
+		    </li>
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=2">
+		            🥟 중식
+		        </a>
+		    </li>
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=3">
+		            🍣 일식
+		        </a>
+		    </li>
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=4">
+		            🍕 양식 / 세계음식
+		        </a>
+		    </li>
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=5">
+		            🍗 육류
+		        </a>
+		    </li>
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=6">
+		            🦞 해산물
+		        </a>
+		    </li>
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=7">
+		            ☕ 디저트 / 카페
+		        </a>
+		    </li>
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=8">
+		            🍺 주점
+		        </a>
+		    </li>
+		
+		    <li>
+		        <a href="${pageContext.request.contextPath}/category?cate=9">
+		            🌙 기타
+		        </a>
+		    </li>
+		
+		</ul>
     </aside>
 
 
@@ -185,6 +190,8 @@
 </div>
 
 </div>
+<%@ include file="/WEB-INF/views/clickbutton.jsp" %>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
+
 </body>
 </html>

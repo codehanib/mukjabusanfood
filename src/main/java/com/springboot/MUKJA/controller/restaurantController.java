@@ -157,7 +157,7 @@ public class restaurantController {
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
 
-	    return "restaurant/adminRestaurantList";
+	    return "admin/adminRestaurantList";
 	}
 	
 	  	// 음식종류별 식당 목록
