@@ -24,7 +24,7 @@ function init() {
     var url = location.href;
 
     // 도로명주소 API 승인키
-    var confmKey = "devU01TX0FVVEgyMDI2MDYxODE1MTUzMjExOTQ1Mjc=";
+    var confmKey = "devU01TX0FVVEgyMDI2MDkxNzE0MDA0ODEyMDQxNDM=";
 
     // 검색 결과 유형
     var resultType = "4";
