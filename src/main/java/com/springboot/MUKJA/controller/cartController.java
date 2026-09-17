@@ -90,7 +90,7 @@ public class cartController {
         return "redirect:/cart?mc_no=" + mc_no + "&r_no=" + r_no + "&r_name=" + encodedRName;
     }
     
-    // 5. 배달 메뉴페이지 이동
+    // 5. 배달 메뉴페이지 이동 (장바구니 전 페이지)
     @GetMapping("/delivery/menu")
     public String deliveryMenu(@RequestParam(value = "r_no", defaultValue ="1") int r_no, Model model) {
     	 List<menuDTO> menuList = restaurantDao.menuList(r_no);

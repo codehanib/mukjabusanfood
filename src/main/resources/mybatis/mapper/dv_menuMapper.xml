@@ -31,7 +31,8 @@
             dm.mn_no,
             m.mn_name,
             m.mn_content,
-            m.mn_img
+            m.mn_img,
+            m.mn_price
         FROM dv_menu dm
         LEFT JOIN menu m ON dm.mn_no = m.mn_no
         WHERE dm.d_no = #{d_no}

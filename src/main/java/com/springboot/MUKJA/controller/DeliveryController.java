@@ -1,5 +1,6 @@
 package com.springboot.MUKJA.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class DeliveryController {
     // 1. 고객 관련 기능 (주문 작성, 배달 추적, 내 주문 내역, API)
     // =========================================================================
 
-    // 1-1. 고객 배달 주문 작성 페이지 이동
+    // 1-1. 고객 배달 주문 작성 페이지 이동 [ 주소입력창 (장바구니 이후 페이지)]
     @GetMapping("/delivery/order")
     public String deliveryOrderForm(
             @RequestParam(value = "r_no", defaultValue = "1") int r_no,
@@ -112,6 +113,10 @@ public class DeliveryController {
 	        
 	        // ★ dto 변수명에 맞게 setD_total_price 적용
 	        dto.setD_total_price(totalPrice + deliveryFee);
+	        
+	        if (dto.getD_stats() == null || dto.getD_stats().isEmpty()) {
+	            dto.setD_stats("주문접수"); // 또는 "배달대기", "결제완료" 등 사용하시는 기본 상태값
+	        }
 	
 	        deliveryDao.insertDelivery(dto);
 	
@@ -325,35 +330,51 @@ public class DeliveryController {
 	        }
 	    }
 	     
-	     // 통계 카운터 계산
-	     int todayTotalCount = (allDeliveryList != null) ? allDeliveryList.size() : 0;
-	     int deliveringCount = 0;
-	     int todayTotalAmount = 0;
-	     
-	     
+	  // 통계 카운터 계산 (모델 변수명과 100% 일치)
+	     int todayTotalCount = 0;  // 금일 전체 배달 요청 건수
+	     int deliveringCount = 0;  // 실시간 배달 중 건수
+	     int todayTotalAmount = 0; // 금일 배달 거래액
+
+	     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	     String todayStr = sdf.format(new Date());
+
 	     if (allDeliveryList != null) {
 	         for (deliveryDTO delivery : allDeliveryList) {
-	        	 
-	        	 // 실시간 배달 중인 건수 카운트
+	             
+	             // 1. 오늘 주문건인지 날짜 비교 (yyyy-MM-dd)
+	             boolean isToday = delivery.getD_reg_date() != null 
+	                     && todayStr.equals(sdf.format(delivery.getD_reg_date()));
+
+	             // [카운트 1] 금일 전체 배달 요청 건수
+	             if (isToday) {
+	                 todayTotalCount++;
+	             }
+
+	             // [카운트 2] 실시간 배달 중 건수 (진행 중인 전체 건)
 	             if ("배달중".equals(delivery.getD_stats())) {
 	                 deliveringCount++;
 	             }
 	             
-	             // 배달완료 건수 금액누적(금일)
-	             if ("배달완료".equals(delivery.getD_stats())) {
+	             // [카운트 3] ★ 금일 배달 거래액 (isToday 조건 적용)
+	             if (isToday 
+	                     && delivery.getD_stats() != null 
+	                     && !"주문접수".equals(delivery.getD_stats()) 
+	                     && !"주문거절".equals(delivery.getD_stats())) {
+	                 
+	                 System.out.println("오늘 주문번호: " + delivery.getD_no() + " | 금액: " + delivery.getD_total_price());
 	                 todayTotalAmount += delivery.getD_total_price();
 	             }
 	         }
 	     }
-	     
-	     // 모델 전달
+
+	     // 모델 전달 (변수명이 동일하므로 빨간 줄/에러가 완전히 사라집니다)
 	     model.addAttribute("r_name", r_name);
 	     model.addAttribute("u_name", u_name);
 	     model.addAttribute("allDeliveryList", allDeliveryList);
 	     model.addAttribute("todayTotalCount", todayTotalCount);
 	     model.addAttribute("deliveringCount", deliveringCount);
 	     model.addAttribute("todayTotalAmount", todayTotalAmount);
-	
+
 	     return "delivery/admin_delivery_manage";
 	 }
 	
