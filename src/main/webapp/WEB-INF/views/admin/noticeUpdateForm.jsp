@@ -14,7 +14,7 @@
         <h1>공지 수정</h1>
     </div>
     <form name="noticeform" method="post" action="/admin/noticeUpdate"
-      enctype="multipart/form-data" class="notice-form">
+      enctype="multipart/form-data" id="noticeform" class="notice-form" onsubmit="return noticeFormVerifi()">
       <input type="hidden" name="nt_no" value="${nt.nt_no}">
 	  <input type="hidden" name="nt_img" value="${nt.nt_img}">
 		<div class="form-group">
@@ -45,5 +45,6 @@
 	</form>
 </div>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
+<script src="/js/boardVerifiy.js"></script>
 </body>
 </html>

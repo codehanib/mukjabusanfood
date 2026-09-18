@@ -29,7 +29,7 @@
 	 					<td colspan="2">${rv.u_name}
 	 					<c:if test="${loginUserNo == rv.u_no}">
 	 					<a href="/users/reviewUpdateForm?rv_no=${rv.rv_no}">수정</a>
-	 					 <a href="/restaurant/reviewDelete?rv_no=${rv.rv_no}&r_no=${rv.r_no}">삭제</a>
+	 					 <a href="/restaurant/reviewDelete?rv_no=${rv.rv_no}&r_no=${rv.r_no}" onclick="return confirm('리뷰를 삭제하시겠습니까?');">삭제</a>
 	 					</c:if>
 	 					</td>
 	 				</tr>

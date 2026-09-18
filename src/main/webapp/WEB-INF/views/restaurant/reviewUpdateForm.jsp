@@ -10,7 +10,7 @@
 </head>
 <body class="review-write-page">
 	<h3>리뷰 수정</h3>
-	<form name="reviewUpdateform" method="post" action="/restaurant/reviewUpdate" enctype="multipart/form-data">
+	<form name="reviewUpdateform" id="reviewUpdateform" method="post" action="/restaurant/reviewUpdate" enctype="multipart/form-data" onsubmit="return reviewFormVerifi()">
 		<input type="hidden" name="rv_no" value="${rvUP.rv_no}">
 		<input type="hidden" name="r_no" value="${rvUP.r_no}">
 		
@@ -36,7 +36,6 @@
 		<button type="submit" class="smbtn">수정하기</button> <br>
 	</form>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
-</body>
 <!-- 스크립트 구역 -->
 <script src="/js/reviewWrite.js"></script>
 <script>
@@ -55,4 +54,6 @@
 	    });
 	}
 </script>
+<script src="/js/boardVerifiy.js"></script>
+</body>
 </html>
