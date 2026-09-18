@@ -360,10 +360,27 @@ function saveIdCookie() {
     }
     return true;
 }
+function checkLogin() {
+    const uidInput = document.getElementById("u_id");
+	const upasswdInput = document.querySelector("input[name='u_passwd']");
 
-
+    if (!uidInput.value.trim()) {
+        alert("아이디를 입력해주세요.");
+        uidInput.focus();
+        return false;
+		
+    }
+	if (!upasswdInput.value.trim()) {
+	        alert("비밀번호를를 입력해주세요.");
+	        upasswdInput.focus();
+	        return false;
+			
+	    }
+		return saveIdCookie();
+}
 function checkLoginError() {
     const params = new URLSearchParams(location.search);
+	
     if (params.get("error") === "true") {
         alert("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
