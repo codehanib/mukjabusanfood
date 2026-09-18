@@ -194,8 +194,24 @@
 
 <header class="dashboard-header">
     <div class="dashboard-title-box">
+    <button type="button"
+            onclick="history.back()"
+            style="
+                background:none;
+                border:none;
+                color:#a0aec0;
+                padding:0;
+                margin:0 0 5px 0;
+                cursor:pointer;
+                font-size:0.8rem;
+                font-weight:600;
+            ">
+        <i class="fa-solid fa-arrow-left"></i>
+        이전 화면
+    </button>
+    
         <h1><i class="fa-solid fa-chart-pie" style="color: #ff6b35;"></i> MUKJA 빅데이터 종합 관제 대시보드</h1>
-        <p>부산 지역구별 외식 물가, 매장 분포 및 실시간 검색어 트렌드 분석</p>
+        <p>부산 지역구별 외식 물가, 매장 분포 및 검색어 트렌드 분석</p>
     </div>
     <div class="live-tag">
         <div class="live-dot"></div> REALTIME ANALYTICS
@@ -238,7 +254,7 @@
             </div>
             <div class="card-body" style="padding:0;">
                 <div class="kpi-native-box">
-                    <div class="kpi-number">1,567</div>
+                    <div class="kpi-number">${restaurantCount}</div>
                     <div class="kpi-subtext"><i class="fa-solid fa-circle-check" style="color:#3182ce;"></i> 부산시 검증 입점 매장</div>
                 </div>
             </div>

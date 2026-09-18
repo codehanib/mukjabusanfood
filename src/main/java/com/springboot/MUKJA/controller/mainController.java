@@ -243,12 +243,17 @@ public class mainController {
 			return "redirect:/restaurant/detail?r_no=" + r_no;
 		}
 		
-		 //  visual_dashboard 실행 컨트롤러
-        @GetMapping("/admin/visual/dashboard")
-        public String visualDashboard() {
-           
-            return "admin/visual_dashboard"; 
-        }
-	
+		// visual_dashboard 실행 컨트롤러
+		@GetMapping("/admin/visual/dashboard")
+		public String visualDashboard(Model model) {
+
+		    // 현재 등록된 전체 식당 수 조회
+		    int restaurantCount = restaurantDao.restaurantCount();
+
+		    // JSP로 전달
+		    model.addAttribute("restaurantCount", restaurantCount);
+
+		    return "admin/visual_dashboard";
+		}
 
 }
