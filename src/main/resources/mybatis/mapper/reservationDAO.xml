@@ -159,13 +159,12 @@
 	</update>
 
 	<!-- 사장님 예약 받은 목록 -->
-	<select id="ownerAllList">
-		select * from reservation
-		where r_no = #{r_no}
-		and
-		res_day >= trunc(sysdate)
-		order by res_day asc, res_time asc
-	</select>
+<select id="ownerAllList" resultType="com.springboot.MUKJA.dto.reservationDTO">
+	select * from reservation
+	where r_no = #{r_no}
+	and res_day &gt;= trunc(sysdate)
+	order by res_day asc, res_time asc
+</select>
 
 	<update id="reassignResNum">
 		update reservation

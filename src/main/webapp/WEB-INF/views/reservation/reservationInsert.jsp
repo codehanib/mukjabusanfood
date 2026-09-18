@@ -1,64 +1,86 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions"%>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
+
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
 <meta charset="UTF-8">
 <title>예약하기</title>
+
 <link rel="stylesheet" href="/css/mypage.css">
 
-<!-- ==================== 포트원 연결 =================== -->
+<!-- ==================== 포트원 연결 ==================== -->
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 
 <script>
 	const ORDER_DATA = {
-		rName: "${r_name}",
-		totalPrice: parseInt("${totalPrice + deliveryFee}")
+		rName : "${r_name}",
+		totalPrice : parseInt("${totalPrice + deliveryFee}")
 	};
 </script>
 
 <script src="${pageContext.request.contextPath}/js/payment.js"></script>
 </head>
-<body>
-<%@ include file="/WEB-INF/views/header.jsp" %>
-	<div class="mypage-container">
-		<div class="mypage-title">예약하기</div>
-		<p style="color:#777; margin-bottom: 20px;">방문 예약 정보를 입력해주세요.</p>
 
-		<form id="reservationForm" action="/reservation/reservationInsert" method="post"
-			name="reservation" onsubmit="return check1();">
+<body>
+
+	<%@ include file="/WEB-INF/views/header.jsp"%>
+
+	<div class="mypage-container">
+
+		<div class="mypage-title">예약하기</div>
+
+		<p style="color: #777; margin-bottom: 20px;">방문 예약 정보를 입력해주세요.</p>
+
+		<form id="reservationForm" action="/reservation/reservationInsert"
+			method="post" name="reservation" onsubmit="return check1();">
 
 			<input type="hidden" name="r_no" value="${r_no}">
 
 			<table class="info-table">
+
+				<!-- 예약자 이름 -->
 				<tr>
 					<th><label for="res_name">예약자 이름</label></th>
 					<td><input type="text" name="res_name" id="res_name"
 						value="${loginName}" placeholder="이름을 입력해주세요"></td>
 				</tr>
+
+				<!-- 연락처 -->
 				<tr>
-					<th><label for="res_tel">연락처</label></th>
+					<th><label for="res_tel1">연락처</label></th>
 					<td><input type="text" name="res_tel1" id="res_tel1"
-						value="${empty tel1 ? '010' : tel1}" maxlength="3" style="width:50px;"> - <input
-						type="text" name="res_tel2" id="res_tel2" maxlength="4" style="width:60px;"
-						value="${tel2}" placeholder="0000"> - <input type="text"
-						name="res_tel3" id="res_tel3" maxlength="4" style="width:60px;"
-						value="${tel3}" placeholder="0000"></td>
+						value="${empty tel1 ? '010' : tel1}" maxlength="3"
+						style="width: 50px;"> - <input type="text" name="res_tel2"
+						id="res_tel2" maxlength="4" style="width: 60px;" value="${tel2}"
+						placeholder="0000"> - <input type="text" name="res_tel3"
+						id="res_tel3" maxlength="4" style="width: 60px;" value="${tel3}"
+						placeholder="0000"></td>
 				</tr>
+
+				<!-- 예약날짜 -->
 				<tr>
 					<th><label for="res_day">예약날짜</label></th>
 					<td><input type="date" name="res_day" id="res_day"
-						value="${res_day}"></td>
+						class="form-control" value="${res_day}"></td>
 				</tr>
+
+				<!-- 예약시간 -->
 				<tr>
 					<th><label for="res_time">예약시간</label></th>
-					<td><select name="res_time" id="res_time">
+					<td><select name="res_time" id="res_time" class="form-control">
+
 							<option value="">선택</option>
+
 							<option value="11:00" ${res_time == '11:00' ? 'selected' : ''}>11:00</option>
 							<option value="11:30" ${res_time == '11:30' ? 'selected' : ''}>11:30</option>
 							<option value="12:00" ${res_time == '12:00' ? 'selected' : ''}>12:00</option>
@@ -66,6 +88,7 @@
 							<option value="13:00" ${res_time == '13:00' ? 'selected' : ''}>13:00</option>
 							<option value="13:30" ${res_time == '13:30' ? 'selected' : ''}>13:30</option>
 							<option value="14:00" ${res_time == '14:00' ? 'selected' : ''}>14:00</option>
+
 							<option value="17:00" ${res_time == '17:00' ? 'selected' : ''}>17:00</option>
 							<option value="17:30" ${res_time == '17:30' ? 'selected' : ''}>17:30</option>
 							<option value="18:00" ${res_time == '18:00' ? 'selected' : ''}>18:00</option>
@@ -75,37 +98,60 @@
 							<option value="20:00" ${res_time == '20:00' ? 'selected' : ''}>20:00</option>
 							<option value="20:30" ${res_time == '20:30' ? 'selected' : ''}>20:30</option>
 							<option value="21:00" ${res_time == '21:00' ? 'selected' : ''}>21:00</option>
+
 					</select></td>
 				</tr>
+
+				<!-- 인원수 -->
 				<tr>
 					<th><label for="res_count">인원수</label></th>
 					<td><input type="number" name="res_count" id="res_count"
-						min="1" placeholder="인원수를 입력해주세요" value="${res_count}"></td>
+						class="form-control" min="1" placeholder="인원수를 입력해주세요"
+						value="${res_count}"></td>
 				</tr>
+
+				<!-- 결제금액 -->
 				<c:if test="${payment}">
 					<tr>
 						<th>결제금액</th>
 						<td>1,000원</td>
 					</tr>
 				</c:if>
+
 			</table>
 
+			<!-- 버튼 영역 -->
 			<div class="info-actions">
+
 				<c:choose>
+
 					<c:when test="${payment}">
-						<button type="button" class="btn" onclick="handleReservationPayment(event)">결제하기</button>
+						<button type="button" class="btn"
+							onclick="handleReservationPayment(event)">결제하기</button>
 					</c:when>
+
 					<c:otherwise>
-						<button type="submit" class="btn" formaction="/reservation/reservationInsert">예약하기</button>
+						<button type="submit" class="btn"
+							formaction="/reservation/reservationInsert">예약하기</button>
 					</c:otherwise>
+
 				</c:choose>
-				<button type="reset" class="btn-outline" onclick="history.back();">취소</button>
+
+				<button type="reset" class="btn-outline" onclick="history.back();">
+					취소</button>
+
 			</div>
+
 		</form>
+
 	</div>
-<%@ include file="/WEB-INF/views/footer.jsp" %>
-<script>
-document.getElementById('res_day').min = new Date().toISOString().split('T')[0];
-</script>
+
+	<%@ include file="/WEB-INF/views/footer.jsp"%>
+
+	<script>
+		document.getElementById('res_day').min = new Date().toISOString()
+				.split('T')[0];
+	</script>
+
 </body>
 </html>

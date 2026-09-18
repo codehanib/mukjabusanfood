@@ -75,7 +75,7 @@
 				<th>인원</th>
 				<th>상태</th>
 			</tr>
-			<c:forEach var="res" items="${all}">
+			<c:forEach var="res" items="${allList}">
 				<tr>
 					<td>${res.res_name}</td>
 					<td>${res.res_tel}</td>

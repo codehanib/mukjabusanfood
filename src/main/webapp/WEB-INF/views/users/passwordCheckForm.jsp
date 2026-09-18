@@ -15,7 +15,6 @@
 <body class="login-body">
 
 <div class="login-wrapper">
-<%@ include file="/WEB-INF/views/header.jsp" %>
 
     <div class="login-card">
 
@@ -52,7 +51,6 @@
         </c:if>
 
     </div>
-<%@ include file="/WEB-INF/views/footer.jsp" %>
 
 </div>
 

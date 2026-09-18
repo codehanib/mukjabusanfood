@@ -814,3 +814,48 @@ body {
         font-size: 12px;
     }
 }
+/* 예약날짜 · 예약시간 · 인원수 공통 스타일 */
+.info-table .form-control {
+    width: 200px;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid #dfe3e8;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #333;
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+/* 포커스 */
+.info-table .form-control:focus {
+    border-color: #ff6644;
+    box-shadow: 0 0 0 3px rgba(255, 102, 68, 0.1);
+}
+
+/* 날짜 입력창 */
+.info-table input[type="date"].form-control {
+    width: 200px;
+    cursor: pointer;
+}
+
+/* 시간 선택창 */
+.info-table select.form-control {
+    width: 200px;
+    cursor: pointer;
+}
+
+/* 인원수 입력창 */
+.info-table input[type="number"].form-control {
+    width: 200px;
+}
+
+/* 숫자 입력창의 기본 화살표 정리 */
+.info-table input[type="number"].form-control::-webkit-inner-spin-button,
+.info-table input[type="number"].form-control::-webkit-outer-spin-button {
+    opacity: 1;
+}
