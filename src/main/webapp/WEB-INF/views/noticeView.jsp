@@ -235,7 +235,7 @@
 	<a href="/noticeList" class="btn-list">목록으로</a>
 	<sec:authorize access="hasRole('ADMIN')">
 	<a href="/admin/noticeUpdateForm?nt_no=${ntview.nt_no}" class="btn-edit">공지 수정</a>
-	<a href="/admin/noticeDelete?nt_no=${ntview.nt_no}" class="btn-delete">공지 삭제</a>
+	<a href="/admin/noticeDelete?nt_no=${ntview.nt_no}" class="btn-delete" onclick="return confirm('공지글을 삭제하시겠습니까?');">공지 삭제</a>
 	</sec:authorize>
 	</div>
 

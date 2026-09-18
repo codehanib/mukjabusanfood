@@ -34,14 +34,15 @@
 <body>
 	<h2>문의 답변 작성</h2>
 	<hr>
-	<form method="post" action="/admin/inquiryAnswer">
+	<form method="post" action="/admin/inquiryAnswer" name="answerform" id="answerform" onsubmit="return answerFormVerifi()">
     <input type="hidden" name="mi_no" value="${ianswer.mi_no}">
     
-    <textarea name="mi_answer" rows="22" cols="70"></textarea>
+    <textarea name="mi_answer" id="mi_answer" rows="22" cols="70"></textarea>
     <br>
     <div class="inquiry-button-area">
     <button type="submit" class="inquiry-write">등록</button>
     </div>
 </form>
+<script src="/js/boardVerifiy.js"></script>
 </body>
 </html>

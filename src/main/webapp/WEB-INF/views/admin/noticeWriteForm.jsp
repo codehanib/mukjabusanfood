@@ -15,7 +15,7 @@
         <p>공지를 등록해주세요</p>
     </div>
 	<form name="noticeform" method="post" 
-	 action="/admin/noticeInsert" enctype="multipart/form-data" class="notice-form">
+	 action="/admin/noticeInsert" id="noticeform" enctype="multipart/form-data" class="notice-form" onsubmit="return noticeFormVerifi()">
 		<div class="form-group">
             <label for="nt_title">제목</label>
             <input
@@ -49,5 +49,6 @@
 	</form>
 	</div>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
+<script src="/js/boardVerifiy.js"></script>
 </body>
 </html>

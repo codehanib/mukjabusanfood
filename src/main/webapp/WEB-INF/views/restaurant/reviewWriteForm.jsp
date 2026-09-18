@@ -10,7 +10,7 @@
 </head>
 <body class="review-write-page">
 	<h3>리뷰 쓰기</h3>
-	<form name="reviewwriteform" method="post" action="/restaurant/reviewInsert" enctype="multipart/form-data">
+	<form name="reviewwriteform" id="reviewwriteform" method="post" action="/restaurant/reviewInsert" enctype="multipart/form-data" onsubmit="return reviewFormVerifi()">
 		<input type="hidden" name="r_no" value="${r_no}">
 		<div class="star-rating">
 		    <div class="stars">
@@ -34,6 +34,7 @@
 	</form>
 <!-- 스크립트 구역 -->
 <script src="/js/reviewWrite.js"></script>
+<script src="/js/boardVerifiy.js"></script>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>
