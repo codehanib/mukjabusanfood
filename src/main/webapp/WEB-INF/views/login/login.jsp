@@ -12,7 +12,7 @@
 </head>
 <body class="login-body" onload="checkLoginError(); loginSuccess();">
     <div class="login-wrapper">
-        <form action="/j_spring_security_check" method="post" name="loginForm" class="login-card" onsubmit="return saveIdCookie();">
+        <form action="/j_spring_security_check" method="post" name="loginForm" class="login-card" onsubmit="return checkLogin();">
             <div class="login-title">
                 <h2>LOGIN</h2>
                 <div class="title-line"></div>
