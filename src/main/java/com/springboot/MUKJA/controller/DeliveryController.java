@@ -442,25 +442,99 @@ public class DeliveryController {
         return "delivery/admin_delivery_manage";
     }
     
-    // 3-2. 관리자 강제 상태 변경 (강제 취소/강제 완료)
-    @PostMapping("/delivery/forceUpdate")
-    public String forceUpdateOrder(
-            @RequestParam("d_no") int d_no,
-            @RequestParam("actionType") String actionType) {
+	 // 3-2. 관리자 강제 상태 변경 (강제 취소/강제 완료)
+	    @PostMapping("/delivery/forceUpdate")
+	    public String forceUpdateOrder(
+	            @RequestParam("d_no") int d_no,
+	            @RequestParam("actionType") String actionType) {
+	
+	        deliveryDTO dto = new deliveryDTO();
+	        dto.setD_no(d_no);
+	
+	        // 대소문자 구분 없이 검사 (.equalsIgnoreCase)
+	        if ("CANCEL".equalsIgnoreCase(actionType)) {
+	            dto.setD_stats("주문거절");
+	        } else if ("COMPLETE".equalsIgnoreCase(actionType) || "FINISH".equalsIgnoreCase(actionType)) {
+	            dto.setD_stats("배달완료");
+	        } else {
+	            // 전달값이 넘어오지 않았거나 다른 값일 경우 기본값 지정
+	            dto.setD_stats("배달완료");
+	        }
+	
+	        deliveryDao.updateOrderStatus(dto);
+	
+	        return "redirect:/admin/deliveryManage";
+	    }
+	    
+	 // 3-3. 관리자 실시간 관제 데이터 API (3초 비동기 폴링 자동 갱신용)
+	    @GetMapping("/delivery/api/admin/list")
+	    @ResponseBody
+	    public Map<String, Object> getAdminDeliveryListApi(
+	            @RequestParam(value = "restaurantKeyword", required = false) String restaurantKeyword,
+	            @RequestParam(value = "orderIdKeyword", required = false) String orderIdKeyword,
+	            @RequestParam(value = "d_stats", required = false) String d_stats) {
 
-        deliveryDTO dto = new deliveryDTO();
-        dto.setD_no(d_no);
+	        Map<String, Object> result = new HashMap<>();
+	        List<deliveryDTO> allDeliveryList = deliveryDao.selectOrderList();
+	        
+	        if (allDeliveryList != null) {
+	            if (restaurantKeyword != null && !restaurantKeyword.trim().isEmpty()) {
+	                String kw = restaurantKeyword.trim().toLowerCase();
+	                allDeliveryList = allDeliveryList.stream()
+	                        .filter(d -> d.getR_name() != null && d.getR_name().toLowerCase().contains(kw))
+	                        .collect(Collectors.toList());
+	            }
 
-        if ("CANCEL".equals(actionType)) {
-            dto.setD_stats("주문거절");
-        } else if ("COMPLETE".equals(actionType)) {
-            dto.setD_stats("배달완료");
-        }
+	            if (orderIdKeyword != null && !orderIdKeyword.trim().isEmpty()) {
+	                String kw = orderIdKeyword.trim();
+	                allDeliveryList = allDeliveryList.stream()
+	                        .filter(d -> String.valueOf(d.getD_no()).contains(kw))
+	                        .collect(Collectors.toList());
+	            }
 
-        deliveryDao.updateOrderStatus(dto);
+	            if (d_stats != null && !d_stats.trim().isEmpty()) {
+	                allDeliveryList = allDeliveryList.stream()
+	                        .filter(d -> d_stats.equals(d.getD_stats()))
+	                                .collect(Collectors.toList());
+	            }
+	        }
 
-        return "redirect:/admin/deliveryManage";
-    }
+	        int todayTotalCount = 0; 
+	        int deliveringCount = 0; 
+	        int todayTotalAmount = 0;
+
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	        String todayStr = sdf.format(new Date());
+
+	        if (allDeliveryList != null) {
+	            for (deliveryDTO delivery : allDeliveryList) {
+	                boolean isToday = delivery.getD_reg_date() != null 
+	                        && todayStr.equals(sdf.format(delivery.getD_reg_date()));
+
+	                if (isToday) {
+	                    todayTotalCount++;
+	                }
+
+	                if ("배달중".equals(delivery.getD_stats())) {
+	                    deliveringCount++;
+	                }
+	                
+	                if (isToday 
+	                        && delivery.getD_stats() != null 
+	                        && !"주문접수".equals(delivery.getD_stats()) 
+	                        && !"주문거절".equals(delivery.getD_stats())) {
+	                    todayTotalAmount += delivery.getD_total_price();
+	                }
+	            }
+	        }
+
+	        result.put("allDeliveryList", allDeliveryList);
+	        result.put("todayTotalCount", todayTotalCount);
+	        result.put("deliveringCount", deliveringCount);
+	        result.put("todayTotalAmount", todayTotalAmount);
+
+	        return result;
+	    }
 
     // =========================================================================
     // 4. 배달 페이지로 이동

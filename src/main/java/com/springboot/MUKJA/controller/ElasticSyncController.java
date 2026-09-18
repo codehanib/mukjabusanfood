@@ -31,10 +31,12 @@ import com.springboot.MUKJA.dao.reviewDAO;
 import com.springboot.MUKJA.dto.MukjaDeliveryESDTO;
 import com.springboot.MUKJA.dto.MukjaPaymentESDTO;
 import com.springboot.MUKJA.dto.MukjaRestaurantESDTO;
+import com.springboot.MUKJA.dto.MukjaReviewESDTO;
 import com.springboot.MUKJA.dto.deliveryDTO;
 import com.springboot.MUKJA.dto.mukjaSearchDTO;
 import com.springboot.MUKJA.dto.paymentDTO;
 import com.springboot.MUKJA.dto.restaurantDTO;
+import com.springboot.MUKJA.dto.reviewDTO;
 
 @RestController
 @RequestMapping("/es")
@@ -147,8 +149,38 @@ public class ElasticSyncController {
         mukjaPaymentESDao.saveAll(esList);
         return "결제 데이터 " + esList.size() + "건 전송 완료!";
     }
+    
     // ========================================================
     //  4. 전체 인덱스 한 번에 동기화
+    // ========================================================
+    @GetMapping("/sync/reviews")
+    public String syncReviews() {
+        List<reviewDTO> oracleList = reviewDao.reviewListAll();
+        List<MukjaReviewESDTO> esList = new ArrayList<>();
+
+        for (reviewDTO dto : oracleList) {
+            // Double -> Float 안전 변환 (Null 처리 포함)
+            Float revScore = (dto.getRv_point() != null) ? dto.getRv_point().floatValue() : 0.0f;
+
+            MukjaReviewESDTO esDto = MukjaReviewESDTO.builder()
+                    .rev_no(dto.getRv_no())
+                    .rv_no(dto.getRv_no())
+                    .r_no(dto.getR_no())
+                    .r_name(null) // reviewDTO에 r_name이 없으므로 null 처리
+                    .user_id(dto.getU_name() != null ? dto.getU_name() : String.valueOf(dto.getU_no()))
+                    .rev_score(revScore) // 안전하게 변환된 Float 적용
+                    .rev_content(dto.getRv_content())
+                    .rev_date(dto.getRv_reg_date() != null ? dto.getRv_reg_date().toString() : null)
+                    .r_region(null)
+                    .build();
+            esList.add(esDto);
+        }
+
+        mukjaReviewESDao.saveAll(esList);
+        return "리뷰 데이터 " + esList.size() + "건 전송 완료!";
+    }
+    // ========================================================
+    //  5. 전체 인덱스 한 번에 동기화
     // ========================================================
     @GetMapping("/sync/all")
     public String syncAll() throws Exception {
@@ -165,7 +197,7 @@ public class ElasticSyncController {
     }
     
     // ========================================================
-    //  5.검색(은진씨 추가분)
+    //  6.검색(은진씨 추가분)
     // ========================================================
     @GetMapping("/sync/search")
     public String syncSearch() throws Exception {

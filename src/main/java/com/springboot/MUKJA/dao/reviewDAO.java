@@ -38,4 +38,7 @@ public interface reviewDAO {
 	// 리뷰 평점 평균
 	public double reviewAvg(@Param("r_no") int r_no);
 	
+	// 전체 리뷰 목록 조회 (ES 동기화용)
+	public List<reviewDTO> reviewListAll();
+	
 }

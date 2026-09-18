@@ -409,6 +409,21 @@
 
 </div>
 
+<!-- ⚡ ES 평점 Map 객체 JS 변환 및 기존 스크립트 수정 -->
+<script>
+    // 백엔드에서 전달받은 ES 평점 데이터를 JS 객체로 전환
+    var ratingMap = {
+        <c:forEach var="entry" items="${ratingMap}" varStatus="status">
+            "${entry.key}": { 
+                avgRating: "${entry.value.avgRating}", 
+                reviewCount: ${entry.value.reviewCount} 
+            }${!status.last ? ',' : ''}
+        </c:forEach>
+    };
+
+    var contextPath = "${pageContext.request.contextPath}";
+</script>
+
 <!-- 🎠 1. 메인 배너 자동 롤링 자바스크립트 -->
 <script>
     var currentSlide = 0;
@@ -462,7 +477,6 @@
     var currentRegionStores = [];
     var regionPageIndex = 0;
     var regionRotateTimer = null;
-    var contextPath = "${pageContext.request.contextPath}";
 
     document.addEventListener("DOMContentLoaded", function() {
         fetchRegionStores('전체');
@@ -485,7 +499,6 @@
                 currentRegionStores = data;
                 regionPageIndex = 0;
                 renderRegionGrid();
-                //resetRegionAutoRotate();
             })
             .catch(function(err) {
                 console.error("지역 매장 로드 실패:", err);
@@ -514,7 +527,11 @@
         displayItems.forEach(function(r) {
             var imgUrl = r.r_img ? r.r_img : 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80';
             var defaultImg = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=400&q=80';
-            var point = r.r_point ? parseFloat(r.r_point).toFixed(1) : '0.0';
+            
+            // ⚡ ES 집계 평점 및 리뷰 수 적용
+            var esInfo = ratingMap[r.r_no] || { avgRating: '0.0', reviewCount: 0 };
+            var point = esInfo.avgRating;
+            var reviewCnt = esInfo.reviewCount;
             var timeInfo = r.r_time ? r.r_time : (r.r_info ? r.r_info : '영업시간 참조');
 
             html += '<a href="' + contextPath + '/restaurant/restaurantDetail?r_no=' + r.r_no + '" class="store-card">';
@@ -525,7 +542,7 @@
             html += '  <div class="card-content">';
             html += '    <div class="store-name">' + r.r_name + '</div>';
             html += '    <div class="store-info">';
-            html += '      <span class="rating">★ ' + point + '</span>';
+            html += '      <span class="rating">★ ' + point + ' (' + reviewCnt + ')</span>';
             html += '      <span>• ' + (r.r_region ? r.r_region : '부산') + '</span>';
             html += '    </div>';
             html += '    <div class="card-footer">';
@@ -537,16 +554,6 @@
         });
 
         grid.innerHTML = html;
-    }
-
-    function resetRegionAutoRotate() {
-        if (regionRotateTimer) clearInterval(regionRotateTimer);
-        regionRotateTimer = setInterval(function() {
-            if (currentRegionStores.length > 4) {
-                regionPageIndex++;
-                renderRegionGrid();
-            }
-        }, 7000);
     }
 </script>
 
@@ -578,7 +585,6 @@
                 currentRatingStores = data;
                 ratingPageIndex = 0;
                 renderRatingGrid();
-                //resetRatingAutoRotate();
             })
             .catch(function(err) {
                 console.error("평점 매장 로드 실패:", err);
@@ -607,8 +613,11 @@
         displayItems.forEach(function(r) {
             var imgUrl = r.r_img ? r.r_img : 'https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=400&q=80';
             var defaultImg = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=400&q=80';
-            var point = r.r_point ? parseFloat(r.r_point).toFixed(1) : '0.0';
-            var reviewCnt = r.reviewCount ? r.reviewCount : 0;
+            
+            // ⚡ ES 집계 평점 및 리뷰 수 적용
+            var esInfo = ratingMap[r.r_no] || { avgRating: '0.0', reviewCount: 0 };
+            var point = esInfo.avgRating;
+            var reviewCnt = esInfo.reviewCount;
             var timeInfo = r.r_time ? r.r_time : (r.r_info ? r.r_info : '영업시간 참조');
 
             html += '<a href="' + contextPath + '/restaurant/restaurantDetail?r_no=' + r.r_no + '" class="store-card">';
@@ -619,7 +628,7 @@
             html += '  <div class="card-content">';
             html += '    <div class="store-name">' + r.r_name + '</div>';
             html += '    <div class="store-info">';
-            html += '      <span class="rating">★ ' + point + ' (' + reviewCnt + '+)</span>';
+            html += '      <span class="rating">★ ' + point + ' (' + reviewCnt + ')</span>';
             html += '      <span>• ' + (r.r_region ? r.r_region : '부산') + '</span>';
             html += '    </div>';
             html += '    <div class="card-footer">';
@@ -651,7 +660,6 @@
                 currentAllStores = data;
                 allPageIndex = 0;
                 renderAllGrid();
-                resetAllAutoRotate();
             })
             .catch(function(err) {
                 console.error("전체 매장 로드 실패:", err);
@@ -680,7 +688,11 @@
         displayItems.forEach(function(r) {
             var imgUrl = r.r_img ? r.r_img : 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80';
             var defaultImg = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=400&q=80';
-            var point = r.r_point ? parseFloat(r.r_point).toFixed(1) : '0.0';
+            
+            // ⚡ ES 집계 평점 및 리뷰 수 적용
+            var esInfo = ratingMap[r.r_no] || { avgRating: '0.0', reviewCount: 0 };
+            var point = esInfo.avgRating;
+            var reviewCnt = esInfo.reviewCount;
             var timeInfo = r.r_time ? r.r_time : (r.r_info ? r.r_info : '영업시간 참조');
 
             html += '<a href="' + contextPath + '/restaurant/restaurantDetail?r_no=' + r.r_no + '" class="store-card">';
@@ -691,7 +703,7 @@
             html += '  <div class="card-content">';
             html += '    <div class="store-name">' + r.r_name + '</div>';
             html += '    <div class="store-info">';
-            html += '      <span class="rating">★ ' + point + '</span>';
+            html += '      <span class="rating">★ ' + point + ' (' + reviewCnt + ')</span>';
             html += '      <span>• ' + (r.r_region ? r.r_region : '부산') + '</span>';
             html += '    </div>';
             html += '    <div class="card-footer">';

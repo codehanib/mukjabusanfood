@@ -15,7 +15,10 @@ public class MukjaReviewESDTO {
 
     @Id
     private Integer rev_no; // 리뷰 번호 (PK)
-
+    
+    @Field(type = FieldType.Integer)
+    private Integer rv_no;
+    
     @Field(type = FieldType.Integer)
     private Integer r_no;
 

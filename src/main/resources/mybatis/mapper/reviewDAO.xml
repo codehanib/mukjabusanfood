@@ -138,4 +138,10 @@
 	     from r_review
 	     where r_no = #{r_no}
 	</select>
+	
+	<!-- 전체 리뷰 목록 조회 쿼리 -->
+	<select id="reviewListAll" resultType="com.springboot.MUKJA.dto.reviewDTO">
+	    SELECT rv_no, r_no, rv_point 
+	    FROM r_review
+	</select>
 </mapper>
