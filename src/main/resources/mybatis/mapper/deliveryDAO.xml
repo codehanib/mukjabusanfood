@@ -6,7 +6,7 @@
 
     <!-- 1. 고객 주문 등록 (시퀀스 채번) -->
     <insert id="insertDelivery" parameterType="com.springboot.MUKJA.dto.deliveryDTO">
-        <selectKey keyProperty="d_no" resultType="int" order="BEFORE">
+        <selectKey keyProperty="d_no" keyColumn="d_no" resultType="int" order="BEFORE">
             SELECT delivery_seq.NEXTVAL FROM DUAL
         </selectKey>
         
@@ -83,17 +83,29 @@
         WHERE d_no = #{d_no}
     </update>
 
-    <!-- 6. 주문 단건 상세 조회 -->
+    <!-- 6. 주문 단건 상세 조회 (★ r_name, u_name, d_total_price JOIN 추가 수정 완료) -->
     <select id="selectOrderById"
             parameterType="int"
             resultType="com.springboot.MUKJA.dto.deliveryDTO">
         SELECT
-            d_no, d_addr, d_lat, d_lng,
-            d_cooking_time, d_delivery_time,
-            d_arrival_time, d_stats, d_reg_date,
-            r_no, u_no
-        FROM delivery
-        WHERE d_no = #{d_no}
+            d.d_no, 
+            d.d_addr, 
+            d.d_lat, 
+            d.d_lng,
+            d.d_cooking_time, 
+            d.d_delivery_time,
+            d.d_arrival_time, 
+            d.d_stats, 
+            d.d_reg_date,
+            d.r_no, 
+            d.u_no,
+            r.r_name,
+            u.u_name,
+            NVL((SELECT SUM(dvm_price * dvm_count) FROM dv_menu WHERE d_no = d.d_no), 0) AS d_total_price
+        FROM delivery d
+        LEFT JOIN restaurant r ON d.r_no = r.r_no
+        LEFT JOIN users u ON d.u_no = u.u_no
+        WHERE d.d_no = #{d_no}
     </select>
 
     <!-- 7. 고객 개인 주문 내역 조회 (가게 이름 JOIN) -->

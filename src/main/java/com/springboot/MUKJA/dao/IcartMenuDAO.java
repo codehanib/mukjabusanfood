@@ -23,6 +23,11 @@ public interface IcartMenuDAO {
     // 장바구니 메뉴 추가
     int insertCartMenu(cartMenuDTO dto);
     
+    //  현재 장바구니에 담긴 식당 번호(r_no) 조회
+    Integer selectCartRestaurant(int mc_no);
+
+    //  장바구니의 식당 번호(r_no) 갱신
+    void updateCartRestaurant(@Param("mc_no") int mc_no, @Param("r_no") int r_no);
 
 
 }

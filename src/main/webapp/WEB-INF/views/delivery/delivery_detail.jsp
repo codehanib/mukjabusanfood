@@ -97,6 +97,14 @@
             <td>${delivery.d_no}</td>
         </tr>
         <tr>
+            <th>가게 이름</th>
+            <td><strong>${delivery.r_name != null ? delivery.r_name : '가게 정보 없음'}</strong></td>
+        </tr>
+        <tr>
+            <th>주문 고객</th>
+            <td>${delivery.u_name != null ? delivery.u_name : '고객'}</td>
+        </tr>
+        <tr>
             <th>배달 주소</th>
             <td>${delivery.d_addr}</td>
         </tr>
@@ -115,25 +123,34 @@
                 </c:choose>
             </td>
         </tr>
+        <tr>
+            <th>총 금액</th>
+            <td><strong><fmt:formatNumber value="${delivery.d_total_price}" type="currency"/></strong></td>
+        </tr>
     </table>
 
     <h3 style="margin-top: 20px;">🍽️ 주문 메뉴 내역</h3>
     <table>
         <thead>
             <tr>
-                <th>메뉴 번호</th>
+                <th>메뉴명</th>
                 <th>수량</th>
-                <th>가격</th>
+                <th>단가</th>
             </tr>
         </thead>
         <tbody>
-            <c:forEach var="menu" items="${not empty menuList ? menuList : orderMenuList}">
+            <c:forEach var="menu" items="${menuList}">
                 <tr>
-                    <td>${menu.mn_no}</td>
+                    <td>${menu.mn_name != null ? menu.mn_name : '메뉴번호 '.concat(menu.mn_no)}</td>
                     <td>${menu.dvm_count}개</td>
                     <td><fmt:formatNumber value="${menu.dvm_price}" type="currency"/></td>
                 </tr>
             </c:forEach>
+            <c:if test="${empty menuList}">
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #888;">주문 메뉴 정보가 존재하지 않습니다.</td>
+                </tr>
+            </c:if>
         </tbody>
     </table>
     

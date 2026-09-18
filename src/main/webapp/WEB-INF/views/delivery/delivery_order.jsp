@@ -17,16 +17,16 @@
     button { padding: 8px 15px; background: #FF5722; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; }
     button:hover { background: #e64a19; }
 
-    /* 메뉴 목록 테이블 스타일 */
     .menu-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
     .menu-table th, .menu-table td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
     .menu-table th { background-color: #f1f1f1; color: #444; font-size: 0.9em; }
     .menu-table td.price { text-align: right; font-weight: bold; }
     
-    /* 결제 금액 요약 박스 */
     .summary-box { background: #fafafa; border: 1px solid #eee; padding: 15px; border-radius: 6px; }
     .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95em; color: #666; }
     .summary-row.total { font-size: 1.2em; font-weight: bold; color: #FF5722; border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 10px; }
+
+    .alert-error { background: #fdecea; color: #b3261e; border: 1px solid #f5c2c0; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-weight: bold; }
 </style>
 
 <!-- 카카오 주소검색 및 좌표변환 API -->
@@ -55,17 +55,23 @@
 
 <div class="form-container">
     <h2>🛒 배달 주문 작성</h2>
-    
-    <form id="orderForm" action="${pageContext.request.contextPath}/delivery/order/create" method="POST">
-        
+
+    <%-- 서버 검증 실패 시 에러 메시지 (OrderTransactionService에서 던진 예외) --%>
+    <c:if test="${not empty errorMsg}">
+        <div class="alert-error">⚠️ ${errorMsg}</div>
+    </c:if>
+
+    <form id="orderForm" action="${pageContext.request.contextPath}/delivery/order" method="POST">
+
         <input type="hidden" name="r_no" value="${r_no}">
         <input type="hidden" name="u_no" value="${u_no}">
         <input type="hidden" name="mc_no" value="${mc_no}">
-        <!-- ★ 오타 수정 (<<input -> <input) -->
-        <input type="hidden" name="d_total_price" value="${totalPrice + deliveryFee}">
-        <input type="hidden" name="deliveryFee" value="${deliveryFee}">
+
+        <%-- 컨트롤러가 받는 파라미터명은 totalPrice 하나뿐 (배달비 포함 최종금액) --%>
+        <input type="hidden" name="totalPrice"
+               value="${(totalPrice != null ? totalPrice : 0) + (deliveryFee != null ? deliveryFee : 3000)}">
         <input type="hidden" name="py_type" value="배달">
-        
+
         <!-- 위도/경도 기본값 -->
         <input type="hidden" name="d_lat" id="d_lat" value="35.1765">
         <input type="hidden" name="d_lng" id="d_lng" value="129.0785">
@@ -83,7 +89,6 @@
             <tbody>
                 <c:forEach var="item" items="${cartList}">
                     <tr>
-                        
                         <td>${item.mn_name}</td>
                         <td style="text-align: center;">${item.mcm_count}개</td>
                         <td class="price">
@@ -91,7 +96,7 @@
                         </td>
                     </tr>
                 </c:forEach>
-                
+
                 <c:if test="${empty cartList}">
                     <tr>
                         <td colspan="3" style="text-align: center; color: #888; padding: 20px;">
