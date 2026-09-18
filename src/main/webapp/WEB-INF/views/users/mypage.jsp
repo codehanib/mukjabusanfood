@@ -78,7 +78,7 @@
             </div>
         </a>
         
-        <a href="/delivery/user/history?u_no =${users.u_no}" class="mypage-menu-item">
+        <a href="/delivery/user/history?u_no=${user.u_no}" class="mypage-menu-item">
             <div class="mypage-menu-title">
                 배달 주문 확인
                 <span>delivery</span>

@@ -48,9 +48,12 @@ public class UsersController {
 
 
 	@GetMapping("/users/mypage")
-	public String mypage() {
-		return "users/mypage";
+	public String mypage(Principal principal, Model model) {
+	    usersDTO user = usersDAO.findById(principal.getName());
+	    model.addAttribute("user", user);
+	    return "users/mypage";
 	}
+	
 
 	@PostMapping("/usersInsert")
 	public String usersInsert(HttpServletRequest request, usersDTO dto, HttpSession session) {
