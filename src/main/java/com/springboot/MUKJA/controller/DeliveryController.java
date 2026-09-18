@@ -1,5 +1,6 @@
 package com.springboot.MUKJA.controller;
 
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,10 +21,13 @@ import com.springboot.MUKJA.dao.IcartMenuDAO;
 import com.springboot.MUKJA.dao.IdeliveryDAO;
 import com.springboot.MUKJA.dao.Idv_menuDAO;
 import com.springboot.MUKJA.dao.paymentDAO;
+import com.springboot.MUKJA.dao.restaurantDAO;
 import com.springboot.MUKJA.dao.usersDAO;
 import com.springboot.MUKJA.dto.cartMenuDTO;
 import com.springboot.MUKJA.dto.deliveryDTO;
 import com.springboot.MUKJA.dto.dv_menuDTO;
+import com.springboot.MUKJA.dto.menuDTO;
+import com.springboot.MUKJA.dto.restaurantDTO;
 import com.springboot.MUKJA.dto.usersDTO;
 import com.springboot.MUKJA.exception.PriceMismatchException;
 import com.springboot.MUKJA.service.DeliveryService;
@@ -53,11 +57,15 @@ public class DeliveryController {
     private usersDAO usersDao;
     
     @Autowired
+    private restaurantDAO restaurantDao;
+    
+    @Autowired
     private OrderTransactionService orderTransactionService;
 
-    // =========================================================================
+ // =========================================================================
     // 1. 고객 관련 기능 (주문 작성, 배달 추적, 내 주문 내역, API)
     // =========================================================================
+
     // 1-1-1. 결제창 띄우기 전 금액 사전 검증 API (Ajax 전용)
     @PostMapping("/delivery/order/validate")
     @ResponseBody
@@ -80,88 +88,95 @@ public class DeliveryController {
         return result;
     }
     
-    
-    
     // 1-1. 고객 배달 주문 작성 페이지 이동 [ 주소입력창 (장바구니 이후 페이지)]
-	    @GetMapping("/delivery/order")
-	    public String deliveryOrderForm(
-	            @RequestParam(value = "r_no", defaultValue = "1") int r_no,
-	            @RequestParam(value = "mc_no", defaultValue = "1") int mc_no,
-	            @RequestParam(value = "u_no", required = false) Integer reqUno,
-	            HttpSession session,
-	            Model model) {
-	
-	        int finalUno = 1083;
-	        if (reqUno != null) {
-	            finalUno = reqUno;
-	        } else if (session.getAttribute("u_no") != null) {
-	            finalUno = (Integer) session.getAttribute("u_no");
-	        }
-	
-	        List<cartMenuDTO> cartList = cartMenuDao.selectCartMenuList(mc_no);
-	        int totalPrice = 0;
-	        if (cartList != null) {
-	            for (cartMenuDTO item : cartList) {
-	                totalPrice += (item.getMcm_price() * item.getMcm_count());
-	            }
-	        }
-	
-	        model.addAttribute("u_no", finalUno);
-	        model.addAttribute("r_no", r_no);
-	        model.addAttribute("mc_no", mc_no);
-	        model.addAttribute("cartList", cartList);
-	        model.addAttribute("totalPrice", totalPrice);
-	        model.addAttribute("deliveryFee", 3000);
-	
-	        return "delivery/delivery_order";
-	    }
-	    
-	    // 1-2. 고객 배달 주문 작성 페이지 이동 [ 주소입력창 (장바구니 이후 페이지)]
-	    @PostMapping("/delivery/order")
-	    public String processOrder(
-	            @RequestParam("u_no") int u_no,
-	            @RequestParam("r_no") int r_no,
-	            @RequestParam("mc_no") int mc_no,
-	            @RequestParam(value = "py_type", defaultValue = "배달") String py_type,
-	            @RequestParam("totalPrice") int totalPrice,
-	            @RequestParam("d_addr") String d_addr,
-	            @RequestParam("d_detail_addr") String d_detail_addr,
-	            @RequestParam(value = "d_lat", defaultValue = "35.1765") double d_lat,
-	            @RequestParam(value = "d_lng", defaultValue = "129.0785") double d_lng,
-	            RedirectAttributes redirectAttributes) {
-	
-	        try {
-	            // 서비스 실행
-	            int generatedDno = orderTransactionService.processDeliveryOrder(
-	                    u_no, r_no, mc_no, py_type, totalPrice,
-	                    d_addr, d_detail_addr, d_lat, d_lng);
-	
-	            // 성공 시 배달 상세 페이지로 이동
-	            return "redirect:/delivery/detail?d_no=" + generatedDno;
-	
-	        } catch (PriceMismatchException e) {
-	            // 금액이 안 맞으면 에러 메시지와 함께 주문 페이지로 되돌림
-	            redirectAttributes.addFlashAttribute("errorMsg", "주문 금액이 변경되었습니다. 다시 확인해주세요.");
-	            return "redirect:/delivery/order?r_no=" + r_no + "&mc_no=" + mc_no;
-	
-	        } catch (IllegalStateException e) {
-	            redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
-	            return "redirect:/delivery/order?r_no=" + r_no + "&mc_no=" + mc_no;
-	        }
-	    }
+    @GetMapping("/delivery/order")
+    public String deliveryOrderForm(
+            @RequestParam(value = "r_no") int r_no,
+            @RequestParam(value = "mc_no") int mc_no,
+            @RequestParam(value = "u_no", required = false) Integer reqUno, // ★ required = false 추가로 400 방지
+            Principal principal, // ★ 스프링 시큐리티 인증 객체 추가
+            HttpSession session,
+            Model model) {
+
+        int finalUno = 0;
+
+        // 1. 시큐리티 로그인 정보에서 u_no 조회
+        if (principal != null) {
+            usersDTO loginUser = usersDao.findById(principal.getName());
+            if (loginUser != null) {
+                finalUno = loginUser.getU_no();
+            }
+        } 
+        // 2. 예비용 (파라미터나 세션)
+        else if (reqUno != null) {
+            finalUno = reqUno;
+        } else if (session.getAttribute("u_no") != null) {
+            finalUno = (Integer) session.getAttribute("u_no");
+        }
+
+        List<cartMenuDTO> cartList = cartMenuDao.selectCartMenuList(mc_no);
+        int totalPrice = 0;
+        if (cartList != null) {
+            for (cartMenuDTO item : cartList) {
+                totalPrice += (item.getMcm_price() * item.getMcm_count());
+            }
+        }
+
+        model.addAttribute("u_no", finalUno);
+        model.addAttribute("r_no", r_no);
+        model.addAttribute("mc_no", mc_no);
+        model.addAttribute("cartList", cartList);
+        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("deliveryFee", 3000);
+
+        return "delivery/delivery_order";
+    }
+    
+    // 1-2. 고객 배달 주문 처리
+    @PostMapping("/delivery/order")
+    public String processOrder(
+            @RequestParam("u_no") int u_no,
+            @RequestParam("r_no") int r_no,
+            @RequestParam("mc_no") int mc_no,
+            @RequestParam(value = "py_type", defaultValue = "배달") String py_type,
+            @RequestParam("totalPrice") int totalPrice,
+            @RequestParam("d_addr") String d_addr,
+            @RequestParam("d_detail_addr") String d_detail_addr,
+            @RequestParam(value = "d_lat", defaultValue = "35.1765") double d_lat,
+            @RequestParam(value = "d_lng", defaultValue = "129.0785") double d_lng,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            int generatedDno = orderTransactionService.processDeliveryOrder(
+                    u_no, r_no, mc_no, py_type, totalPrice,
+                    d_addr, d_detail_addr, d_lat, d_lng);
+
+            return "redirect:/delivery/detail?d_no=" + generatedDno;
+
+        } catch (PriceMismatchException e) {
+            redirectAttributes.addFlashAttribute("errorMsg", "주문 금액이 변경되었습니다. 다시 확인해주세요.");
+            return "redirect:/delivery/order?r_no=" + r_no + "&mc_no=" + mc_no;
+
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
+            return "redirect:/delivery/order?r_no=" + r_no + "&mc_no=" + mc_no;
+        }
+    }
 
     // 1-3. 고객 배달 주문 생성 처리
     @PostMapping("/delivery/order/create")
     public String createOrder(
             deliveryDTO dto, 
             @RequestParam(value = "mc_no", defaultValue = "1") int mc_no,
-            @RequestParam(value = "u_no", defaultValue = "5") int u_no) {
+            Principal principal) { // ★ 시큐리티 반영
 
-        if (dto.getU_no() <= 0) {
-            dto.setU_no(u_no);
+        if (principal != null && dto.getU_no() <= 0) {
+            usersDTO loginUser = usersDao.findById(principal.getName());
+            if (loginUser != null) {
+                dto.setU_no(loginUser.getU_no());
+            }
         }
 
-        // 장바구니 총 금액 계산
         List<cartMenuDTO> cartList = cartMenuDao.selectCartMenuList(mc_no);
         int totalPrice = 0;
         if (cartList != null) {
@@ -171,7 +186,6 @@ public class DeliveryController {
         }
         
         int deliveryFee = 3000;
-        
         dto.setD_total_price(totalPrice + deliveryFee);
         
         if (dto.getD_stats() == null || dto.getD_stats().isEmpty()) {
@@ -183,19 +197,15 @@ public class DeliveryController {
         return "redirect:/delivery/detail?d_no=" + dto.getD_no();
     }
 
-    // 1-4. 고객 주문 상세 현황 및 실시간 위치 추적 페이지 (★ 메뉴 리스트 조회 명확화)
+    // 1-4. 고객 주문 상세 현황
     @GetMapping("/delivery/detail")
     public String deliveryDetail(@RequestParam("d_no") int d_no, Model model) {
         deliveryDTO delivery = deliveryDao.selectOrderById(d_no);
-        
-        // 주문한 배달 메뉴 목록 가져오기 (Mapper 메서드 호출)
         List<dv_menuDTO> menuList = dvMenuDao.selectDeliveryMenusByOrder(d_no);
 
-        // 테스트용 식당 좌표 (부산 기준)
         double storeLat = 35.1795588;
         double storeLng = 129.0756416;
 
-        // 시간대별 배달 통계 데이터 조회
         List<Map<String, Object>> timeStats = deliveryDao.selectTimeStatistics();
 
         model.addAttribute("delivery", delivery);
@@ -210,12 +220,19 @@ public class DeliveryController {
     // 1-5. 고객 개인 배달 주문 내역 목록
     @GetMapping("/delivery/user/history")
     public String userDeliveryHistory(
-            @RequestParam(value = "u_no", required = false) Integer reqUno,
+            @RequestParam(value = "u_no", required = false) Integer reqUno, // ★ required = false 추가
+            Principal principal, // ★ 시큐리티 정보 반영
             HttpSession session,
             Model model) {
 
-        int u_no = 1083;
-        if (reqUno != null) {
+        int u_no = 0;
+
+        if (principal != null) {
+            usersDTO loginUser = usersDao.findById(principal.getName());
+            if (loginUser != null) {
+                u_no = loginUser.getU_no();
+            }
+        } else if (reqUno != null) {
             u_no = reqUno;
         } else if (session.getAttribute("u_no") != null) {
             u_no = (Integer) session.getAttribute("u_no");
@@ -225,13 +242,13 @@ public class DeliveryController {
         List<deliveryDTO> myOrderList = deliveryDao.selectOrdersByUser(u_no);
 
         model.addAttribute("u_no", u_no);
-        model.addAttribute("userName",(user != null) ? user.getU_name() : "고객");
+        model.addAttribute("userName", (user != null) ? user.getU_name() : "고객");
         model.addAttribute("myOrderList", myOrderList);
 
         return "delivery/user_delivery_history";
     }
 
-    // 1-6. 실시간 상태 동기화 API (Ajax Polling 용)
+    // 1-6. 실시간 상태 동기화 API
     @GetMapping("/delivery/api/status")
     @ResponseBody
     public deliveryDTO getDeliveryStatusApi(@RequestParam("d_no") int d_no) {
@@ -246,7 +263,7 @@ public class DeliveryController {
     // 2-1. 점주 가게별 전체 주문 내역 관리 페이지
     @GetMapping("/store/order/history")
     public String storeOrderHistory(
-            @RequestParam(value = "r_no", required = false, defaultValue = "1") int r_no,
+            @RequestParam(value = "r_no", required = false) int r_no,
             @RequestParam(value = "d_stats", required = false) String d_stats,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate,
@@ -445,4 +462,32 @@ public class DeliveryController {
         return "redirect:/admin/deliveryManage";
     }
 
+    // =========================================================================
+    // 4. 배달 페이지로 이동
+    // =========================================================================
+    
+	 // GET /delivery/menu
+	    @GetMapping("/delivery/menu")
+	    public String deliveryMenu(@RequestParam("r_no") int r_no, Principal principal, Model model) {
+	
+	        int u_no = 0;
+	        if (principal != null) {
+	            usersDTO loginUser = usersDao.findById(principal.getName());
+	            if (loginUser != null) {
+	                u_no = loginUser.getU_no();
+	            }
+	        }
+	
+	        List<menuDTO> menuList = restaurantDao.menuList(r_no);
+	        restaurantDTO restaurant = restaurantDao.restaurantDetail(r_no);
+	
+	        model.addAttribute("menuList", menuList);
+	        model.addAttribute("restaurant", restaurant);
+	        model.addAttribute("r_no", r_no);
+	        model.addAttribute("u_no", u_no);
+	
+	        return "delivery/delivery_menu";
+	    }
+
+    
 }   
