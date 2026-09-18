@@ -301,9 +301,7 @@
 			</button>
 	
 	        <!-- 예약하기 -->
-	        <button type="button"
-	                class="reservation-btn"
-	                onclick="location.href='/reservation/reservationInsert?r_no=${restaurant.r_no}'">
+	        <button type="button" class="reservation-btn" onclick="location.href='/reservation/reservationInsert?r_no=${restaurant.r_no}'">
 	            예약하기
 	        </button>
 	
@@ -328,9 +326,7 @@
 		    </form>
 		
 		    <!-- 예약 -->
-		    <button type="button"
-		            class="reservation-btn"
-		            onclick="location.href='/reservation/reservationInsert?r_no=${restaurant.r_no}'">
+		    <button type="button" class="reservation-btn" onclick="location.href='/reservation/reservationInsert?r_no=${restaurant.r_no}'">
 		        예약하기
 		    </button>
 		
@@ -338,12 +334,9 @@
 		    <form action="${pageContext.request.contextPath}/cart/delivery/menu"
 		          method="get">
 		
-		        <input type="hidden"
-		               name="r_no"
-		               value="${restaurant.r_no}">
+		        <input type="hidden" name="r_no" value="${restaurant.r_no}">
 		
-		        <button type="submit"
-		                class="delivery-btn">
+		        <button type="submit" class="delivery-btn">
 		            배달주문
 		        </button>
 		    </form>
@@ -361,16 +354,16 @@
     
     <%@ include file="/WEB-INF/views/footer.jsp" %>
     <%@ include file="/WEB-INF/views/clickbutton.jsp" %>
+    
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=725ccfecc146dd521381871e82fd928b&libraries=services&autoload=false">
 	</script>
-	
+		
 	<script src="${pageContext.request.contextPath}/js/delivery_map.js"></script>
-	
 	<script>
-	initRestaurantMap(
-	    "${restaurant.r_lat}",
-	    "${restaurant.r_lon}"
-	);
+	    initRestaurantMap(
+	        "${restaurant.r_lat}",
+	        "${restaurant.r_lon}"
+	    );
 	</script>
 	
 	<script src="/js/restaurantDetail.js"></script>
