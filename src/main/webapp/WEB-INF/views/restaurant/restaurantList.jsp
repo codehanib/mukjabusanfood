@@ -177,7 +177,7 @@
 				</a>
 				
 				<!-- 배달 -->
-				<a class="delivery-btn" href="${pageContext.request.contextPath}/cart/delivery/menu?r_no=${restaurant.r_no}" onclick="event.stopPropagation();">
+				<a class="delivery-btn" href="${pageContext.request.contextPath}/delivery/menu?r_no=${restaurant.r_no}" onclick="event.stopPropagation();">
 				    배달주문
 				</a>
 

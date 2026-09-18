@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -36,13 +35,12 @@
 </head>
 <body>
 
-<%-- mc_no: 세션에 있으면 세션값 사용, 없으면 임시로 1 --%>
 <c:set var="cartMcNo" value="${not empty sessionScope.mc_no ? sessionScope.mc_no : 1}" />
 
 <div class="container">
     <div class="header">
         <h2>🍽️ 배달 메뉴 선택</h2>
-        <a href="${pageContext.request.contextPath}/cart?mc_no=${cartMcNo}&r_no=${r_no}&r_name=${restaurant.r_name}" class="btn-cart">🛒 장바구니 보러가기</a>
+        <a href="${pageContext.request.contextPath}/cart" class="btn-cart">🛒 장바구니 보러가기</a>
     </div>
 
     <!-- 메뉴 목록 출력 -->

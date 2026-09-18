@@ -1,6 +1,8 @@
 package com.springboot.MUKJA.controller;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,10 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.MUKJA.dao.IcartMenuDAO;
-import com.springboot.MUKJA.dao.restaurantDAO;
+import com.springboot.MUKJA.dao.usersDAO;
 import com.springboot.MUKJA.dto.cartMenuDTO;
-import com.springboot.MUKJA.dto.menuDTO;
-import com.springboot.MUKJA.dto.restaurantDTO;
+import com.springboot.MUKJA.dto.usersDTO;
 
 @Controller
 @RequestMapping("/cart")
@@ -24,112 +25,124 @@ public class cartController {
     private IcartMenuDAO cartMenuDao;
     
     @Autowired
-    private restaurantDAO restaurantDao;
-    
- 
+    private usersDAO usersDao;
 
-    // 1. 장바구니 목록 조회
+ // 1. 장바구니 페이지 이동 (GET /cart)
     @GetMapping
-    public String cartPage(@RequestParam(value = "mc_no", defaultValue = "1") int mc_no, 
-    					   @RequestParam(value = "r_no", defaultValue = "1") int r_no,
-    					   @RequestParam(value = "r_name", defaultValue = "야키토리숯") String r_name,
-    						Model model) {
+    public String cartPage(Principal principal, Model model) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        usersDTO loginUser = usersDao.findById(principal.getName());
+        int u_no = loginUser.getU_no();
+
+        // 내 u_no 기반 mc_no 조회
+        Integer mc_no = cartMenuDao.selectMcNoByUno(u_no);
+
+        // ★ 장바구니 레코드가 아예 없으면 DB에 새로 생성!
+        if (mc_no == null) {
+            cartMenuDao.insertNewCartForUser(u_no);
+            mc_no = cartMenuDao.selectMcNoByUno(u_no);
+        }
+
+        Map<String, Object> storeInfo = cartMenuDao.selectCartStoreInfo(u_no);
+        int r_no = 0;
+        String r_name = "식당 정보 없음";
+
+        if (storeInfo != null) {
+            Object rNoObj = storeInfo.get("R_NO") != null ? storeInfo.get("R_NO") : storeInfo.get("r_no");
+            Object rNameObj = storeInfo.get("R_NAME") != null ? storeInfo.get("R_NAME") : storeInfo.get("r_name");
+            if (rNoObj != null) r_no = ((Number) rNoObj).intValue();
+            if (rNameObj != null) r_name = (String) rNameObj;
+        }
+
         List<cartMenuDTO> cartList = cartMenuDao.selectCartMenuList(mc_no);
 
-        // 총 금액 계산 (단가 * 수량)
         int totalPrice = 0;
-        for (cartMenuDTO item : cartList) {
-            totalPrice += (item.getMcm_price() * item.getMcm_count());
+        if (cartList != null) {
+            for (cartMenuDTO item : cartList) {
+                totalPrice += (item.getMcm_price() * item.getMcm_count());
+            }
         }
-        
-      
 
         model.addAttribute("cartList", cartList);
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("mc_no", mc_no);
-        model.addAttribute("r_name",r_name);
-        model.addAttribute("r_no",r_no);
+        model.addAttribute("r_no", r_no);
+        model.addAttribute("r_name", r_name);
+        model.addAttribute("u_no", u_no);
 
-        return "cart/cart"; // /WEB-INF/views/cart/cart.jsp
-    } // <--- 누락되었던 닫는 중괄호 추가
-
-    // 2. 수량 수정
-    @PostMapping("/update")
-    public String updateCount(@RequestParam("mcm_no") int mcm_no,
-                              @RequestParam("mcm_count") int mcm_count, // "mam_count" 오타 수정
-                              @RequestParam("mc_no") int mc_no,
-                              @RequestParam(value = "r_no", defaultValue = "1") int r_no,
-                              @RequestParam(value = "r_name", defaultValue = "") String r_name) {
-        cartMenuDao.updateCartMenuCount(mcm_no, mcm_count);
-        
-        String encodedRName = java.net.URLEncoder.encode(r_name, java.nio.charset.StandardCharsets.UTF_8);
-        return "redirect:/cart?mc_no=" + mc_no + "&r_no=" + r_no + "&r_name=" + encodedRName;
+        return "cart/cart";
     }
 
-    // 3. 개별 메뉴 삭제
-    @PostMapping("/delete")
-    public String deleteItem(@RequestParam("mcm_no") int mcm_no,
-                             @RequestParam("mc_no") int mc_no,
-                             @RequestParam(value = "r_no", defaultValue = "1") int r_no,
-                             @RequestParam(value = "r_name", defaultValue = "") String r_name) {
-        cartMenuDao.deleteCartMenu(mcm_no);
-        
-        String encodedRName = java.net.URLEncoder.encode(r_name, java.nio.charset.StandardCharsets.UTF_8);
-        return "redirect:/cart?mc_no=" + mc_no + "&r_no=" + r_no + "&r_name=" + encodedRName;
-    }
-
-    // 4. 장바구니 비우기
-    @PostMapping("/clear")
-    public String clearCart(@RequestParam("mc_no") int mc_no,
-				    		@RequestParam(value = "r_no", defaultValue = "1") int r_no,
-				            @RequestParam(value = "r_name", defaultValue = "") String r_name) {
-        cartMenuDao.clearCartMenu(mc_no);
-        
-        String encodedRName = java.net.URLEncoder.encode(r_name, java.nio.charset.StandardCharsets.UTF_8);
-        return "redirect:/cart?mc_no=" + mc_no + "&r_no=" + r_no + "&r_name=" + encodedRName;
-    }
-    
-    // 5. 배달 메뉴페이지 이동 (장바구니 전 페이지)
-    @GetMapping("/delivery/menu")
-    public String deliveryMenu(@RequestParam(value = "r_no", defaultValue ="1") int r_no, Model model) {
-    	 List<menuDTO> menuList = restaurantDao.menuList(r_no);
-    	 restaurantDTO restaurant = restaurantDao.restaurantDetail(r_no);
-    	 
-    	 model.addAttribute("menuList",menuList);
-    	 model.addAttribute("restaurant",restaurant);
-    	 model.addAttribute("r_no",r_no);
-    	 
-    	 return "delivery/delivery_menu";
-    	 
-    }
-    
-    // 6.장바구니에 주문 메뉴 전달
+    // 2. 장바구니 메뉴 담기 (POST /cart/insert)
     @PostMapping("/insert")
     public String insertCart(cartMenuDTO dto,
                              @RequestParam(value = "r_no", defaultValue = "1") int r_no,
                              @RequestParam(value = "r_name", defaultValue = "") String r_name,
-                             @RequestParam(value = "forceReplace", defaultValue = "false") boolean forceReplace) {
+                             @RequestParam(value = "forceReplace", defaultValue = "false") boolean forceReplace,
+                             Principal principal) {
 
-        Integer cartRno = cartMenuDao.selectCartRestaurant(dto.getMc_no());
+        if (principal == null) {
+            return "redirect:/login";
+        }
 
-        // 이미 다른 가게 메뉴가 장바구니에 들어있는 경우
+        usersDTO loginUser = usersDao.findById(principal.getName());
+        int u_no = loginUser.getU_no();
+
+        // ★ DB에 유저 장바구니(mc_no)가 없으면 1번으로 안 던지고 즉시 DB에 생성을 해줍니다.
+        Integer realMcNo = cartMenuDao.selectMcNoByUno(u_no);
+        if (realMcNo == null) {
+            cartMenuDao.insertNewCartForUser(u_no);
+            realMcNo = cartMenuDao.selectMcNoByUno(u_no);
+        }
+        dto.setMc_no(realMcNo);
+        
+        //  현재 장바구니에 실제로 담긴 메뉴 품목이 있는지 확인
+        List<cartMenuDTO> currentCartList = cartMenuDao.selectCartMenuList(realMcNo);
+        if (currentCartList == null || currentCartList.isEmpty()) {
+            // 메뉴가 0개면 DB의 식당 번호를 0(초기 상태)으로 리셋
+            cartMenuDao.updateCartRestaurant(realMcNo, 0);
+        }
+
+        Integer cartRno = cartMenuDao.selectCartRestaurant(realMcNo);
+        String encodedRName = java.net.URLEncoder.encode(r_name, java.nio.charset.StandardCharsets.UTF_8);
+
         if (cartRno != null && cartRno != 0 && cartRno != r_no) {
             if (!forceReplace) {
-                // 강제 교체 신호(forceReplace)가 없으면 URL에 파라미터를 달아서 되돌림 -> 프론트에서 confirm 팝업 띄움
-                String encodedRName = java.net.URLEncoder.encode(r_name, java.nio.charset.StandardCharsets.UTF_8);
-                return "redirect:/cart/delivery/menu?r_no=" + r_no
+                return "redirect:/delivery/menu?r_no=" + r_no
                      + "&r_name=" + encodedRName + "&restaurantConflict=true";
             } else {
-                // 사용자가 confirm 팝업에서 "확인(장바구니 비우고 담기)"을 누른 경우 -> 기존 장바구니 비우기
-                cartMenuDao.clearCartMenu(dto.getMc_no());
+                cartMenuDao.clearCartMenu(realMcNo);
             }
         }
 
-        // 장바구니에 메뉴 담고 식당 정보 갱신
         cartMenuDao.insertCartMenu(dto);
-        cartMenuDao.updateCartRestaurant(dto.getMc_no(), r_no);
+        cartMenuDao.updateCartRestaurant(realMcNo, r_no);
 
-        String encodedRName = java.net.URLEncoder.encode(r_name, java.nio.charset.StandardCharsets.UTF_8);
-        return "redirect:/cart/delivery/menu?r_no=" + r_no + "&r_name=" + encodedRName;
+        return "redirect:/delivery/menu?r_no=" + r_no + "&r_name=" + encodedRName;
+    }
+
+    // 3. 수량 수정 (POST /cart/update)
+    @PostMapping("/update")
+    public String updateCount(@RequestParam("mcm_no") int mcm_no,
+                              @RequestParam("mcm_count") int mcm_count) {
+        cartMenuDao.updateCartMenuCount(mcm_no, mcm_count);
+        return "redirect:/cart";
+    }
+
+    // 4. 개별 메뉴 삭제 (POST /cart/delete)
+    @PostMapping("/delete")
+    public String deleteItem(@RequestParam("mcm_no") int mcm_no) {
+        cartMenuDao.deleteCartMenu(mcm_no);
+        return "redirect:/cart";
+    }
+
+    // 5. 장바구니 비우기 (POST /cart/clear)
+    @PostMapping("/clear")
+    public String clearCart(@RequestParam("mc_no") int mc_no) {
+        cartMenuDao.clearCartMenu(mc_no);
+        return "redirect:/cart";
     }
 }

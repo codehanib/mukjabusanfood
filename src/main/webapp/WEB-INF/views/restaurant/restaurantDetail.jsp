@@ -306,7 +306,7 @@
 	        </button>
 	
 	        <!-- 배달 주문 -->
-	        <form action="${pageContext.request.contextPath}/cart/delivery/menu" method="get">
+	        <form action="${pageContext.request.contextPath}/delivery/menu" method="get">
 	            <input type="hidden" name="r_no" value="${restaurant.r_no}">
 	            <button type="submit" class="delivery-btn">배달주문</button>
 	        </form>
@@ -331,7 +331,7 @@
 		    </button>
 		
 		    <!-- 배달 주문 -->
-		    <form action="${pageContext.request.contextPath}/cart/delivery/menu"
+		    <form action="${pageContext.request.contextPath}/delivery/menu"
 		          method="get">
 		
 		        <input type="hidden" name="r_no" value="${restaurant.r_no}">

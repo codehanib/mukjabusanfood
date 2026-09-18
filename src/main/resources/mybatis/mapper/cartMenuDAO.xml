@@ -4,6 +4,54 @@
 
 <mapper namespace="com.springboot.MUKJA.dao.IcartMenuDAO">
 
+    <!-- ========================================================================= -->
+    <!-- 1. 회원(u_no) 기반 장바구니 및 식당 정보 조회                             -->
+    <!-- ========================================================================= -->
+
+    <!-- 유저(u_no)의 장바구니 번호(mc_no) 조회 -->
+    <select id="selectMcNoByUno" parameterType="int" resultType="Integer">
+        SELECT mc_no FROM mukja_cart WHERE u_no = #{u_no}
+    </select>
+
+    <!-- 유저(u_no)의 장바구니 및 식당 정보(r_no, r_name) 조인 조회 -->
+    <select id="selectCartStoreInfo" parameterType="int" resultType="map">
+        SELECT 
+            c.mc_no,
+            c.r_no,
+            r.r_name
+        FROM mukja_cart c
+        LEFT JOIN restaurant r ON c.r_no = r.r_no
+        WHERE c.u_no = #{u_no}
+    </select>
+    
+    <!-- 유저 전용 장바구니 신규 생성 -->
+	<insert id="insertNewCartForUser" parameterType="int">
+	    INSERT INTO mukja_cart (mc_no, u_no, r_no)
+	    VALUES (mukja_cart_seq.NEXTVAL, #{u_no}, 0)
+	</insert>
+
+
+    <!-- ========================================================================= -->
+    <!-- 2. 단일 식당 제한 검증용 (r_no 관련)                                      -->
+    <!-- ========================================================================= -->
+
+    <!-- 현재 장바구니에 담긴 식당 번호 조회 -->
+    <select id="selectCartRestaurant" parameterType="int" resultType="int">
+        SELECT NVL(r_no, 0) FROM mukja_cart WHERE mc_no = #{mc_no}
+    </select>
+    
+    <!-- 장바구니의 식당 번호 갱신 (비어있던 장바구니에 처음 담거나 교체할 때) -->
+    <update id="updateCartRestaurant">
+        UPDATE mukja_cart
+        SET r_no = #{r_no}
+        WHERE mc_no = #{mc_no}
+    </update>
+
+
+    <!-- ========================================================================= -->
+    <!-- 3. 장바구니 메뉴 CRUD                                                      -->
+    <!-- ========================================================================= -->
+
     <!-- mukja_cart 및 menu 테이블 조인 조회 -->
     <select id="selectCartMenuList" resultType="com.springboot.MUKJA.dto.cartMenuDTO">
         SELECT 
@@ -20,23 +68,7 @@
         ORDER BY cm.mcm_no ASC
     </select>
 
-    <update id="updateCartMenuCount">
-        UPDATE cart_menu
-        SET mcm_count = #{mcm_count}
-        WHERE mcm_no = #{mcm_no}
-    </update>
-
-    <delete id="deleteCartMenu">
-        DELETE FROM cart_menu 
-        WHERE mcm_no = #{mcm_no}
-    </delete>
-
-    <delete id="clearCartMenu">
-        DELETE FROM cart_menu 
-        WHERE mc_no = #{mc_no}
-    </delete>
-    
-    <!--  새로 추가할 장바구니 메뉴 담기 쿼리 -->
+    <!-- 장바구니 메뉴 담기 -->
     <insert id="insertCartMenu" parameterType="com.springboot.MUKJA.dto.cartMenuDTO">
         INSERT INTO cart_menu (
             mcm_no,
@@ -52,17 +84,24 @@
             #{mcm_price}
         )
     </insert>
-    
-    <!--  현재 장바구니에 담긴 식당 번호 조회 -->
-	<select id="selectCartRestaurant" parameterType="int" resultType="int">
-	    SELECT NVL(r_no, 0) FROM mukja_cart WHERE mc_no = #{mc_no}
-	</select>
-	
-	<!--  장바구니의 식당 번호 갱신 (비어있던 장바구니에 처음 담거나 교체할 때) -->
-	<update id="updateCartRestaurant">
-	    UPDATE mukja_cart
-	    SET r_no = #{r_no}
-	    WHERE mc_no = #{mc_no}
-	</update>
+
+    <!-- 메뉴 수량 변경 -->
+    <update id="updateCartMenuCount">
+        UPDATE cart_menu
+        SET mcm_count = #{mcm_count}
+        WHERE mcm_no = #{mcm_no}
+    </update>
+
+    <!-- 개별 메뉴 삭제 -->
+    <delete id="deleteCartMenu">
+        DELETE FROM cart_menu 
+        WHERE mcm_no = #{mcm_no}
+    </delete>
+
+    <!-- 장바구니 전체 비우기 -->
+    <delete id="clearCartMenu">
+        DELETE FROM cart_menu 
+        WHERE mc_no = #{mc_no}
+    </delete>
 
 </mapper>
