@@ -37,7 +37,14 @@
 					<c:forEach var="res" items="${myList}">
 						<tr>
 							<td>${res.res_num}</td>
+							<c:choose>
+							<c:when test="${not empty res.r_name}">
 							<td>${res.r_name}</td>
+							</c:when>
+							<c:otherwise>
+							<td>삭제된 식당입니다.</td>
+							</c:otherwise>
+							</c:choose>
 							<td><fmt:formatDate value="${res.res_day}"
 									pattern="yyyy-MM-dd" /></td>
 							<td>${res.res_time}</td>
