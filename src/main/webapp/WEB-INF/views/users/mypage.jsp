@@ -77,6 +77,16 @@
                 문의 내역을 확인하실 수 있습니다.<br>
             </div>
         </a>
+        
+        <a href="/delivery/user/history?u_no =${users.u_no}" class="mypage-menu-item">
+            <div class="mypage-menu-title">
+                배달 주문 확인
+                <span>delivery</span>
+            </div>
+            <div class="mypage-menu-desc">
+                배달 내역을 확인하실 수 있습니다.<br>
+            </div>
+        </a>
 
     </div>
 

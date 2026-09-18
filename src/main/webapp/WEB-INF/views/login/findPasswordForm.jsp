@@ -10,7 +10,6 @@
 <link rel="stylesheet" href="/css/login.css">
 </head>
 <body class="login-body" onload="checkFindPasswordError();">
-<%@ include file="/WEB-INF/views/header.jsp" %>
 
     <div class="login-wrapper">
         <div class="login-card">

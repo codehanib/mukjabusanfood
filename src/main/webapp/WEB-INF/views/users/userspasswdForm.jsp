@@ -12,7 +12,6 @@
 <link rel="stylesheet" href="/css/login.css">
 </head>
 <body class="login-body">
-	<%@ include file="/WEB-INF/views/header.jsp" %>
 
 	<div class="login-wrapper">
 		<div class="login-card">
@@ -44,6 +43,5 @@
 		</div>
 	</div>
 
-	<%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>
