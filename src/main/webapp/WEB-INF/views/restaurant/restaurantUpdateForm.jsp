@@ -52,7 +52,7 @@
         <tr>
             <td>매장 소개</td>
             <td>
-                <textarea name="r_info" rows="5" cols="60">${restaurant.r_info}</textarea>
+                <textarea name="r_info" rows="5" cols="60" required>${restaurant.r_info}</textarea>
             </td>
         </tr>
 
@@ -61,7 +61,7 @@
         <tr>
             <td>영업시간</td>
             <td>
-                <textarea name="r_time" rows="5" cols="60">${restaurant.r_time}</textarea>
+                <textarea name="r_time" rows="5" cols="60" required>${restaurant.r_time}</textarea>
             </td>
         </tr>
         
@@ -196,15 +196,15 @@
 						    <input type="hidden" name="mn_no" value="${menu.mn_no}">
 						
 						    메뉴명
-						    <input type="text" name="mn_name" value="${menu.mn_name}">
+						    <input type="text" name="mn_name" value="${menu.mn_name}" required>
 						    <br>
 						
 						    메뉴 설명
-						    <textarea name="mn_content">${menu.mn_content}</textarea>
+						    <textarea name="mn_content" required>${menu.mn_content}</textarea>
 						    <br>
 						
 						    가격
-						    <input type="number" name="mn_price" value="${menu.mn_price}">
+						    <input type="number" name="mn_price" value="${menu.mn_price}" required>
 						    <br>
 						
 						    현재 이미지
@@ -236,19 +236,19 @@
 							<input type="hidden" name="old_mn_img" value="">
 							
                             메뉴명<br>
-                            <input type="text" name="mn_name">
+                            <input type="text" name="mn_name" required>
                             <br>
 
                             메뉴 설명<br>
-							<textarea name="mn_content"></textarea>
+							<textarea name="mn_content" required></textarea>
 							<br>
 
                             가격<br>
-                            <input type="number" name="mn_price">
+                            <input type="number" name="mn_price" required>
                             <br>
 
                             메뉴 이미지<br>
-                            <input type="file" name="mn_upload" accept="image/*">
+                            <input type="file" name="mn_upload" accept="image/*" required>
 
                             <hr>
 
@@ -271,7 +271,7 @@
             <td>상세 정보</td>
 
             <td>
-                <textarea name="r_desc" rows="10" cols="60">${restaurant.r_desc}</textarea>
+                <textarea name="r_desc" rows="10" cols="60" required>${restaurant.r_desc}</textarea>
             </td>
         </tr>
 
