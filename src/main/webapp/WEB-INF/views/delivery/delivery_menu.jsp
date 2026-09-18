@@ -36,11 +36,13 @@
 </head>
 <body>
 
+<%-- mc_no: 세션에 있으면 세션값 사용, 없으면 임시로 1 --%>
+<c:set var="cartMcNo" value="${not empty sessionScope.mc_no ? sessionScope.mc_no : 1}" />
+
 <div class="container">
     <div class="header">
         <h2>🍽️ 배달 메뉴 선택</h2>
-        <!-- 💡 1. 상단 장바구니 이동 버튼에 r_no 및 r_name 추가 -->
-        <a href="${pageContext.request.contextPath}/cart?mc_no=1&r_no=${r_no}&r_name=${restaurant.r_name}" class="btn-cart">🛒 장바구니 보러가기</a>
+        <a href="${pageContext.request.contextPath}/cart?mc_no=${cartMcNo}&r_no=${r_no}&r_name=${restaurant.r_name}" class="btn-cart">🛒 장바구니 보러가기</a>
     </div>
 
     <!-- 메뉴 목록 출력 -->
@@ -60,14 +62,13 @@
                 </div>
 
                 <!-- 장바구니 담기 전송 폼 -->
-                <form action="${pageContext.request.contextPath}/cart/insert" method="POST" class="cart-form">
-                    <input type="hidden" name="mc_no" value="1">
+                <form action="${pageContext.request.contextPath}/cart/insert" method="POST" class="cart-form add-cart-form">
+                    <input type="hidden" name="mc_no" value="${cartMcNo}">
                     <input type="hidden" name="mn_no" value="${menu.mn_no}">
                     <input type="hidden" name="mcm_price" value="${menu.mn_price}">
-                    
-                    <!-- 💡 2. 중복 태그 제거 후 1개씩만 유지 -->
                     <input type="hidden" name="r_no" value="${r_no}">
                     <input type="hidden" name="r_name" value="${restaurant.r_name}">
+                    <input type="hidden" name="forceReplace" value="false">
                     
                     <label for="count_${menu.mn_no}" style="font-size: 0.85em; color: #666;">수량:</label>
                     <input type="number" id="count_${menu.mn_no}" name="mcm_count" value="1" min="1" max="99" class="count-input" required>
@@ -84,6 +85,63 @@
         </div>
     </c:if>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // 1) 각 메뉴 폼 제출 시, 어떤 메뉴를 담으려 했는지 sessionStorage에 저장
+    document.querySelectorAll(".add-cart-form").forEach(function (form) {
+        form.addEventListener("submit", function () {
+            const data = {
+                mc_no: form.mc_no.value,
+                mn_no: form.mn_no.value,
+                mcm_price: form.mcm_price.value,
+                mcm_count: form.mcm_count.value,
+                r_no: form.r_no.value,
+                r_name: form.r_name.value
+            };
+            sessionStorage.setItem("pendingCartItem", JSON.stringify(data));
+        });
+    });
+
+    // 2) 컨트롤러가 restaurantConflict=true 로 되돌려보낸 경우 처리
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("restaurantConflict") === "true") {
+        const pending = sessionStorage.getItem("pendingCartItem");
+
+        if (pending && confirm("다른 식당의 메뉴가 담겨 있습니다.\n기존 장바구니를 비우고 새로 담으시겠습니까?")) {
+            const item = JSON.parse(pending);
+            submitForceReplace(item);
+        }
+        sessionStorage.removeItem("pendingCartItem");
+    }
+
+    // 3) forceReplace=true로 동적 폼 생성 후 자동 제출
+    function submitForceReplace(item) {
+        const form = document.createElement("form");
+        form.method = "post";
+        form.action = "${pageContext.request.contextPath}/cart/insert";
+
+        for (const key in item) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = item[key];
+            form.appendChild(input);
+        }
+
+        const forceInput = document.createElement("input");
+        forceInput.type = "hidden";
+        forceInput.name = "forceReplace";
+        forceInput.value = "true";
+        form.appendChild(forceInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+});
+</script>
+
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package com.springboot.MUKJA.controller;
 
-import java.net.URLEncoder;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,14 +107,29 @@ public class cartController {
     @PostMapping("/insert")
     public String insertCart(cartMenuDTO dto,
                              @RequestParam(value = "r_no", defaultValue = "1") int r_no,
-                             @RequestParam(value = "r_name", defaultValue = "") String r_name) {
-        
+                             @RequestParam(value = "r_name", defaultValue = "") String r_name,
+                             @RequestParam(value = "forceReplace", defaultValue = "false") boolean forceReplace) {
+
+        Integer cartRno = cartMenuDao.selectCartRestaurant(dto.getMc_no());
+
+        // 이미 다른 가게 메뉴가 장바구니에 들어있는 경우
+        if (cartRno != null && cartRno != 0 && cartRno != r_no) {
+            if (!forceReplace) {
+                // 강제 교체 신호(forceReplace)가 없으면 URL에 파라미터를 달아서 되돌림 -> 프론트에서 confirm 팝업 띄움
+                String encodedRName = java.net.URLEncoder.encode(r_name, java.nio.charset.StandardCharsets.UTF_8);
+                return "redirect:/cart/delivery/menu?r_no=" + r_no
+                     + "&r_name=" + encodedRName + "&restaurantConflict=true";
+            } else {
+                // 사용자가 confirm 팝업에서 "확인(장바구니 비우고 담기)"을 누른 경우 -> 기존 장바구니 비우기
+                cartMenuDao.clearCartMenu(dto.getMc_no());
+            }
+        }
+
+        // 장바구니에 메뉴 담고 식당 정보 갱신
         cartMenuDao.insertCartMenu(dto);
-        
-        // 한글 식당명 URL 인코딩 처리
+        cartMenuDao.updateCartRestaurant(dto.getMc_no(), r_no);
+
         String encodedRName = java.net.URLEncoder.encode(r_name, java.nio.charset.StandardCharsets.UTF_8);
-        
-     
         return "redirect:/cart/delivery/menu?r_no=" + r_no + "&r_name=" + encodedRName;
     }
 }

@@ -52,5 +52,17 @@
             #{mcm_price}
         )
     </insert>
+    
+    <!--  현재 장바구니에 담긴 식당 번호 조회 -->
+	<select id="selectCartRestaurant" parameterType="int" resultType="int">
+	    SELECT NVL(r_no, 0) FROM mukja_cart WHERE mc_no = #{mc_no}
+	</select>
+	
+	<!--  장바구니의 식당 번호 갱신 (비어있던 장바구니에 처음 담거나 교체할 때) -->
+	<update id="updateCartRestaurant">
+	    UPDATE mukja_cart
+	    SET r_no = #{r_no}
+	    WHERE mc_no = #{mc_no}
+	</update>
 
 </mapper>
