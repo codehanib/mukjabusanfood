@@ -64,10 +64,10 @@ public class EsRatingService {
                     resultMap.put(rNo, ratingData);
                     
                     // ⚡ [로그 추가] 이클립스 Console 탭에서 확인용
-                    System.out.println(">>> ES 집계 성공 - 식당번호: " + rNo + " | 평점: " + roundedAvg + " | 리뷰수: " + count);
+                    //System.out.println(">>> ES 집계 성공 - 식당번호: " + rNo + " | 평점: " + roundedAvg + " | 리뷰수: " + count);
                 }
             }
-            System.out.println(">>> ES 총 집계된 식당 수: " + resultMap.size() + "개");
+            //System.out.println(">>> ES 총 집계된 식당 수: " + resultMap.size() + "개");
 
         } catch (Exception e) {
             e.printStackTrace();

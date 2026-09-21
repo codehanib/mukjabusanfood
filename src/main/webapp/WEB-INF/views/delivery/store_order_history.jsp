@@ -64,7 +64,7 @@
         </div>
         <div class="card success">
             <div class="title">총 누적 매출액</div>
-            <div class="value"><fmt:formatNumber value="${totalRevenue != null ? totalRevenue : 0}" type="currency"/></div>
+            <div class="value"><fmt:formatNumber value="${totalRevenue != null ? totalRevenue : 0}" pattern="#,###"/> 원</div>
         </div>
         <div class="card warning">
             <div class="title">진행 중인 배달</div>

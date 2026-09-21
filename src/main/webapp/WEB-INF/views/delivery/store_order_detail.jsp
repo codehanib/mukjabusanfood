@@ -155,7 +155,6 @@
         <thead>
             <tr>
                 <th>메뉴 이미지</th>
-                <th>메뉴 번호</th>
                 <th>메뉴명</th>
                 <th>단가</th>
                 <th>수량</th>
@@ -179,9 +178,9 @@
                                              alt="${item.mn_name}"
                                              onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=No+Img';">
                                     </c:when>
-                                    <%-- DB 값이 서버 내부 경로인 경우 --%>
+                                    <%-- DB 값이 업로드 파일인 경우 --%>
                                     <c:otherwise>
-                                        <img src="${pageContext.request.contextPath}/${item.mn_img}"
+                                        <img src="/upload/${item.mn_img}"
                                              class="menu-img"
                                              alt="${item.mn_name}"
                                              onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=No+Img';">
@@ -193,16 +192,15 @@
                             </c:otherwise>
                         </c:choose>
                     </td>
-                    <td>#${item.mn_no}</td>
                     <td style="text-align: left; font-weight: bold;">
                         ${item.mn_name != null ? item.mn_name : '메뉴명조회'}
                         <c:if test="${not empty item.mn_content}">
                             <br><small style="color:#777; font-weight:normal;">${item.mn_content}</small>
                         </c:if>
                     </td>
-                    <td><fmt:formatNumber value="${item.dvm_price}" type="currency"/></td>
+                    <td><fmt:formatNumber value="${item.dvm_price}" pattern="#,###"/> 원</td>
                     <td><strong>${item.dvm_count}</strong> 개</td>
-                    <td style="font-weight: bold;"><fmt:formatNumber value="${itemTotal}" type="currency"/></td>
+                    <td style="font-weight: bold;"><fmt:formatNumber value="${itemTotal}" pattern="#,###"/> 원</td>
                 </tr>
             </c:forEach>
 
@@ -216,7 +214,7 @@
 
     <!-- 5. 최종 결제 총액 -->
     <div class="total-box">
-        총 주문 합계 금액: <fmt:formatNumber value="${grandTotal}" type="currency"/>
+        총 주문 합계 금액: <fmt:formatNumber value="${grandTotal}" pattern="#,###"/> 원
     </div>
 
     <!-- 6. 하단 버튼 영역 -->

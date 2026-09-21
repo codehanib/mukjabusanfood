@@ -39,7 +39,7 @@
             <h2 style="margin: 0;">🛒 장바구니</h2>
 				
 			
-			<a href="${pageContext.request.contextPath}/cart/delivery/menu?r_no=${r_no}" class="store-link">
+			<a href="/restaurant/detail?r_no=${r_no}" class="store-link">
     			🏪 ${not empty r_name ? r_name : '가게 바로가기'} ➔
 			</a>
         </div>
