@@ -390,9 +390,19 @@ body {
 							<div class="card-content">
 								<div class="store-name">${r.r_name}</div>
 								<div class="store-info">
-									<span class="rating">★ <fmt:formatNumber
-											value="${r.r_point != null ? r.r_point : 0.0}" pattern="0.0" />
-									</span> <span>• ${r.r_region != null ? r.r_region : '부산'}</span>
+									<%-- ⚡ ES 실시간 평점 및 리뷰 수 연동 --%>
+									<c:set var="rData" value="${ratingMap[r.r_no]}" />
+									<span class="rating">
+										<c:choose>
+											<c:when test="${not empty rData && rData.avgRating > 0}">
+												★ <fmt:formatNumber value="${rData.avgRating}" pattern="0.0" /> (${rData.reviewCount})
+											</c:when>
+											<c:otherwise>
+												★ 0.0 (0)
+											</c:otherwise>
+										</c:choose>
+									</span>
+									<span>• ${r.r_region != null ? r.r_region : '부산'}</span>
 								</div>
 								<div class="card-footer">
 									<span>🕒 ${not empty r.r_info ? r.r_info : '가게 소개'}</span>
