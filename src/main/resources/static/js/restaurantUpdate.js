@@ -248,3 +248,21 @@ function addMenu() {
 
     container.appendChild(div);
 }
+
+function deleteExistingMenu(button, mnNo) {
+
+    if (!confirm("이 메뉴를 삭제하시겠습니까?")) {
+        return;
+    }
+
+    // 삭제할 기존 메뉴 번호를 서버로 전달
+    const hidden = document.createElement("input");
+    hidden.type = "hidden";
+    hidden.name = "delete_mn_no";
+    hidden.value = mnNo;
+
+    document.getElementById("deletedMenuContainer").appendChild(hidden);
+
+    // 화면에서 메뉴 제거
+    button.closest(".menu-item").remove();
+}

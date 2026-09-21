@@ -48,9 +48,7 @@ public class RestaurantService {
 
         StringBuilder result = new StringBuilder();
 
-        // -------------------------------------------------
         // 요일별 처리
-        // -------------------------------------------------
         for (int i = 0; i < days.length; i++) {
 
             String day = days[i];
@@ -94,9 +92,7 @@ public class RestaurantService {
                 "매일·"
             );
 
-            // -------------------------------------------------
             // 점심 / 저녁
-            // -------------------------------------------------
             dayText = dayText
                 .replace(
                     "점심·",
@@ -107,35 +103,27 @@ public class RestaurantService {
                     "저녁&nbsp;&nbsp;"
                 );
 
-            // -------------------------------------------------
             // 브레이크 타임
             // 15:00 ~ 17:00·브레이크 타임
-            // -------------------------------------------------
             dayText = dayText.replaceAll(
                 "(\\d{1,2}:\\d{2}\\s*~\\s*(?:새벽\\s*)?\\d{1,2}:\\d{2})\\s*·?\\s*브레이크\\s*타임",
                 "<br>&nbsp;&nbsp;&nbsp;&nbsp;$1&nbsp;&nbsp;브레이크 타임"
             );
 
-            // -------------------------------------------------
             // 라스트오더 앞에 반복되는 매일 제거
-            // -------------------------------------------------
             dayText = dayText.replaceAll(
                 "매일·(?=(?:새벽\\s*)?\\d{1,2}:\\d{2}\\s*까지\\s*라스트오더)",
                 ""
             );
 
-            // -------------------------------------------------
             // 라스트오더
             // 23:30 까지 라스트오더
-            // -------------------------------------------------
             dayText = dayText.replaceAll(
                 "((?:새벽\\s*)?\\d{1,2}:\\d{2})\\s*까지\\s*라스트오더",
                 "<br>&nbsp;&nbsp;&nbsp;&nbsp;$1 까지 라스트오더"
             );
 
-            // -------------------------------------------------
             // 혹시 '매'만 남은 경우 제거
-            // -------------------------------------------------
             dayText = dayText.replaceAll(
                 "\\s+매\\s*(?=<br>)",
                 ""
@@ -168,10 +156,7 @@ public class RestaurantService {
                   .append(dayText);
         }
 
-
-        // -------------------------------------------------
         // 요일 없이 "매일"만 존재하는 경우
-        // -------------------------------------------------
         if (result.length() == 0
                 && rTime.contains("__DAILY__")) {
 
@@ -390,7 +375,8 @@ public class RestaurantService {
          List<String> oldMnImgList,
          List<MultipartFile> mnUploadList,
          List<Integer> deleteMbiNoList,
-         List<MultipartFile> mbiUploadList
+         List<MultipartFile> mbiUploadList,
+         List<Integer> deleteMnNoList
  ) throws Exception {
 
      // 1. 식당 대표 이미지
@@ -413,7 +399,10 @@ public class RestaurantService {
              oldMnImgList,
              mnUploadList
      );
-
+     
+     //메뉴 삭제
+     deleteMenus(deleteMnNoList);
+     
      // 4. 기존 메뉴판 이미지 삭제
      deleteMenuBoardImages(
              deleteMbiNoList
@@ -862,6 +851,25 @@ private void insertMenuBoardImages(
              .menuBoardImageInsert(
                      menuBoard
              );
+ }
+}
+
+//=====================================================
+//메뉴 삭제
+//=====================================================
+private void deleteMenus(List<Integer> deleteMnNoList) {
+
+ if (deleteMnNoList == null) {
+     return;
+ }
+
+ for (Integer mnNo : deleteMnNoList) {
+
+     if (mnNo == null) {
+         continue;
+     }
+
+     restaurantdao.menuDelete(mnNo);
  }
 }
 
