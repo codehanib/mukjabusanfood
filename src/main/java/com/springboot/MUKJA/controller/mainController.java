@@ -1,6 +1,7 @@
 package com.springboot.MUKJA.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,7 +51,7 @@ public class mainController {
         return restaurantDao.restaurantListRegion(region);
     }
     
- // ⚡ 2. 평점별 매장 목록 (타입 안전성 강화 버전)
+    // ⚡ 2. 평점별 매장 목록 (타입 안전성 강화 버전)
     @GetMapping("/api/store/top-rating")
     @ResponseBody
     public List<restaurantDTO> getStoresByTopRating(@RequestParam(value = "filter", defaultValue = "all") String filter) {
@@ -80,7 +81,7 @@ public class mainController {
             .collect(Collectors.toList());
     }
 
-    //  [안전 헬퍼 메서드] Map에서 평점을 안전하게 Double로 추출
+    // [안전 헬퍼 메서드] Map에서 평점을 안전하게 Double로 추출
     private double getAvgRatingFromMap(Map<Integer, Map<String, Object>> ratingMap, Object rNoObj) {
         if (ratingMap == null || rNoObj == null) return 0.0;
         try {
@@ -147,7 +148,7 @@ public class mainController {
         return "main";
     }
     
-    // 카테고리 페이지 이동
+    // ⚡ 5. 카테고리 페이지 이동 컨트롤러 (ES 캐싱 및 정렬 완벽 적용)
     @GetMapping("/category")
     public String storeCategory(
             @RequestParam(value = "cate", defaultValue = "0") String cateParam,
@@ -170,12 +171,37 @@ public class mainController {
         List<restaurantDTO> storeList;
         int totalCount;
 
-        if (mukja_c_no == 0) {
-            storeList = restaurantDao.mainrestaurantList(start, pageSize);
-            totalCount = restaurantDao.restaurantCount();
+        // ES 캐싱 평점 Map 가져오기 (메인페이지와 동일한 타입)
+        Map<Integer, Map<String, Object>> ratingMap = esRatingService.getRestaurantRatings();
+
+        // 평점순 정렬 요청 시 ("rating" 또는 "score") 인메모리 ES 평점 정렬
+        if ("rating".equals(sort) || "score".equals(sort)) {
+            List<restaurantDTO> allStores;
+            if (mukja_c_no == 0) {
+                allStores = restaurantDao.restaurantListAll();
+            } else {
+                allStores = restaurantDao.restaurantListCategory(mukja_c_no, sort, 0, 1000);
+            }
+
+            // getAvgRatingFromMap 헬퍼 메서드로 ES 평점 기준 내림차순 정렬
+            allStores.sort((s1, s2) -> {
+                double p1 = getAvgRatingFromMap(ratingMap, s1.getR_no());
+                double p2 = getAvgRatingFromMap(ratingMap, s2.getR_no());
+                return Double.compare(p2, p1);
+            });
+
+            totalCount = allStores.size();
+            int end = Math.min(start + pageSize, totalCount);
+            storeList = (start < totalCount) ? allStores.subList(start, end) : new ArrayList<>();
         } else {
-            storeList = restaurantDao.restaurantListCategory(mukja_c_no, sort, start, pageSize);
-            totalCount = restaurantDao.restaurantCountCategory(mukja_c_no);
+            // 기본 정렬 (DB 페이징)
+            if (mukja_c_no == 0) {
+                storeList = restaurantDao.mainrestaurantList(start, pageSize);
+                totalCount = restaurantDao.restaurantCount();
+            } else {
+                storeList = restaurantDao.restaurantListCategory(mukja_c_no, sort, start, pageSize);
+                totalCount = restaurantDao.restaurantCountCategory(mukja_c_no);
+            }
         }
 
         int totalPage = (int) Math.ceil((double) totalCount / pageSize);
@@ -194,6 +220,7 @@ public class mainController {
         }
 
         model.addAttribute("storeList", storeList);
+        model.addAttribute("ratingMap", ratingMap); // 메인페이지처럼 ratingMap을 JSP로 전달!
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("selectedCate", mukja_c_no);
         model.addAttribute("selectedCategory", categoryName);
