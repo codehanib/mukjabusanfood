@@ -227,14 +227,14 @@
 							
 							 <br>
 							
-							<div id="deletedMenuContainer"></div>
-							
 					        <button type="button" onclick="deleteExistingMenu(this, '${menu.mn_no}')">
 					            메뉴 삭제
 					        </button>
 						</div>
 
                     </c:forEach>
+                    
+                    <div id="deletedMenuContainer"></div>
 
                     <!-- 메뉴가 하나도 없는 경우 -->
                     <c:if test="${empty menuList}">
