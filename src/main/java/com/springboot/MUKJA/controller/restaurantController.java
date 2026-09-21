@@ -316,6 +316,7 @@ public class restaurantController {
 	         @RequestParam(value = "mn_price", required = false) List<Integer> mnPriceList,
 	         @RequestParam(value = "mn_upload", required = false) List<MultipartFile> mnUploadList,
 	         @RequestParam(value = "mbi_upload", required = false) List<MultipartFile> mbiUploadList,
+	         @RequestParam(value = "delete_mn_no", required = false) List<Integer> deleteMnNoList,
 	         Principal principal) throws Exception {
 
 	     System.out.println("===== 식당 등록 Controller 진입 =====");
@@ -390,7 +391,7 @@ public class restaurantController {
 	         @RequestParam( value = "mn_upload", required = false)List<MultipartFile> mnUploadList,
 	         @RequestParam( value = "mbi_upload", required = false) List<MultipartFile> mbiUploadList,
 	         @RequestParam( value = "delete_mbi_no", required = false) List<Integer> deleteMbiNoList,
-
+	         @RequestParam(value = "delete_mn_no", required = false) List<Integer> deleteMnNoList,
 	         Principal principal) throws Exception {
 
 	     usersDTO user = usersdao.findById(principal.getName());
@@ -401,7 +402,7 @@ public class restaurantController {
 	     }
 
 	     restaurantService.updateRestaurant(dto, old_r_img, file, mnNoList, mnNameList, mnContentList,
-	             mnPriceList, oldMnImgList, mnUploadList, deleteMbiNoList, mbiUploadList
+	             mnPriceList, oldMnImgList, mnUploadList, deleteMbiNoList, mbiUploadList, deleteMnNoList
 	     );
 
 	     return "redirect:/restaurant/detail?r_no=" + dto.getR_no();

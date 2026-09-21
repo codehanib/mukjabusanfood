@@ -61,22 +61,25 @@ public interface restaurantDAO {
 		public int restaurantDelete(int r_no);
 		
 		//메뉴판
-		List<restaurantDTO> menuBoardImageList(@Param("r_no") int r_no);
+		public List<restaurantDTO> menuBoardImageList(@Param("r_no") int r_no);
 				
-		//메뉴
+		// 메뉴
 		public List<menuDTO> menuList(@Param("r_no")int r_no);
 		
 		// 메뉴 등록
-		int menuInsert(menuDTO dto);
+		public int menuInsert(menuDTO dto);
 		
 		// 메뉴 수정
-		int menuUpdate(menuDTO dto);
+		public int menuUpdate(menuDTO dto);
+		
+		// 메뉴 삭제
+		public int menuDelete(@Param("mn_no") int mn_no);
 		
 		// 메뉴판 이미지 등록
-		int menuBoardImageInsert(restaurantDTO dto);
+		public int menuBoardImageInsert(restaurantDTO dto);
 		
 		// 메뉴판 이미지 삭제
-		int menuBoardImageDelete(@Param("mbi_no") int mbi_no);
+		public int menuBoardImageDelete(@Param("mbi_no") int mbi_no);
 		
 		// 메인화면 지역별 가게 자동 전환 ajax용 
 		public List<restaurantDTO> restaurantListRegion(@Param("r_region") String r_region);

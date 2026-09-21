@@ -241,11 +241,16 @@
 	    FETCH NEXT #{pageSize} ROWS ONLY
 	</select>
 	
-
+	<!-- 메뉴 삭제 -->
+	<delete id="menuDelete">
+	    DELETE FROM menu
+	    WHERE mn_no = #{mn_no}
+	</delete>
 	
-	
+	<!-- 메뉴판 이미지 삭제 -->
 	<delete id="menuBoardImageDelete">
 	    DELETE FROM menuboardimg
 	    WHERE mbi_no = #{mbi_no}
 	</delete>
+	
 </mapper>

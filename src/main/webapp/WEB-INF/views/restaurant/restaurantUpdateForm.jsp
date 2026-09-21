@@ -224,6 +224,14 @@
 						    
 						    새 메뉴 이미지
 						    <input type="file" name="mn_upload" accept="image/*">
+							
+							 <br>
+							
+							<div id="deletedMenuContainer"></div>
+							
+					        <button type="button" onclick="deleteExistingMenu(this, '${menu.mn_no}')">
+					            메뉴 삭제
+					        </button>
 						</div>
 
                     </c:forEach>
