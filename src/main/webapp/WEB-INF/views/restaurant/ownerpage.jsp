@@ -32,6 +32,16 @@
 		<div class="mypage-menu">
 
 			<!-- 식당 정보 수정 -->
+			<a href="/users/userviewForm" class="mypage-menu-item">
+            <div class="mypage-menu-title">
+                회원정보보기
+                <span>profile</span>
+            </div>
+            <div class="mypage-menu-desc">
+                회원 정보를 확인하고<br>
+                수정, 비밀번호 변경, 탈퇴를 하실 수 있습니다.
+            </div>
+        </a>
 			<a href="/restaurant/updateForm?r_no=${user.r_no}"
 				class="mypage-menu-item${empty user.r_no ? ' disabled' : ''}">
 				<div class="mypage-menu-title">
@@ -73,6 +83,7 @@
 					문의 내역을 확인하실 수 있습니다.<br>
 				</div>
 			</a>
+			
 
 		</div>
 
