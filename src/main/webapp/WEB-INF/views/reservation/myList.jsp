@@ -39,7 +39,7 @@
 							<td>${res.res_num}</td>
 							<c:choose>
 							<c:when test="${not empty res.r_name}">
-							<td>${res.r_name}</td>
+							<td><a href="/restaurant/detail?r_no=${res.r_no}">${res.r_name}</a></td>
 							</c:when>
 							<c:otherwise>
 							<td>삭제된 식당입니다.</td>
@@ -76,7 +76,14 @@
 				</tr>
 				<c:forEach var="res" items="${history}">
 					<tr>
-						<td>${res.r_name}</td>
+						<c:choose>
+							<c:when test="${not empty res.r_name}">
+							<td>${res.r_name}</td>
+							</c:when>
+							<c:otherwise>
+							<td>삭제된 식당입니다.</td>
+							</c:otherwise>
+						</c:choose>
 						<td><fmt:formatDate value="${res.res_day}"
 								pattern="yyyy-MM-dd" /></td>
 						<td>${res.res_count}</td>

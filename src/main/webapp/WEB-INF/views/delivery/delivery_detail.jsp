@@ -125,7 +125,7 @@
         </tr>
         <tr>
             <th>총 금액</th>
-            <td><strong><fmt:formatNumber value="${delivery.d_total_price}" type="currency"/></strong></td>
+            <td><strong><fmt:formatNumber value="${delivery.d_total_price}" pattern="#,###"/> 원</strong></td>
         </tr>
     </table>
 
@@ -143,7 +143,7 @@
                 <tr>
                     <td>${menu.mn_name != null ? menu.mn_name : '메뉴번호 '.concat(menu.mn_no)}</td>
                     <td>${menu.dvm_count}개</td>
-                    <td><fmt:formatNumber value="${menu.dvm_price}" type="currency"/></td>
+                    <td><fmt:formatNumber value="${menu.dvm_price}" pattern="#,###"/> 원</td>
                 </tr>
             </c:forEach>
             <c:if test="${empty menuList}">
