@@ -205,6 +205,13 @@ public class mainController {
         }
 
         int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+        int pageBlock = 5;
+
+	    // 현재 페이지가 포함된 페이지 번호 구간
+	    int startPage = ((page - 1) / pageBlock) * pageBlock + 1;
+	
+	    // 마지막 페이지가 totalPage를 넘지 않도록 처리
+	    int endPage = Math.min(startPage + pageBlock - 1, totalPage);
 
         String categoryName = "전체 맛집";
         switch(mukja_c_no) {
@@ -227,6 +234,8 @@ public class mainController {
         model.addAttribute("sort", sort);
         model.addAttribute("page", page);
         model.addAttribute("totalPage", totalPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
 
         return "category";
     }
