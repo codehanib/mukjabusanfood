@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -380,7 +383,7 @@ public class restaurantController {
 	 
 	// 식당 수정 처리
 	 @RequestMapping("/restaurant/update")
-	 public String restaurantUpdate(restaurantDTO dto,
+	 public String restaurantUpdate(@ModelAttribute("updateDto") restaurantDTO dto,
 	         @RequestParam("old_r_img") String old_r_img,
 	         @RequestParam(value = "r_upload", required = false) MultipartFile file,
 	         @RequestParam(value = "mn_no", required = false) List<String> mnNoList,
@@ -423,6 +426,18 @@ public class restaurantController {
 	     return "redirect:/restaurant/search";
 	 }
 	 
+	 @InitBinder("updateDto")
+	 public void initUpdateBinder(WebDataBinder binder) {
+	     binder.setDisallowedFields(
+	         "mn_no",
+	         "mn_name",
+	         "mn_content",
+	         "mn_price",
+	         "mn_img",
+	         "mbi_no",
+	         "mbi_img"
+	     );
+	 }
 	 
 	 @RequestMapping("/restaurant/ownerpage")
 	 public String ownerPage(Principal principal, Model model) {
