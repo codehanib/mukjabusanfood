@@ -30,9 +30,17 @@
 	<br><br>
 		<textarea id ="rv_content" name="rv_content" rows="5" cols="50"
 				placeholder="리뷰를 작성해주세요.">${rvUP.rv_content}</textarea> <br>
+
+		<div class="existing-review-images">
+		    <c:forEach var="img" items="${rvUP.reviewImages}">
+		        <img src="${pageContext.request.contextPath}/upload/${img.rvimg_img}" alt="기존 리뷰 이미지"
+		            width="150">
+		    </c:forEach>
+		</div>
+		<br>
+		<label for="reviewFiles">리뷰 이미지 변경</label><br>
+		<input type="file" id="reviewFiles" name="reviewFiles" multiple accept="image/*">
 		
-		<label for="reviewFiles">이미지등록</label> <br>
-		<input type="file" name="reviewFiles" multiple accept="image/*">
 		<button type="submit" class="smbtn">수정하기</button> <br>
 	</form>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
